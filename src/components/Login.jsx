@@ -74,7 +74,6 @@ export default function Login() {
     });
   };
 
-  console.log(res);
   return (
     <Card className="border-violet-100 p-4">
       <CardHeader>
