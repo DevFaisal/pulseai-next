@@ -138,7 +138,9 @@ export default function DashboardWrapper({ children }) {
           </DropdownMenu>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <div className="flex items-center">{children}</div>
+          <div className="flex items-center rounded-lg border border-dashed">
+            {children}
+          </div>
         </main>
       </div>
     </div>

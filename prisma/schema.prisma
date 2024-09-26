@@ -35,7 +35,6 @@ model Patient {
   name             String
   age              Int
   gender           String
-  medicalInfo      String?
   hospitalId       String       @db.ObjectId
   assignedDoctorId String?      @db.ObjectId
   hospital         Hospital     @relation(fields: [hospitalId], references: [id])

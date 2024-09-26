@@ -117,9 +117,7 @@ export default function Doctors() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold">Doctor Registration</h1>
-
+    <>
       {error && toast.error(error)}
       <div className="flex flex-col gap-3 p-4">
         <ReusableForm
@@ -130,6 +128,6 @@ export default function Doctors() {
         />
         <div>{renderedDoctors}</div>
       </div>
-    </div>
+    </>
   );
 }

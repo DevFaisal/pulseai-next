@@ -26,8 +26,8 @@ import { useRouter } from "next/navigation";
 
 const loginInputs = [
   {
-    label: "Hospital Code",
-    placeholder: "Enter your hospital code",
+    label: "H-Code",
+    placeholder: "Enter your H-Code",
     type: "text",
     id: "hospital-code",
     name: "hospitalCode",
@@ -66,16 +66,17 @@ export default function Login() {
   const router = useRouter();
 
   const onSubmit = (data) => {
-    const res = signIn("credentials", {
+    signIn("credentials", {
       hospitalCode: data.hospitalCode,
       email: data.email,
       password: data.password,
-      redirect: "/dashboard",
+      redirect: false,
     });
   };
 
   return (
     <Card className="border-violet-100 p-4">
+      {JSON.stringify(session)}
       <CardHeader>
         <CardTitle className="text-violet-800">Login to Pulse AI</CardTitle>
         <CardDescription className="text-violet-600">
