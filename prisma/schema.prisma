@@ -1,0 +1,90 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  email      String    @unique
+  password   String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  role       Role      @default(USER)
+  Hospital   Hospital? @relation(fields: [hospitalId], references: [id])
+  hospitalId String?   @db.ObjectId
+}
+
+model Doctor {
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  specialty  String?
+  phone      String?
+  Hospital   Hospital?   @relation(fields: [hospitalId], references: [id])
+  hospitalId String?     @db.ObjectId
+  patients   Patient[]
+  thresholds Threshold[]
+}
+
+model Patient {
+  id               String       @id @default(auto()) @map("_id") @db.ObjectId
+  name             String
+  age              Int
+  gender           String
+  medicalInfo      String?
+  hospitalId       String       @db.ObjectId
+  assignedDoctorId String?      @db.ObjectId
+  hospital         Hospital     @relation(fields: [hospitalId], references: [id])
+  assignedDoctor   Doctor?      @relation(fields: [assignedDoctorId], references: [id])
+  vitalSigns       VitalSign[]
+  medications      Medication[]
+}
+
+model Hospital {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  hospitalCode String    @unique
+  name         String
+  location     String?
+  users        User[]
+  doctors      Doctor[]
+  patients     Patient[]
+}
+
+model VitalSign {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId     String   @db.ObjectId
+  timestamp     DateTime @default(now())
+  heartRate     Int?
+  bloodPressure String?
+  temperature   Float?
+  patient       Patient  @relation(fields: [patientId], references: [id])
+}
+
+model Medication {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String   @db.ObjectId
+  name      String
+  dosage    String
+  startDate DateTime
+  endDate   DateTime
+  patient   Patient  @relation(fields: [patientId], references: [id])
+}
+
+model Threshold {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  doctorId  String @db.ObjectId
+  vitalType String
+  minValue  Float
+  maxValue  Float
+  doctor    Doctor @relation(fields: [doctorId], references: [id])
+}
+
+enum Role {
+  ADMIN
+  USER
+  DOCTOR
+}
