@@ -65,6 +65,19 @@ export async function GET(request) {
       where: {
         hospitalId: hospitalId,
       },
+      select: {
+        id: true,
+        name: true,
+        age: true,
+        hospitalId: true,
+        gender: true,
+        assignedDoctor: {
+          select: {
+            name: true,
+          },
+        },
+        assignedDoctorId: true,
+      },
     });
 
     if (!patients.length) {

@@ -18,6 +18,17 @@ export function useAPI() {
       console.error("Error adding patient:", error);
     }
   };
-
-  return { addPatient };
+  const updatePatient = async (formData, id) => {
+    try {
+      const response = await axios.put(`/api/patient/${id}`, formData);
+      if (response.status === 200) {
+        toast.success("Patient updated successfully");
+        return response.data;
+      }
+    } catch (error) {
+      toast.error("Failed to update patient");
+      console.error("Error updating patient:", error);
+    }
+  };
+  return { addPatient, updatePatient };
 }

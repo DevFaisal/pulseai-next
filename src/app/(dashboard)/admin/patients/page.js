@@ -7,6 +7,7 @@ import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
 import AddPatient from "@/components/AddPatient";
 import SpinnerLoader from "@/components/SpinnerLoader";
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Component() {
   const patientsLoadable = useRecoilValueLoadable(AdminPatientsSelector);
@@ -17,10 +18,10 @@ export default function Component() {
 
   useEffect(() => {
     if (patientsLoadable.state === "hasValue") {
-      setPatients(patientsLoadable.contents);
+      setPatients(patientsLoadable.contents || []);
     }
     if (doctorsLoadable.state === "hasValue") {
-      setDoctors(doctorsLoadable.contents);
+      setDoctors(doctorsLoadable.contents || []);
     }
     if (
       patientsLoadable.state !== "loading" &&
@@ -35,7 +36,11 @@ export default function Component() {
     patientsLoadable.state === "loading" ||
     doctorsLoadable.state === "loading"
   ) {
-    return <SpinnerLoader />;
+    return (
+      <div className="flex flex-col items-center justify-center w-full h-full">
+        <h1>Loading...</h1>
+      </div>
+    );
   }
 
   // Handle error states
@@ -47,17 +52,6 @@ export default function Component() {
     return <div>Error: {doctorsLoadable.contents.message}</div>;
   }
 
-  // Check if either patients or doctors is empty
-  if (!patients.length) {
-    return <div>No patients or doctors found</div>;
-  }
-
-  // Map patients to include assigned doctor names
-  const mappedPatients = patients.map((patient) => {
-    const doctor = doctors.find((doc) => doc.id === patient?.assignedDoctorId);
-    return { ...patient, assignedDoctor: doctor?.name || "Not assigned" };
-  });
-
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
@@ -66,9 +60,17 @@ export default function Component() {
           <AddPatient doctors={doctors} setPatients={setPatients} />
         </div>
         <Card>
-          <CardContent>
-            <PatientTable patients={mappedPatients} setPatients={setPatients} />
-          </CardContent>
+          {patients && patients.length > 0 ? ( // Check if patients is defined and has length
+            <CardContent>
+              <PatientTable
+                patients={patients}
+                setPatients={setPatients}
+                doctors={doctors}
+              />
+            </CardContent>
+          ) : (
+            <div>No patients available</div>
+          )}
         </Card>
       </main>
     </div>

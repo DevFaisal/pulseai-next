@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -38,11 +39,13 @@ export default function AddPatient({ doctors, setPatients }) {
 
   // Form fields definition with select inputs
   const inputs = Inputs.AddPatientInput;
-  inputs.assignedDoctor.options = doctors.length>1? doctors?.map((doctor) => ({
-    value: doctor.id,
-    label: doctor.name,
-  })) : [{ value: "", label: "No doctors available" }];
-  
+  inputs.assignedDoctor.options =
+    doctors.length > 1
+      ? doctors?.map((doctor) => ({
+          value: doctor.id,
+          label: doctor.name,
+        }))
+      : [{ value: "", label: "No doctors available" }];
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>

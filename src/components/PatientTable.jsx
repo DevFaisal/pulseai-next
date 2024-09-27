@@ -19,18 +19,11 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 import axios from "axios";
 import { toast } from "sonner";
+import { EditPatient } from "@/components/EditPatient";
 
-export default function PatientTable({ patients = [], setPatients }) {
+export default function PatientTable({ patients = [], setPatients, doctors }) {
   const deletePatient = (id) => async () => {
     try {
       const res = await axios.delete(`/api/patient/${id}`);
@@ -68,71 +61,12 @@ export default function PatientTable({ patients = [], setPatients }) {
                 <div>{patient.gender}</div>
               </TableCell>
               <TableCell>
-                <div>{patient.assignedDoctor}</div>
+                <div>{patient.assignedDoctor?.name || ""}</div>
               </TableCell>
               <TableCell className="text-right">
                 {/* Edit Patient Dialog */}
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      <FilePenIcon className="h-4 w-4" />
-                      <span className="sr-only">Edit</span>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Edit Patient</DialogTitle>
-                      <DialogDescription>
-                        Update the patient's information.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <form className="grid gap-4">
-                      {/* Edit Form with default values */}
-                      <div className="grid gap-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input id="name" defaultValue={patient.name} />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          defaultValue="johndoe@example.com"
-                        />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="phone">Phone</Label>
-                        <Input id="phone" defaultValue="+1 (555) 555-5555" />
-                      </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="doctor">Assigned Doctor</Label>
-                        <Select id="doctor" defaultValue="dr-jane-smith">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select doctor" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="dr-jane-smith">
-                              Dr. Jane Smith
-                            </SelectItem>
-                            <SelectItem value="dr-john-smith">
-                              Dr. John Smith
-                            </SelectItem>
-                            <SelectItem value="dr-sarah-lee">
-                              Dr. Sarah Lee
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </form>
-                    <DialogFooter>
-                      <DialogClose>
-                        <Button variant="outline">Cancel</Button>
-                      </DialogClose>
-                      <Button type="submit">Save Changes</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
 
+                <EditPatient patient={patient} doctors={doctors} />
                 {/* Delete Patient Dialog */}
                 <Dialog>
                   <DialogTrigger asChild>
