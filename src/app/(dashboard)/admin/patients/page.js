@@ -1,56 +1,73 @@
 "use client";
 
-import AddPatient from "@/components/AddPatient";
 import { Card, CardContent } from "@/components/ui/card";
 import PatientTable from "@/components/PatientTable";
-import { useSession } from "next-auth/react";
+import { useRecoilValueLoadable } from "recoil";
+import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
+import AddPatient from "@/components/AddPatient";
+import SpinnerLoader from "@/components/SpinnerLoader";
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 export default function Component() {
-  const { data: session } = useSession();
-  const hospitalId = session?.user?.hospitalId;
+  const patientsLoadable = useRecoilValueLoadable(AdminPatientsSelector);
+  const doctorsLoadable = useRecoilValueLoadable(AdminDoctorsSelector);
   const [patients, setPatients] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        const response = await axios.get(
-          `/api/patient?hospitalId=${hospitalId}`
-        );
-        setPatients(response.data);
-      } catch (error) {
-        console.error("Error fetching patients:", error);
-      }
-    };
-    fetchPatients();
-  }, [hospitalId]);
+    if (patientsLoadable.state === "hasValue") {
+      setPatients(patientsLoadable.contents);
+    }
+    if (doctorsLoadable.state === "hasValue") {
+      setDoctors(doctorsLoadable.contents);
+    }
+    if (
+      patientsLoadable.state !== "loading" &&
+      doctorsLoadable.state !== "loading"
+    ) {
+      setIsLoading(false);
+    }
+  }, [patientsLoadable, doctorsLoadable]);
 
-  // const patients = [
-  //   {
-  //     name: "John Doe",
-  //     age: 35,
-  //     gender: "Male",
-  //     doctor: "Dr. Jane Smith",
-  //   },
-  //   {
-  //     name: "Kaiser Doe",
-  //     age: 22,
-  //     gender: "Female",
-  //     doctor: "Dr. John Smith",
-  //   },
-  // ];
+  if (
+    isLoading ||
+    patientsLoadable.state === "loading" ||
+    doctorsLoadable.state === "loading"
+  ) {
+    return <SpinnerLoader />;
+  }
+
+  // Handle error states
+  if (patientsLoadable.state === "hasError") {
+    return <div>Error: {patientsLoadable.contents.message}</div>;
+  }
+
+  if (doctorsLoadable.state === "hasError") {
+    return <div>Error: {doctorsLoadable.contents.message}</div>;
+  }
+
+  // Check if either patients or doctors is empty
+  if (!patients.length) {
+    return <div>No patients or doctors found</div>;
+  }
+
+  // Map patients to include assigned doctor names
+  const mappedPatients = patients.map((patient) => {
+    const doctor = doctors.find((doc) => doc.id === patient?.assignedDoctorId);
+    return { ...patient, assignedDoctor: doctor?.name || "Not assigned" };
+  });
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">Patients</h1>
-          <AddPatient />
+          <AddPatient doctors={doctors} setPatients={setPatients} />
         </div>
         <Card>
           <CardContent>
-            <PatientTable patients={patients} />
+            <PatientTable patients={mappedPatients} setPatients={setPatients} />
           </CardContent>
         </Card>
       </main>

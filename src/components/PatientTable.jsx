@@ -27,8 +27,22 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import axios from "axios";
+import { toast } from "sonner";
 
-export default function PatientTable({ patients = [] }) {
+export default function PatientTable({ patients = [], setPatients }) {
+  const deletePatient = (id) => async () => {
+    try {
+      const res = await axios.delete(`/api/patient/${id}`);
+      if (res.status === 200) {
+        setPatients((prev) => prev.filter((patient) => patient.id !== id));
+        toast.success("Patient deleted successfully");
+      }
+    } catch (error) {
+      toast.error("Error deleting patient");
+    }
+  };
+
   return (
     <>
       <Table>
@@ -54,7 +68,7 @@ export default function PatientTable({ patients = [] }) {
                 <div>{patient.gender}</div>
               </TableCell>
               <TableCell>
-                <div>{patient.doctor}</div>
+                <div>{patient.assignedDoctor}</div>
               </TableCell>
               <TableCell className="text-right">
                 {/* Edit Patient Dialog */}
@@ -138,7 +152,12 @@ export default function PatientTable({ patients = [] }) {
                       <DialogClose>
                         <Button variant="outline">Cancel</Button>{" "}
                       </DialogClose>
-                      <Button variant="destructive">Delete</Button>
+                      <Button
+                        onClick={deletePatient(patient.id)}
+                        variant="destructive"
+                      >
+                        Delete
+                      </Button>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
