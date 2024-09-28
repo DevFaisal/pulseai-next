@@ -1,5 +1,20 @@
 import { z } from "zod";
 
+const doctorSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  specialty: z
+    .string()
+    .min(2, { message: "Specialty must be at least 2 characters." }),
+  contact: z
+    .string()
+    .length(10, { message: "Contact number must be exactly 10 digits." })
+    .regex(/^\d+$/, { message: "Contact number must contain only digits." }),
+  email: z.string().email({ message: "Invalid email address." }),
+  password: z
+    .string()
+    .min(6, { message: "Password must be at least 6 characters." }),
+});
+
 const patientSchema = z.object({
   name: z.string().nonempty("Name is required"),
   email: z.string().email("Invalid email address"),
@@ -16,4 +31,4 @@ const UpdatePatientSchema = z.object({
   assignedDoctor: z.string().nonempty("Doctor assignment is required"),
 });
 
-export { patientSchema, UpdatePatientSchema };
+export { patientSchema, UpdatePatientSchema, doctorSchema };

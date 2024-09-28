@@ -51,7 +51,9 @@ export const NEXT_AUTH = {
           if (!user) {
             return null;
           }
-
+          if (user.role === "DOCTOR") {
+            
+          }
           if (credentials.hospitalCode !== user?.Hospital.hospitalCode) {
             return null;
           }

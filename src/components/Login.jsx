@@ -23,6 +23,8 @@ import {
 import { signIn, useSession } from "next-auth/react";
 import { Router } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const loginInputs = [
   {
@@ -62,21 +64,35 @@ export default function Login() {
     },
   });
 
+  const [loading, setLoading] = useState(false);
+
   const session = useSession();
   const router = useRouter();
 
-  const onSubmit = (data) => {
-    signIn("credentials", {
-      hospitalCode: data.hospitalCode,
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    });
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+      const result = await signIn("credentials", {
+        hospitalCode: data.hospitalCode,
+        email: data.email,
+        password: data.password,
+        redirect: true,
+      });
+
+      if (result.error) {
+        throw new Error("Invalid credentials");
+      }
+      toast.success("Logged in successfully");
+      // router.push("/");
+    } catch (error) {
+      toast.error(error.message || "Error logging in");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Card className="border-violet-100 p-4">
-      {JSON.stringify(session)}
       <CardHeader>
         <CardTitle className="text-violet-800">Login to Pulse AI</CardTitle>
         <CardDescription className="text-violet-600">
@@ -112,7 +128,7 @@ export default function Login() {
           onClick={form.handleSubmit(onSubmit)}
           className="w-full bg-violet-600 hover:bg-violet-700 text-white"
         >
-          Login
+          {loading ? "Loading..." : "Login"}
         </Button>
       </Form>
     </Card>

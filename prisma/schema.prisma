@@ -20,14 +20,15 @@ model User {
 }
 
 model Doctor {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String    @db.ObjectId
   name       String
   specialty  String?
   phone      String?
-  Hospital   Hospital?   @relation(fields: [hospitalId], references: [id])
-  hospitalId String?     @db.ObjectId
+  email      String    @unique
+  Hospital   Hospital? @relation(fields: [hospitalId], references: [id])
+  hospitalId String?   @db.ObjectId
   patients   Patient[]
-  thresholds Threshold[]
 }
 
 model Patient {
@@ -41,6 +42,7 @@ model Patient {
   assignedDoctor   Doctor?      @relation(fields: [assignedDoctorId], references: [id])
   vitalSigns       VitalSign[]
   medications      Medication[]
+  Threshold        Threshold[]
 }
 
 model Hospital {
@@ -74,12 +76,13 @@ model Medication {
 }
 
 model Threshold {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  doctorId  String @db.ObjectId
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  doctorId  String  @db.ObjectId
   vitalType String
   minValue  Float
   maxValue  Float
-  doctor    Doctor @relation(fields: [doctorId], references: [id])
+  patientId String  @db.ObjectId
+  patient   Patient @relation(fields: [patientId], references: [id])
 }
 
 enum Role {

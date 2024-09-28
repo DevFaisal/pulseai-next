@@ -46,9 +46,6 @@ export async function PUT(request, { params }) {
   try {
     const { patientId } = params;
     const body = await request.json();
-    console.log("Update patient data:", body);
-
-    console.log("Update patient data:", body);
 
     if (!patientId) {
       return NextResponse.json(

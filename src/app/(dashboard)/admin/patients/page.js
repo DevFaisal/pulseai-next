@@ -5,23 +5,22 @@ import PatientTable from "@/components/PatientTable";
 import { useRecoilValueLoadable } from "recoil";
 import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
 import AddPatient from "@/components/AddPatient";
-import SpinnerLoader from "@/components/SpinnerLoader";
 import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Component() {
   const patientsLoadable = useRecoilValueLoadable(AdminPatientsSelector);
   const doctorsLoadable = useRecoilValueLoadable(AdminDoctorsSelector);
+
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (patientsLoadable.state === "hasValue") {
-      setPatients(patientsLoadable.contents || []);
+      setPatients(patientsLoadable.contents.data || []);
     }
     if (doctorsLoadable.state === "hasValue") {
-      setDoctors(doctorsLoadable.contents || []);
+      setDoctors(doctorsLoadable.contents.data || []);
     }
     if (
       patientsLoadable.state !== "loading" &&
@@ -37,7 +36,7 @@ export default function Component() {
     doctorsLoadable.state === "loading"
   ) {
     return (
-      <div className="flex flex-col items-center justify-center w-full h-full">
+      <div className="flex flex-col items-center h-screen justify-center w-full">
         <h1>Loading...</h1>
       </div>
     );
@@ -60,7 +59,7 @@ export default function Component() {
           <AddPatient doctors={doctors} setPatients={setPatients} />
         </div>
         <Card>
-          {patients && patients.length > 0 ? ( // Check if patients is defined and has length
+          {patients && patients.length > 0 ? (
             <CardContent>
               <PatientTable
                 patients={patients}
@@ -69,7 +68,11 @@ export default function Component() {
               />
             </CardContent>
           ) : (
-            <div>No patients available</div>
+            <div className="flex flex-col items-center justify-center h-96">
+              <h1 className="text-2xl font-semibold text-center">
+                No patients available
+              </h1>
+            </div>
           )}
         </Card>
       </main>

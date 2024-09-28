@@ -41,18 +41,29 @@ const ReusableFormWithSelect = ({ schema, inputs, onSubmit }) => {
                 <FormControl>
                   {/* Render Input or Select based on input type */}
                   {input.type === "select" ? (
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger>
-                        <SelectValue placeholder={input.placeholder} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {input.options.map((option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    input.options && input.options.length > 1 ? (
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={input.placeholder} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {input.options.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    ) : (
+                      <Input
+                        placeholder="No options available"
+                        type="text"
+                        disabled
+                      />
+                    )
                   ) : (
                     <Input
                       placeholder={input.placeholder}

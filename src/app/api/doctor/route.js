@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { ObjectId } from "mongodb";
 
 const prisma = new PrismaClient();
 
@@ -13,27 +14,31 @@ export async function GET(request) {
     );
   }
 
-  //TODO: Validate hospitalId as it mongoDB ObjectID
+  if (!ObjectId.isValid(hospitalId)) {
+    return NextResponse.json(
+      { error: "Invalid Hospital ID format" },
+      { status: 400 }
+    );
+  }
 
   try {
-    // Fetch patients from the database based on hospitalId
-    const patients = await prisma.doctor.findMany({
+    const doctors = await prisma.doctor.findMany({
       where: {
         hospitalId: hospitalId,
       },
     });
 
-    if (!patients.length) {
+    if (!doctors.length) {
       return NextResponse.json({ error: "No Doctor found" }, { status: 404 });
     }
 
     // Return the patients in the response
-    return NextResponse.json(patients);
+    return NextResponse.json(doctors);
   } catch (error) {
     // Log the error to the server
     console.error(error);
     return NextResponse.json(
-      { error: "Failed to fetch patients" },
+      { error: "Failed to fetch Doctors" },
       { status: 500 }
     );
   }

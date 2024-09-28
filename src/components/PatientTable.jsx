@@ -6,25 +6,13 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import Link from "next/link";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
 import axios from "axios";
 import { toast } from "sonner";
 import { EditPatient } from "@/components/EditPatient";
+import DeleteDialog from "./DeleteDialog";
 
 export default function PatientTable({ patients = [], setPatients, doctors }) {
-  const deletePatient = (id) => async () => {
+  const handelDelete = (id) => async () => {
     try {
       const res = await axios.delete(`/api/patient/${id}`);
       if (res.status === 200) {
@@ -65,36 +53,13 @@ export default function PatientTable({ patients = [], setPatients, doctors }) {
               </TableCell>
               <TableCell className="text-right">
                 {/* Edit Patient Dialog */}
-
                 <EditPatient patient={patient} doctors={doctors} />
                 {/* Delete Patient Dialog */}
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      <TrashIcon className="h-4 w-4" />
-                      <span className="sr-only">Delete</span>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Delete Patient</DialogTitle>
-                      <DialogDescription>
-                        Are you sure you want to delete this patient?
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <DialogClose>
-                        <Button variant="outline">Cancel</Button>{" "}
-                      </DialogClose>
-                      <Button
-                        onClick={deletePatient(patient.id)}
-                        variant="destructive"
-                      >
-                        Delete
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
+                <DeleteDialog
+                  title={"Delete Patient"}
+                  description={"Are you sure you want to delete this patient?"}
+                  onClick={handelDelete(patient.id)}
+                />
               </TableCell>
             </TableRow>
           ))}

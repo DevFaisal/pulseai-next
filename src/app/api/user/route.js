@@ -50,30 +50,6 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-
-    if (role === "DOCTOR") {
-      try {
-        const doctor = await prisma.doctor.create({
-          data: {
-            name: name,
-            specialty: body.specialty,
-            Hospital: {
-              connect: {
-                id: hospitalId,
-              },
-            },
-            phone: body.contact,
-          },
-        });
-      } catch (error) {
-        console.error("Error creating doctor:", error);
-        return NextResponse.json(
-          { error: "Failed to create doctor" },
-          { status: 500 }
-        );
-      }
-    }
-
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -89,6 +65,31 @@ export async function POST(request) {
         },
       },
     });
+
+    if (role === "DOCTOR") {
+      try {
+        const doctor = await prisma.doctor.create({
+          data: {
+            name: name,
+            userId: user.id,
+            specialty: body.specialty,
+            Hospital: {
+              connect: {
+                id: hospitalId,
+              },
+            },
+            email: email,
+            phone: body.contact,
+          },
+        });
+      } catch (error) {
+        console.error("Error creating doctor:", error);
+        return NextResponse.json(
+          { error: "Failed to create doctor" },
+          { status: 500 }
+        );
+      }
+    }
 
     return NextResponse.json(user, { status: 201 });
   } catch (error) {

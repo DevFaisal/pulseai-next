@@ -1,29 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import {
-  AirVent,
-  Bell,
-  CircleUser,
-  Home,
-  LineChart,
-  Menu,
-  Package,
-  Package2,
-  Search,
-  ShoppingCart,
-  Users,
-} from "lucide-react";
+import { signOut } from "next-auth/react";
+import { AirVent, Bell, CircleUser, Menu, Search } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -36,12 +17,10 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 import { getVisibleLinks } from "@/lib/dashboardItems";
-import { signOut } from "next-auth/react";
 
-const userRole = "admin";
-const navItems = getVisibleLinks(userRole);
+export default function DashboardWrapper({ children, userRole = "admin" }) {
+  const navItems = getVisibleLinks(userRole);
 
-export default function DashboardWrapper({ children }) {
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
@@ -49,32 +28,25 @@ export default function DashboardWrapper({ children }) {
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <AirVent className="h-6 w-6" />
-              <span className="">Pulse AI</span>
+              <span>Pulse AI</span>
             </Link>
             <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
               <Bell className="h-4 w-4" />
               <span className="sr-only">Toggle notifications</span>
             </Button>
           </div>
-          <div className="flex-1">
-            <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                >
-                  <item.icon className="h-4 w-4" />
-                  {item.label}
-                  {/* {item.icon && (
-                    <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                      {item.icon}
-                    </Badge>
-                  )} */}
-                </Link>
-              ))}
-            </nav>
-          </div>
+          <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+            {navItems.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+              >
+                <item.icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </div>
       <div className="flex flex-col">
@@ -98,7 +70,6 @@ export default function DashboardWrapper({ children }) {
                     href={item.href}
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
                   >
-                    {/* <LineChart className="h-5 w-5" /> */}
                     <item.icon className="h-5 w-5" />
                     {item.label}
                   </Link>
@@ -107,7 +78,7 @@ export default function DashboardWrapper({ children }) {
             </SheetContent>
           </Sheet>
           <div className="w-full flex-1">
-            <form>
+            <form onSubmit={(e) => e.preventDefault()}>
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -131,16 +102,14 @@ export default function DashboardWrapper({ children }) {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <button onClick={() => signOut()}>Logout</button>
+              <DropdownMenuItem onSelect={() => signOut()}>
+                Logout
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-          <div className="flex items-center rounded-lg border border-dashed">
-            {children}
-          </div>
+          {children}
         </main>
       </div>
     </div>
