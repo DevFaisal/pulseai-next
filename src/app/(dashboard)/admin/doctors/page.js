@@ -47,13 +47,13 @@ export default function Doctors() {
   ];
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
+    <div className="flex min-h-screen w-full flex-col bg-background">
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Doctors</h1>
+        <div className="flex items-center justify-between mb-4 border-b pb-2">
+          <h1 className="text-3xl font-bold text-primary">Doctors</h1>
           <AddDoctor setDoctors={setDoctors} />
         </div>
-        <Card>
+        <Card >
           {loading ? (
             <div className="flex items-center justify-center h-32 text-lg text-gray-500">
               <h1 className="text-2xl font-semibold">Loading...</h1>

@@ -48,6 +48,8 @@ export async function GET(request, { params }) {
           select: {
             id: true,
             name: true,
+            age: true,
+            gender: true,
             vitalSigns: {
               select: {
                 id: true,

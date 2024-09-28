@@ -15,7 +15,6 @@ const doctorDetailsSelector = selectorFamily({
     (id) =>
     async ({ get }) => {
       const userRole = get(userRoleState); // Get the current user role
-      console.log("User Role:", userRole);
 
       // Ensure that only the DOCTOR role can access this selector
       if (userRole !== "DOCTOR") {

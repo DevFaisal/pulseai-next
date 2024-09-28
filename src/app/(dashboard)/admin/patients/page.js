@@ -52,10 +52,10 @@ export default function Component() {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
+    <div className="flex min-h-screen w-full flex-col bg-background">
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold">Patients</h1>
+        <div className="flex items-center justify-between mb-4 border-b pb-2">
+          <h1 className="text-3xl font-bold text-primary">Patients</h1>
           <AddPatient doctors={doctors} setPatients={setPatients} />
         </div>
         <Card>
@@ -69,7 +69,7 @@ export default function Component() {
             </CardContent>
           ) : (
             <div className="flex flex-col items-center justify-center h-96">
-              <h1 className="text-2xl font-semibold text-center">
+              <h1 className="text-2xl font-semibold text-center text-gray-500">
                 No patients available
               </h1>
             </div>

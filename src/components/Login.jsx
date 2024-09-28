@@ -76,14 +76,14 @@ export default function Login() {
         hospitalCode: data.hospitalCode,
         email: data.email,
         password: data.password,
-        redirect: true,
+        redirect: false,
       });
 
       if (result.error) {
         throw new Error("Invalid credentials");
       }
       toast.success("Logged in successfully");
-      // router.push("/");
+      window.location.reload();
     } catch (error) {
       toast.error(error.message || "Error logging in");
     } finally {

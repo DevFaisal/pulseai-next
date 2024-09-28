@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { signOut } from "next-auth/react";
-import { AirVent, Bell, CircleUser, Menu, Search } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
+import { AirVent, Bell, CircleUser, Heart, Menu, Search } from "lucide-react";
+import { Home, Calendar, Users } from "lucide-react"; // Import your icons
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,11 +16,55 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useEffect, useState } from "react";
+import { ModeToggle } from "./ModeToggle";
 
-import { getVisibleLinks } from "@/lib/dashboardItems";
+// Create link function
+const createLink = (label, href, icon, roles) => ({
+  label,
+  href,
+  icon,
+  visible: roles,
+});
 
-export default function DashboardWrapper({ children, userRole = "admin" }) {
+// Define dashboard links with appropriate roles
+export const dashboardLinks = [
+  createLink("Dashboard", "/", Home, ["admin", "doctor", "user"]),
+  createLink("Appointments", "/appointments", Calendar, ["doctor"]),
+  createLink("Patients", "/admin/patients", Users, ["admin", "doctor"]),
+  createLink("Doctors", "/admin/doctors", Users, ["admin"]),
+];
+
+// Function to get visible links based on user role
+export const getVisibleLinks = (userRole) => {
+  return dashboardLinks.filter((link) => link.visible.includes(userRole));
+};
+
+// Dashboard Wrapper Component
+export default function DashboardWrapper({ children }) {
+  const [userRole, setUserRole] = useState("admin");
+
+  const session = useSession();
+
+  useEffect(() => {
+    if (session) {
+      setUserRole(session.data?.user.role.toLowerCase());
+    }
+  }, [session]);
+
   const navItems = getVisibleLinks(userRole);
+  const [loading, setLoading] = useState(false);
+
+  const handleLogout = async () => {
+    setLoading(true);
+    try {
+      await signOut();
+    } catch (error) {
+      console.error("Logout failed: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -27,12 +72,16 @@ export default function DashboardWrapper({ children, userRole = "admin" }) {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <AirVent className="h-6 w-6" />
+              <Heart className="h-6 w-6 text-violet-600" />
               <span>Pulse AI</span>
             </Link>
-            <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
+            <Button
+              variant="outline"
+              size="icon"
+              className="ml-auto h-8 w-8"
+              aria-label="Toggle notifications"
+            >
               <Bell className="h-4 w-4" />
-              <span className="sr-only">Toggle notifications</span>
             </Button>
           </div>
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
@@ -41,6 +90,7 @@ export default function DashboardWrapper({ children, userRole = "admin" }) {
                 key={item.label}
                 href={item.href}
                 className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                aria-label={`Navigate to ${item.label}`}
               >
                 <item.icon className="h-4 w-4" />
                 {item.label}
@@ -57,9 +107,9 @@ export default function DashboardWrapper({ children, userRole = "admin" }) {
                 variant="outline"
                 size="icon"
                 className="shrink-0 md:hidden"
+                aria-label="Toggle navigation menu"
               >
                 <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="flex flex-col">
@@ -69,6 +119,7 @@ export default function DashboardWrapper({ children, userRole = "admin" }) {
                     key={item.label}
                     href={item.href}
                     className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                    aria-label={`Navigate to ${item.label}`}
                   >
                     <item.icon className="h-5 w-5" />
                     {item.label}
@@ -77,38 +128,35 @@ export default function DashboardWrapper({ children, userRole = "admin" }) {
               </nav>
             </SheetContent>
           </Sheet>
-          <div className="w-full flex-1">
-            <form onSubmit={(e) => e.preventDefault()}>
-              <div className="relative">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search products..."
-                  className="w-full appearance-none bg-background pl-8 shadow-none md:w-2/3 lg:w-1/3"
-                />
-              </div>
-            </form>
+          <div className="flex justify-between w-full">
+            <div>
+              <ModeToggle />
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full"
+                  aria-label="User menu"
+                >
+                  <CircleUser className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>Support</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onSelect={handleLogout}>
+                  {loading ? "Logging out..." : "Logout"}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="icon" className="rounded-full">
-                <CircleUser className="h-5 w-5" />
-                <span className="sr-only">Toggle user menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onSelect={() => signOut()}>
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+        <main className=" flex flex-1 flex-col gap-4 p-0 lg:p-2">
           {children}
         </main>
       </div>

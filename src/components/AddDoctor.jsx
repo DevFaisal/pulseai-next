@@ -26,6 +26,7 @@ export default function AddDoctor({ setDoctors }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = async (formData) => {
+    formData.name = "Dr. " + formData.name;
     try {
       const newDoctor = await api.addDoctor(formData, hospitalId);
       setDoctors((prev) => [...prev, newDoctor]);

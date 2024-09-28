@@ -3,6 +3,7 @@ import "./globals.css";
 import Providers from "@/context/Providers";
 
 import RecoilRootProvider from "@/context/RecoilRootProvider";
+import { ThemeProvider } from "@/context/ThemeProvider";
 
 export const metadata = {
   title: "Create Next App",
@@ -13,10 +14,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Providers>
-          <Toaster />
-          <RecoilRootProvider>{children}</RecoilRootProvider>
-        </Providers>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Providers>
+            <Toaster />
+            <RecoilRootProvider>{children}</RecoilRootProvider>
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

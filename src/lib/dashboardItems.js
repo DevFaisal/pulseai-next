@@ -1,3 +1,5 @@
+import { Home, Calendar, Users } from "lucide-react"; // Import your icons here
+
 const createLink = (label, href, icon, roles) => ({
   label,
   href,
@@ -6,10 +8,10 @@ const createLink = (label, href, icon, roles) => ({
 });
 
 export const dashboardLinks = [
-  createLink("Dashboard", "/", "home", ["admin", "doctor", "user"]),
-  createLink("Appointments", "/appointments", "calendar", ["doctor"]),
-  createLink("Patients", "/admin/patients", "people", ["admin"]),
-  createLink("Doctors", "/admin/doctors", "people", ["admin"]),
+  createLink("Dashboard", "/", Home, ["admin", "doctor", "user"]), // Use icon component
+  createLink("Appointments", "/appointments", Calendar, ["doctor"]),
+  createLink("Patients", "/admin/patients", Users, ["admin"]),
+  createLink("Doctors", "/admin/doctors", Users, ["admin"]),
 ];
 
 export const getVisibleLinks = (userRole) => {
