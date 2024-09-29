@@ -15,17 +15,19 @@ export function useAPI() {
       console.error("Error deleting doctor:", error);
     }
   };
-
   const addDoctor = async (formData, hospitalId) => {
-    const response = await axios.post("/api/user", {
-      ...formData,
-      role: "DOCTOR",
-      hospitalId,
-    });
-    if (response.status === 201) {
+    try {
+      const response = await axios.post("/api/user", {
+        ...formData,
+        role: "DOCTOR",
+        hospitalId,
+      });
       toast.success("Doctor added successfully.");
-    } else {
-      setError("Failed to add doctor. Please try again.");
+      return response;
+    } catch (error) {
+      console.error("Error adding doctor:::", error);
+      toast.error(error.response.data.error || "Failed to add doctor");
+      return error.response;
     }
   };
 
@@ -56,5 +58,28 @@ export function useAPI() {
       console.error("Error updating patient:", error);
     }
   };
-  return { addPatient, updatePatient, deleteDoctor, addDoctor };
+
+  const updatePatientMedication = async (formData, id) => {
+    try {
+      const response = await axios.put(`/api/patient/${id}/medication`, {
+        name: formData.name,
+        dosage: formData.dosage,
+        frequency: formData.frequency,
+      });
+      if (response.status === 200) {
+        toast.success("Patient medication updated successfully");
+      }
+      return response;
+    } catch (error) {
+      toast.error("Failed to update patient medication");
+      console.error("Error updating patient medication:", error);
+    }
+  };
+  return {
+    addPatient,
+    updatePatient,
+    deleteDoctor,
+    addDoctor,
+    updatePatientMedication,
+  };
 }

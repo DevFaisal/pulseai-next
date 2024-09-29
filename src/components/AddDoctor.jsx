@@ -29,8 +29,11 @@ export default function AddDoctor({ setDoctors }) {
     formData.name = "Dr. " + formData.name;
     try {
       const newDoctor = await api.addDoctor(formData, hospitalId);
-      setDoctors((prev) => [...prev, newDoctor]);
-      setDialogOpen(false);
+      console.log(newDoctor);
+      if (newDoctor.status === 201) {
+        setDoctors((prev) => [...prev, newDoctor]);
+        setDialogOpen(false);
+      }
     } catch (error) {
       console.error("Error adding patient:", error);
       toast.error("Error adding patient");

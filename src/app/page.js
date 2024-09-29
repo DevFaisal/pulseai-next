@@ -11,28 +11,33 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-violet-50">
+    <div className="flex flex-col min-h-screen bg-accent ">
       <AppBar />
-      <main className="flex-1 mx-auto  gap-4">
-        <section className="w-full py-12 md:py-24 lg:py-32 ">
-          <div className="container px-4 md:px-6">
-            <div className="flex flex-col items-center space-y-4 text-center">
-              <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none text-violet-900">
-                  Empowering Healthcare with AI
-                </h1>
-                <p className="mx-auto max-w-[700px] text-violet-700 md:text-xl">
-                  Enhance patient outcomes with seamless, personalized
-                  care—anytime, anywhere.
-                </p>
-              </div>
-              <div className="w-full max-w-sm space-y-2 pt-10">
-                <Login />
+      <main className="flex-1 gap-4  ">
+        <main className="md:px-20 h-screen">
+          <section className="w-full py-12 md:py-24 lg:py-32 ">
+            <div className="container px-4 md:px-6">
+              <div className="flex flex-col items-center space-y-4 text-center">
+                <div className="space-y-2">
+                  <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
+                    Empowering Healthcare with{" "}
+                    <span className="bg-gradient-to-tl from-red-500 to-violet-600 text-transparent bg-clip-text">
+                      AI
+                    </span>
+                  </h1>
+                  <p className="mx-auto max-w-[700px] text-violet-700 md:text-xl">
+                    Enhance patient outcomes with seamless, personalized
+                    care—anytime, anywhere.
+                  </p>
+                </div>
+                <div className="w-full max-w-sm space-y-2 pt-10">
+                  <Login />
+                </div>
               </div>
             </div>
-          </div>
-        </section>
-        <section className="w-full py-12 md:py-24 lg:py-32 bg-white">
+          </section>
+        </main>
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-background md:p-20">
           <div className="container px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-center mb-8 text-violet-900">
               Key Features

@@ -7,7 +7,6 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -19,17 +18,21 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAPI } from "@/hooks/useAPI";
+import SpinnerLoader from "./SpinnerLoader";
 
 const patientSchema = z.object({
   name: z.string().nonempty("Name is required"),
-  age: z
-    .number()
-    .min(0, "Age must be a positive number")
-    .max(120, "Age is not valid"),
+  age: z.preprocess(
+    (value) => Number(value), // Ensure age is converted to a number
+    z
+      .number()
+      .min(0, "Age must be a positive number")
+      .max(120, "Age is not valid")
+  ),
   gender: z.enum(["Male", "Female"], { required_error: "Gender is required" }),
   assignedDoctor: z.string().nonempty("Doctor selection is required"),
 });
@@ -42,9 +45,10 @@ export function EditPatient({ patient, doctors }) {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm({
-    // resolver: zodResolver(patientSchema),
+    resolver: zodResolver(patientSchema),
     defaultValues: {
       name: patient.name,
       age: String(patient.age),
@@ -55,6 +59,7 @@ export function EditPatient({ patient, doctors }) {
 
   const onSubmit = async (data) => {
     setLoading(true);
+    console.log(data);
     try {
       await api.updatePatient(data, patient.id);
       setDialogOpen(false);
@@ -99,19 +104,25 @@ export function EditPatient({ patient, doctors }) {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="gender">Gender</Label>
-            <Select
-              id="gender"
-              defaultValue={patient.gender}
-              {...register("gender")}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Gender" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Male">Male</SelectItem>
-                <SelectItem value="Female">Female</SelectItem>
-              </SelectContent>
-            </Select>
+            <Controller
+              name="gender"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  id="gender"
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Male">Male</SelectItem>
+                    <SelectItem value="Female">Female</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.gender && (
               <span className="text-xs text-red-500">
                 {errors.gender.message}
@@ -120,30 +131,36 @@ export function EditPatient({ patient, doctors }) {
           </div>
           <div className="grid gap-2">
             <Label htmlFor="assignedDoctor">Assigned Doctor</Label>
-            <Select
-              id="assignedDoctor"
-              defaultValue={patient.assignedDoctorId}
-              {...register("assignedDoctor")}
-            >
-              <SelectTrigger>
-                <SelectValue>
-                  {patient.assignedDoctorId && Array.isArray(doctors)
-                    ? doctors.find((doc) => doc.id === patient.assignedDoctorId)?.name
-                    : "Select doctor"}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {Array.isArray(doctors) && doctors.length > 0 ? (
-                  doctors.map((doctor) => (
-                    <SelectItem key={doctor.id} value={doctor.id}>
-                      {doctor.name}
-                    </SelectItem>
-                  ))
-                ) : (
-                  <SelectItem disabled>No doctors available</SelectItem>
-                )}
-              </SelectContent>
-            </Select>
+            <Controller
+              name="assignedDoctor"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  id="assignedDoctor"
+                  defaultValue={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue>
+                      {field.value && Array.isArray(doctors)
+                        ? doctors.find((doc) => doc.id === field.value)?.name
+                        : "Select doctor"}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.isArray(doctors) && doctors.length > 0 ? (
+                      doctors.map((doctor) => (
+                        <SelectItem key={doctor.id} value={doctor.id}>
+                          {doctor.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem disabled>No doctors available</SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+              )}
+            />
             {errors.assignedDoctor && (
               <span className="text-xs text-red-500">
                 {errors.assignedDoctor.message}
@@ -153,7 +170,7 @@ export function EditPatient({ patient, doctors }) {
 
           <DialogFooter>
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : "Save Changes"}
+              {loading ? <SpinnerLoader /> : "Save Changes"}
             </Button>
           </DialogFooter>
         </form>

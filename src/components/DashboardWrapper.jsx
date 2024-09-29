@@ -4,7 +4,6 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { AirVent, Bell, CircleUser, Heart, Menu, Search } from "lucide-react";
 import { Home, Calendar, Users } from "lucide-react"; // Import your icons
-
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -29,8 +28,7 @@ const createLink = (label, href, icon, roles) => ({
 
 // Define dashboard links with appropriate roles
 export const dashboardLinks = [
-  createLink("Dashboard", "/", Home, ["admin", "doctor", "user"]),
-  createLink("Appointments", "/appointments", Calendar, ["doctor"]),
+  createLink("Patients", "/doctor/patients", Calendar, ["patient"]),
   createLink("Patients", "/admin/patients", Users, ["admin", "doctor"]),
   createLink("Doctors", "/admin/doctors", Users, ["admin"]),
 ];
@@ -43,17 +41,16 @@ export const getVisibleLinks = (userRole) => {
 // Dashboard Wrapper Component
 export default function DashboardWrapper({ children }) {
   const [userRole, setUserRole] = useState("admin");
-
-  const session = useSession();
+  const { data: session } = useSession();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (session) {
-      setUserRole(session.data?.user.role.toLowerCase());
+      setUserRole(session.user.role.toLowerCase());
     }
   }, [session]);
 
   const navItems = getVisibleLinks(userRole);
-  const [loading, setLoading] = useState(false);
 
   const handleLogout = async () => {
     setLoading(true);
@@ -68,37 +65,35 @@ export default function DashboardWrapper({ children }) {
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+      {/* Sidebar */}
       <div className="hidden border-r bg-muted/40 md:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
+          {/* Logo */}
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <Heart className="h-6 w-6 text-violet-600" />
               <span>Pulse AI</span>
             </Link>
-            <Button
-              variant="outline"
-              size="icon"
-              className="ml-auto h-8 w-8"
-              aria-label="Toggle notifications"
-            >
-              <Bell className="h-4 w-4" />
-            </Button>
           </div>
+
+          {/* Navigation */}
           <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
             {navItems.map((item) => (
               <Link
                 key={item.label}
                 href={item.href}
-                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary/10 hover:text-primary"
                 aria-label={`Navigate to ${item.label}`}
               >
-                <item.icon className="h-4 w-4" />
+                <item.icon className="h-5 w-5" />
                 {item.label}
               </Link>
             ))}
           </nav>
         </div>
       </div>
+
+      {/* Main Content */}
       <div className="flex flex-col">
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <Sheet>
@@ -128,10 +123,10 @@ export default function DashboardWrapper({ children }) {
               </nav>
             </SheetContent>
           </Sheet>
+
+          {/* User Account & Mode Toggle */}
           <div className="flex justify-between w-full">
-            <div>
-              <ModeToggle />
-            </div>
+            <ModeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -156,8 +151,12 @@ export default function DashboardWrapper({ children }) {
             </DropdownMenu>
           </div>
         </header>
-        <main className=" flex flex-1 flex-col gap-4 p-0 lg:p-2">
-          {children}
+
+        {/* Main Page Content */}
+        <main className="bg-muted h-screen ">
+          <div className="max-w-7xl mx-auto flex flex-1 flex-col gap-4 p-4 lg:p-6 ">
+            {children}
+          </div>
         </main>
       </div>
     </div>

@@ -20,6 +20,7 @@ export async function GET(request) {
 export async function POST(request) {
   try {
     const body = await request.json();
+    console.log(body);
 
     // Validate request body
     const { name, email, password, role, hospitalId } = body;

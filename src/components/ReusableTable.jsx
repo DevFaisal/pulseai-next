@@ -7,7 +7,6 @@ import {
   TableCell,
 } from "@/components/ui/table";
 
-import axios from "axios";
 import DeleteDialog from "@/components/DeleteDialog";
 
 export default function ReusableTable({
@@ -28,22 +27,33 @@ export default function ReusableTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data?.map((row, index) => (
-          <TableRow key={index}>
-            {columns.map((col, colIndex) => (
-              <TableCell key={colIndex}>
-                {col.render ? col.render(row[col.accessor]) : row[col.accessor]}
+        {data?.length > 0 ? (
+          data.map((row, index) => (
+            <TableRow key={index}>
+              {columns.map((col, colIndex) => (
+                <TableCell key={colIndex}>
+                  {/* Optional chaining to safely access row data */}
+                  {col.render
+                    ? col.render(row?.[col.accessor])
+                    : row?.[col.accessor] || "N/A"}
+                </TableCell>
+              ))}
+              <TableCell className="text-right">
+                <DeleteDialog
+                  title={"Delete Doctor"}
+                  description={"Are you sure you want to delete this doctor?"}
+                  onClick={() => handleDelete(row?.id)} // Safely access row id
+                />
               </TableCell>
-            ))}
-            <TableCell className="text-right">
-              <DeleteDialog
-                title={"Delete Doctor"}
-                description={"Are you sure you want to delete this doctor?"}
-                onClick={handleDelete(row.id)}
-              />
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={columns.length + 1} className="text-center">
+              No data available
             </TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   );

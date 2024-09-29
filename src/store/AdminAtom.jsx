@@ -25,10 +25,7 @@ const fetchData = async (url, hospitalId) => {
     return { error: true, message: `Error: Failed to fetch data from ${url}` };
   } catch (error) {
     console.error(`API Error [${url}]:`, error.message);
-    return {
-      error: true,
-      message: error.response?.data?.message || error.message,
-    };
+    return { error: true, message: error.response?.data?.message || error.message };
   }
 };
 

@@ -70,6 +70,7 @@ model Medication {
   patientId String   @db.ObjectId
   name      String
   dosage    String
+  frequency String
   startDate DateTime
   endDate   DateTime
   patient   Patient  @relation(fields: [patientId], references: [id])
