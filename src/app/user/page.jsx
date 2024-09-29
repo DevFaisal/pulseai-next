@@ -47,6 +47,7 @@ import { getSession, signOut, useSession } from "next-auth/react";
 import { useRecoilValueLoadable } from "recoil";
 import { patientsDetailsSelector } from "@/store/HospitalAtom";
 import { useRouter } from "next/navigation";
+import AppBar from "@/components/AppBar";
 
 export default function PulseAIRemoteOperatorDashboard() {
   const [patients, setPatients] = useState([]);
@@ -183,35 +184,8 @@ export default function PulseAIRemoteOperatorDashboard() {
   return (
     <div className="min-h-screen bg-gray-100">
       <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-          <div className="flex items-center">
-            <Heart className="h-8 w-8 text-primary mr-2" />
-            <h1 className="text-2xl font-bold text-gray-900">Pulse AI</h1>
-          </div>
-          <div className="flex items-center space-x-4">
-            {/* <Button variant="outline" size="sm">
-              <Clock className="mr-2 h-4 w-4" />
-              {new Date().toLocaleTimeString()}
-            </Button> */}
-            <Button
-              onClick={() => {
-                signOut({ callbackUrl: "/" });
-              }}
-              variant="ghost"
-            >
-              <LogOut className=" rounded-full h-5" />
-            </Button>
-
-            {/* <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>RO</AvatarFallback>
-            </Avatar> */}
-            {/* <Button variant="ghost">
-              Dr. Alex Johnson
-              <ChevronDown className="ml-2 h-4 w-4" />
-            </Button> */}
-          </div>
-        </div>
+        <AppBar />
+        
       </header>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
