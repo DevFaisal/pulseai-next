@@ -66,7 +66,6 @@ export const NEXT_AUTH = {
           if (!isValidPassword) {
             return null;
           }
-          console.log(user);
           return {
             id: user.id,
             name: user.name,
