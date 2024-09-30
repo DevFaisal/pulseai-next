@@ -180,7 +180,7 @@ export default function DashboardWrapper({ children }) {
             </DropdownMenu>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto bg-background p-4 sm:p-6 bg-slate-100">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-muted">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>
