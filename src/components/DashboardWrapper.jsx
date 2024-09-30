@@ -11,6 +11,8 @@ import {
   Home,
   Calendar,
   Users,
+  BriefcaseMedical,
+  UserRoundPen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,11 +40,11 @@ const createNavItem = (label, href, icon, roles) => ({
 
 const dashboardLinks = [
   createNavItem("Dashboard", "/doctor", Home, ["doctor"]),
-  createNavItem("Patients", "/doctor/patients", Users, ["doctor"]),
+  createNavItem("Patients", "/doctor/patients", UserRoundPen, ["doctor"]),
   createNavItem("Dashboard", "/admin", Home, ["admin"]),
-  createNavItem("Patients", "/admin/patients", Users, ["admin"]),
-  createNavItem("Doctors", "/admin/doctors", Users, ["admin"]),
-  createNavItem("Users", "/admin/user", Home, ["admin"]),
+  createNavItem("Patients", "/admin/patients", UserRoundPen, ["admin"]),
+  createNavItem("Doctors", "/admin/doctors", BriefcaseMedical, ["admin"]),
+  createNavItem("Users", "/admin/user", Users, ["admin"]),
 ];
 
 const getVisibleLinks = (userRole) => {
