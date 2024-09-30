@@ -19,6 +19,10 @@ import { useRecoilValue } from "recoil";
 import { hospitalIdState } from "@/store/AdminAtom";
 import { patientSchema } from "@/lib/inputValidation";
 import { toast } from "sonner";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { AddPatientsInBulk } from "./AddPatientsInBulk";
 
 export default function AddPatient({ doctors, setPatients }) {
   const hospitalId = useRecoilValue(hospitalIdState);
@@ -47,6 +51,26 @@ export default function AddPatient({ doctors, setPatients }) {
       : [{ value: "", label: "No doctors available" }];
 
   return (
+    // <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
+    //   <DialogTrigger asChild>
+    //     <Button size="sm">Add Patient</Button>
+    //   </DialogTrigger>
+    //   <DialogContent>
+    //     <DialogHeader>
+    //       <DialogTitle>Add New Patient</DialogTitle>
+    //       <DialogDescription>
+    //         Fill out the form to add a new patient.
+    //       </DialogDescription>
+    //     </DialogHeader>
+    //     {/* Using ReusableFormWithSelect */}
+    //     <ReusableFormWithSelect
+    //       schema={patientSchema}
+    //       inputs={inputs}
+    //       onSubmit={handleSubmit}
+    //     />
+    //     <DialogFooter></DialogFooter>
+    //   </DialogContent>
+    // </Dialog>
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button size="sm">Add Patient</Button>
@@ -58,13 +82,22 @@ export default function AddPatient({ doctors, setPatients }) {
             Fill out the form to add a new patient.
           </DialogDescription>
         </DialogHeader>
-        {/* Using ReusableFormWithSelect */}
-        <ReusableFormWithSelect
-          schema={patientSchema}
-          inputs={inputs}
-          onSubmit={handleSubmit}
-        />
-        <DialogFooter></DialogFooter>
+        <Tabs defaultValue="patients" className="mt-6">
+          <TabsList>
+            <TabsTrigger value="add-patient">Patient</TabsTrigger>
+            <TabsTrigger value="add-patient-bulk">Bulk</TabsTrigger>
+          </TabsList>
+          <TabsContent value="add-patient">
+            <ReusableFormWithSelect
+              schema={patientSchema}
+              inputs={inputs}
+              onSubmit={handleSubmit}
+            />
+          </TabsContent>
+          <TabsContent value="add-patient-bulk">
+            <AddPatientsInBulk />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );
