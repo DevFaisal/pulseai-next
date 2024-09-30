@@ -10,9 +10,9 @@ export const NEXT_AUTH = {
       name: "Credentials",
       credentials: {
         hospitalCode: {
-          label: "Hospital Code",
+          label: "H-Code",
           type: "text",
-          placeholder: "Enter your Hospital Code",
+          placeholder: "Enter your H-Code",
         },
         email: {
           label: "Email",
@@ -43,6 +43,7 @@ export const NEXT_AUTH = {
               Hospital: {
                 select: {
                   id: true,
+                  name: true,
                   hospitalCode: true,
                 },
               },
@@ -52,7 +53,6 @@ export const NEXT_AUTH = {
             return null;
           }
           if (user.role === "DOCTOR") {
-            
           }
           if (credentials.hospitalCode !== user?.Hospital.hospitalCode) {
             return null;
@@ -66,13 +66,14 @@ export const NEXT_AUTH = {
           if (!isValidPassword) {
             return null;
           }
-
+          console.log(user);
           return {
             id: user.id,
             name: user.name,
             email: user.email,
             role: user.role,
             hospitalId: user.Hospital.id,
+            hospitalName : user.Hospital.name,
           };
         } catch (error) {
           console.error("Authorization error:", error);
@@ -87,6 +88,7 @@ export const NEXT_AUTH = {
         token.id = user.id;
         token.role = user.role;
         token.hospitalId = user.hospitalId;
+        token.hospitalName = user.hospitalName;
       }
       return token;
     },
@@ -95,6 +97,7 @@ export const NEXT_AUTH = {
         session.user.id = token.id;
         session.user.role = token.role;
         session.user.hospitalId = token.hospitalId;
+        session.user.hospitalName = token.hospitalName;
       }
       return session;
     },
