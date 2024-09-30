@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import {
@@ -27,6 +26,7 @@ import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/ModeToggle";
 import Image from "next/image";
 import icon from "@/app/icon/pulse-ai.svg";
+import DashboardSkeleton from "./DashboardSkeleton";
 
 const createNavItem = (label, href, icon, roles) => ({
   label,
@@ -49,10 +49,10 @@ const getVisibleLinks = (userRole) => {
 };
 
 export default function DashboardWrapper({ children }) {
-  const [userRole, setUserRole] = useState("admin");
+  const { data: session, status } = useSession();
+  const [userRole, setUserRole] = useState("");
   const [username, setUsername] = useState("");
   const [hospitalName, setHospitalName] = useState("");
-  const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -75,6 +75,15 @@ export default function DashboardWrapper({ children }) {
       setLoading(false);
     }
   };
+
+  // Wait for session to load before rendering
+  if (status === "loading") {
+    return <DashboardSkeleton />;
+  }
+
+  if (!session?.user) {
+    return <div>Unauthorized. Please log in.</div>;
+  }
 
   return (
     <div className="flex h-screen bg-background">
