@@ -8,7 +8,7 @@ export function useAPI() {
       const response = await axios.delete(`/api/doctor/${id}`);
       if (response.status === 200) {
         toast.success("Doctor deleted successfully");
-        return response.data;
+        return response;
       }
     } catch (error) {
       toast.error("Failed to delete doctor");

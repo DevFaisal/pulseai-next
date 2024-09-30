@@ -41,9 +41,9 @@ export default function ReusableTable({
               ))}
               <TableCell className="text-right">
                 <DeleteDialog
-                  title={"Delete Entry"}
+                  title={"Delete Doctor"}
                   description={"Are you sure you want to delete this entry?"}
-                  onClick={() => handleDelete(row.id)} // Safely handle row ID
+                  onClick={handleDelete(row.userId)}
                 />
               </TableCell>
             </TableRow>

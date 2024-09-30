@@ -7,6 +7,7 @@ import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
 import AddPatient from "@/components/AddPatient";
 import { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
+import NotAvailable from "@/components/NotAvailabe";
 
 export default function Component() {
   const patientsLoadable = useRecoilValueLoadable(AdminPatientsSelector);
@@ -65,11 +66,7 @@ export default function Component() {
               />
             </CardContent>
           ) : (
-            <div className="flex flex-col items-center justify-center h-96">
-              <h1 className="text-2xl font-semibold text-center text-gray-500">
-                No patients available
-              </h1>
-            </div>
+            <NotAvailable title="patient" />
           )}
         </Card>
       </main>

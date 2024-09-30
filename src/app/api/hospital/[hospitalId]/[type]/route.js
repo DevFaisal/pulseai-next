@@ -4,7 +4,6 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export async function GET(request, { params }) {
-  console.log("GET request", params);
   try {
     const { hospitalId, type } = params;
 
@@ -15,42 +14,39 @@ export async function GET(request, { params }) {
       );
     }
 
-    // // Check the `type` param to determine whether to fetch users or patients
-    // if (type === "patients") {
-    //   // Fetch patients
-    //   const data = await prisma.hospital.findMany({
-    //     where: {
-    //       id: hospitalId,
-    //     },
-    //     select: {
-    //       patients: {
-    //         select: {
-    //           id: true,
-    //           name: true,
-    //           age: true,
-    //           gender: true,
-    //           hospitalId: true,
-    //           assignedDoctor: {
-    //             select: {
-    //               name: true,
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   });
+    if (type === "patients") {
+      // Fetch patients
+      const data = await prisma.hospital.findMany({
+        where: {
+          id: hospitalId,
+        },
+        select: {
+          patients: {
+            select: {
+              id: true,
+              name: true,
+              age: true,
+              gender: true,
+              hospitalId: true,
+              assignedDoctor: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      if (!data) {
+        return NextResponse.json(
+          { error: "No patients found" },
+          { status: 404 }
+        );
+      }
+      const patients = data[0].patients;
 
-    //   if (!data || data.length === 0) {
-    //     return NextResponse.json(
-    //       { error: "No patients found" },
-    //       { status: 404 }
-    //     );
-    //   }
-
-    //   const patients = data[0].patients;
-    //   return NextResponse.json(patients);
-    // }
-    if (type === "users") {
+      return NextResponse.json(patients);
+    } else if (type === "users") {
       const users = await prisma.user.findMany({
         where: {
           hospitalId: hospitalId,

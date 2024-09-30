@@ -9,6 +9,8 @@ import { CardContent, Card } from "@/components/ui/card";
 import AddDoctor from "@/components/AddDoctor";
 import { useAPI } from "@/hooks/useAPI";
 import Loading from "@/components/Loading";
+import { toast } from "sonner";
+import NotAvailable from "@/components/NotAvailabe";
 
 // Configuration for the form inputs
 const formInput = Inputs.AddDoctorInput;
@@ -24,20 +26,29 @@ export default function Doctors() {
     if (doctorsLoadable.state === "hasValue") {
       setDoctors(doctorsLoadable.contents.data || []);
       setIsLoading(false);
-    }
-    if (doctorsLoadable.state === "loading") {
+    } else if (doctorsLoadable.state === "loading") {
       setIsLoading(true);
+    } else if (doctorsLoadable.state === "hasError") {
+      setIsLoading(false);
+      toast.error("Failed to load doctors.");
     }
   }, [doctorsLoadable]);
+
   const handleDeleteDoctor = (id) => async () => {
     try {
-      await api.deleteDoctor(id);
-      setDoctors((prevDoctors) =>
-        prevDoctors.filter((doctor) => doctor.id !== id)
-      );
+      const result = await api.deleteDoctor(id);
+      if (result.status === 200) {
+        setDoctors((prevDoctors) =>
+          prevDoctors.filter((doctor) => doctor.id !== id)
+        );
+      } else {
+        throw new Error("Failed to delete doctor");
+      }
     } catch (error) {
       console.error("Error deleting doctor:", error);
-      // You might want to show a notification or a message to the user
+      toast.error("An unexpected error occurred. Please try again later.");
+
+      // If delete fails, re-fetch doctors or handle rollback UI
     }
   };
 
@@ -63,16 +74,11 @@ export default function Doctors() {
               <ReusableTable
                 data={doctors}
                 columns={columns}
-                doctors={doctors}
-                handleDelete={handleDeleteDoctor}
+                handleDelete={handleDeleteDoctor} // Passing only handleDelete, no need for `doctors`
               />
             </CardContent>
           ) : (
-            <div className="flex items-center justify-center h-32 text-lg text-gray-500">
-              <h1 className="text-2xl font-semibold text-gray-500">
-                No Doctor available
-              </h1>
-            </div>
+            <NotAvailable title="doctors" />
           )}
         </Card>
       </main>

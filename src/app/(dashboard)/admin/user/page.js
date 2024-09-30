@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/table";
 import DeleteDialog from "@/components/DeleteDialog";
 import Loading from "@/components/Loading";
+import NotAvailable from "@/components/NotAvailabe";
 
 export default function Component() {
   const usersLoadable = useRecoilValueLoadable(usersDetailsSelector);
@@ -91,11 +92,7 @@ export default function Component() {
               </Table>
             </CardContent>
           ) : (
-            <div className="flex flex-col items-center justify-center h-96">
-              <h1 className="text-2xl font-semibold text-center text-gray-500">
-                No Users available
-              </h1>
-            </div>
+            <NotAvailable title="users" />
           )}
         </Card>
       </main>

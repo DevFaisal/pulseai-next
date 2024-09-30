@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -40,7 +39,7 @@ export default function AddPatient({ doctors, setPatients }) {
   // Form fields definition with select inputs
   const inputs = Inputs.AddPatientInput;
   inputs.assignedDoctor.options =
-    doctors.length > 1
+    doctors.length >= 0
       ? doctors?.map((doctor) => ({
           value: doctor.id,
           label: doctor.name,

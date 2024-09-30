@@ -41,7 +41,7 @@ const ReusableFormWithSelect = ({ schema, inputs, onSubmit }) => {
                 <FormControl>
                   {/* Render Input or Select based on input type */}
                   {input.type === "select" ? (
-                    input.options && input.options.length > 1 ? (
+                    input.options && input.options.length > 0 ? (
                       <Select
                         value={field.value}
                         onValueChange={field.onChange}

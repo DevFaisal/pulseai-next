@@ -36,7 +36,8 @@ const createNavItem = (label, href, icon, roles) => ({
 });
 
 const dashboardLinks = [
-  createNavItem("Patients", "/doctor/patients", Calendar, ["patient"]),
+  createNavItem("Dashboard", "/doctor", Home, ["doctor"]),
+  createNavItem("Patients", "/doctor/patients", Users, ["doctor"]),
   createNavItem("Dashboard", "/admin", Home, ["admin"]),
   createNavItem("Patients", "/admin/patients", Users, ["admin"]),
   createNavItem("Doctors", "/admin/doctors", Users, ["admin"]),

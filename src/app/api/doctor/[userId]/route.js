@@ -93,7 +93,7 @@ export async function DELETE(request, { params }) {
   if (!userId) {
     return NextResponse.json({ error: "User ID is required" }, { status: 400 });
   }
-
+  console.log(userId);
   if (!ObjectId.isValid(userId)) {
     return NextResponse.json(
       { error: "Invalid User ID format" },
@@ -102,12 +102,11 @@ export async function DELETE(request, { params }) {
   }
 
   try {
-    const doctor = await prisma.doctor.findUnique({
+    const doctor = await prisma.user.findUnique({
       where: {
-        userId: userId,
+        id: userId,
       },
     });
-
     if (!doctor) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
@@ -116,6 +115,7 @@ export async function DELETE(request, { params }) {
       prisma.doctor.delete({
         where: {
           userId: userId,
+          email: doctor.email,
         },
       }),
       prisma.user.delete({
@@ -127,6 +127,7 @@ export async function DELETE(request, { params }) {
     if (!deletedDoctorData) {
       return NextResponse.json({ error: "Doctor not found" }, { status: 404 });
     }
+    return NextResponse.json({ message: "Doctor deleted successfully" });
   } catch (error) {
     console.error("Error deleting doctor:", error);
     return NextResponse.json(
