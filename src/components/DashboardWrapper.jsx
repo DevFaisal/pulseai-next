@@ -215,6 +215,8 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/ModeToggle";
+import Image from "next/image";
+import icon from "@/app/icon/pulse-ai.svg";
 
 const createNavItem = (label, href, icon, roles) => ({
   label,
@@ -268,8 +270,9 @@ export default function DashboardWrapper({ children }) {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <Heart className="h-6 w-6 text-primary animate-pulse" />
-              <span>Pulse AI</span>
+              {/* <Heart className="h-6 w-6 text-primary animate-pulse" />
+              <span>Pulse AI</span> */}
+              <Image src={icon} width={100} height={40} />
             </Link>
           </div>
           <div className="grid items-start px-2 text-sm font-medium lg:px-4">
