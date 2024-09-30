@@ -27,6 +27,7 @@ import { ModeToggle } from "@/components/ModeToggle";
 import Image from "next/image";
 import icon from "@/app/icon/pulse-ai.svg";
 import DashboardSkeleton from "./DashboardSkeleton";
+import { Badge } from "@/components/ui/badge";
 
 const createNavItem = (label, href, icon, roles) => ({
   label,
@@ -155,8 +156,15 @@ export default function DashboardWrapper({ children }) {
                 </nav>
               </SheetContent>
             </Sheet>
-            <h1 className="text-lg font-semibold">
-              Welcome, <span className="text-primary">{username}</span>
+            <h1 className="flex text-lg font-semibold items-center justify-center gap-5">
+              {userRole === "admin" && (
+                <div className="mb-1">
+                  <Badge>Admin</Badge>
+                </div>
+              )}
+              <div>
+                Welcome, <span className="text-primary">{username}</span>
+              </div>
             </h1>
           </div>
           <div className="flex items-center gap-4">
