@@ -8,6 +8,7 @@ import Inputs from "@/lib/inputs";
 import { CardContent, Card } from "@/components/ui/card";
 import AddDoctor from "@/components/AddDoctor";
 import { useAPI } from "@/hooks/useAPI";
+import Loading from "@/components/Loading";
 
 // Configuration for the form inputs
 const formInput = Inputs.AddDoctorInput;
@@ -56,9 +57,7 @@ export default function Doctors() {
         </div>
         <Card>
           {loading ? (
-            <div className="flex items-center justify-center h-32 text-lg text-gray-500">
-              <h1 className="text-2xl font-semibold">Loading...</h1>
-            </div>
+            <Loading />
           ) : doctors.length > 0 ? (
             <CardContent>
               <ReusableTable

@@ -6,6 +6,7 @@ import { useRecoilValueLoadable } from "recoil";
 import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
 import AddPatient from "@/components/AddPatient";
 import { useEffect, useState } from "react";
+import Loading from "@/components/Loading";
 
 export default function Component() {
   const patientsLoadable = useRecoilValueLoadable(AdminPatientsSelector);
@@ -35,11 +36,7 @@ export default function Component() {
     patientsLoadable.state === "loading" ||
     doctorsLoadable.state === "loading"
   ) {
-    return (
-      <div className="flex flex-col items-center h-screen justify-center w-full">
-        <h1>Loading...</h1>
-      </div>
-    );
+    return <Loading />;
   }
 
   // Handle error states

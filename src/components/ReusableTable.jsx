@@ -12,8 +12,6 @@ import DeleteDialog from "@/components/DeleteDialog";
 export default function ReusableTable({
   data = [],
   columns = [],
-  setPatients,
-  doctors,
   handleDelete,
 }) {
   return (
@@ -28,21 +26,24 @@ export default function ReusableTable({
       </TableHeader>
       <TableBody>
         {data?.length > 0 ? (
-          data.map((row, index) => (
-            <TableRow key={index}>
+          data.map((row, rowIndex) => (
+            <TableRow key={rowIndex}>
               {columns.map((col, colIndex) => (
                 <TableCell key={colIndex}>
-                  {/* Optional chaining to safely access row data */}
-                  {col.render
-                    ? col.render(row?.[col.accessor])
-                    : row?.[col.accessor] || "N/A"}
+                  <div
+                    className={`${col.accessor === "name" ? "font-bold" : ""}`}
+                  >
+                    {col.render
+                      ? col.render(row[col.accessor])
+                      : row[col.accessor] || "N/A"}
+                  </div>
                 </TableCell>
               ))}
               <TableCell className="text-right">
                 <DeleteDialog
-                  title={"Delete Doctor"}
-                  description={"Are you sure you want to delete this doctor?"}
-                  onClick={() => handleDelete(row?.id)} // Safely access row id
+                  title={"Delete Entry"}
+                  description={"Are you sure you want to delete this entry?"}
+                  onClick={() => handleDelete(row.id)} // Safely handle row ID
                 />
               </TableCell>
             </TableRow>

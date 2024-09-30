@@ -11,10 +11,11 @@ export default function AppBar() {
   const session = useSession();
 
   return (
-    <header className="px-4 lg:px-6 h-16 flex items-center border-b">
+    // <header className=" flex items-center border-b">
+    <header className="sticky top-0 z-50 flex items-center px-4 lg:px-6 h-16 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <Link className="flex items-center justify-center" href="#">
         <HeartPulse className="h-6 w-6 text-primary animate-pulse" />
-        <span className="ml-2 text-2xl font-bold">Pulse AI</span>
+        <span className="ml-2 text-base md:text-2xl font-bold">Pulse AI</span>
       </Link>
       {session?.status === "authenticated" ? (
         <nav className="ml-auto flex gap-4 sm:gap-6">
@@ -26,19 +27,19 @@ export default function AppBar() {
       ) : (
         <nav className="ml-auto flex gap-4 sm:gap-6">
           <Link
-            className="text-sm font-medium text-slate-600 hover:text-violet-600 transition-colors"
+            className="text-xs md:text-sm font-medium text-slate-600 hover:text-violet-600 transition-colors"
             href="#features"
           >
             Features
           </Link>
           <Link
-            className="text-sm font-medium text-slate-600 hover:text-violet-600 transition-colors"
+            className="text-xs md:text-sm font-medium text-slate-600 hover:text-violet-600 transition-colors"
             href="#about"
           >
             About
           </Link>
           <Link
-            className="text-sm font-medium text-slate-600 hover:text-violet-600 transition-colors"
+            className="text-xs md:text-sm font-medium text-slate-600 hover:text-violet-600 transition-colors"
             href="#contact"
           >
             Contact

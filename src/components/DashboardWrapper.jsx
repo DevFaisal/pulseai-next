@@ -37,9 +37,10 @@ const createNavItem = (label, href, icon, roles) => ({
 
 const dashboardLinks = [
   createNavItem("Patients", "/doctor/patients", Calendar, ["patient"]),
-  createNavItem("Patients", "/admin/patients", Users, ["admin", "doctor"]),
-  createNavItem("Users", "/admin/user", Home, ["admin"]),
+  createNavItem("Dashboard", "/admin", Home, ["admin"]),
+  createNavItem("Patients", "/admin/patients", Users, ["admin"]),
   createNavItem("Doctors", "/admin/doctors", Users, ["admin"]),
+  createNavItem("Users", "/admin/user", Home, ["admin"]),
 ];
 
 const getVisibleLinks = (userRole) => {
@@ -152,12 +153,10 @@ export default function DashboardWrapper({ children }) {
             <div className="hidden items-center gap-2 sm:flex">
               <Hospital size={20} aria-hidden="true" />
               <span className="text-lg font-semibold">
-                <span className="text-primary">
+                <span className="text-orange-500">
                   {hospitalName.split(" ")[0]}
                 </span>{" "}
-                <span className="text-destructive">
-                  {hospitalName.split(" ")[1]}
-                </span>
+                <span className="text-">{hospitalName.split(" ")[1]}</span>
               </span>
             </div>
             <ModeToggle />
@@ -181,7 +180,7 @@ export default function DashboardWrapper({ children }) {
             </DropdownMenu>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto bg-background p-4 sm:p-6">
+        <main className="flex-1 overflow-y-auto bg-background p-4 sm:p-6 bg-slate-100">
           <div className="mx-auto max-w-7xl">{children}</div>
         </main>
       </div>
