@@ -92,10 +92,10 @@
 //   };
 
 //   return (
-//     <Card className="border-violet-100 p-4">
+//     <Card className="border-primary-100 p-4">
 //       <CardHeader>
-//         <CardTitle className="text-violet-800">Login to Pulse AI</CardTitle>
-//         <CardDescription className="text-violet-600">
+//         <CardTitle className="text-primary-800">Login to Pulse AI</CardTitle>
+//         <CardDescription className="text-primary-600">
 //           Access your personalized healthcare dashboard
 //         </CardDescription>
 //       </CardHeader>
@@ -107,7 +107,7 @@
 //             name={input.name}
 //             render={({ field }) => (
 //               <FormItem className="mb-4">
-//                 <FormLabel htmlFor={input.id} className="text-violet-700">
+//                 <FormLabel htmlFor={input.id} className="text-primary-700">
 //                   {input.label}
 //                 </FormLabel>
 //                 <FormControl>
@@ -116,7 +116,7 @@
 //                     placeholder={input.placeholder}
 //                     type={input.type}
 //                     {...field}
-//                     className="border-violet-200 focus:border-violet-400"
+//                     className="border-primary-200 focus:border-primary-400"
 //                   />
 //                 </FormControl>
 //                 <FormMessage />
@@ -126,7 +126,7 @@
 //         ))}
 //         <Button
 //           onClick={form.handleSubmit(onSubmit)}
-//           className="w-full bg-violet-600 hover:bg-violet-700 text-white"
+//           className="w-full bg-primary-600 hover:bg-primary-700 text-white"
 //         >
 //           {loading ? "Loading..." : "Login"}
 //         </Button>
@@ -231,10 +231,10 @@ export default function Login() {
   return (
     <Card className="w-full max-w-md mx-auto shadow-lg">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center text-violet-800">
+        <CardTitle className="text-2xl font-bold text-center text-primary-800">
           Login to Pulse AI
         </CardTitle>
-        <CardDescription className="text-center text-violet-600">
+        <CardDescription className="text-center text-primary-600">
           Access your personalized healthcare dashboard
         </CardDescription>
       </CardHeader>
@@ -248,34 +248,34 @@ export default function Login() {
                 name={input.name}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-violet-700">
+                    <FormLabel className="">
                       {input.label}
                     </FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <input.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-violet-400 h-5 w-5" />
+                        <input.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary h-5 w-5" />
                         <Input
                           placeholder={input.placeholder}
                           type={input.type}
                           {...field}
-                          className="pl-10 border-violet-200 focus:border-violet-400 rounded-md"
+                          className="pl-10 border-primary-200 focus:border-primary-400 rounded-md"
                         />
                       </div>
                     </FormControl>
-                    <FormMessage className="text-red-500" />
+                    <FormMessage className="text-destructive" />
                   </FormItem>
                 )}
               />
             ))}
             <Button
               type="submit"
-              className="w-full bg-violet-600 hover:bg-violet-700 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+              className="w-full bg-primary hover:bg-primary text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
               disabled={isLoading}
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
                   <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 "
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"

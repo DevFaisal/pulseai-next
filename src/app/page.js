@@ -50,17 +50,17 @@ export default function Home() {
     <div className="flex flex-col min-h-screen bg-accent">
       <AppBar />
       <main className="flex-1">
-        <section className="w-full py-5 md:py-24 lg:py-15 md:px-20 h-screen">
+        <section className="w-full md:px-20 h-screen flex items-center pb-36">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
                   Empowering Healthcare with{" "}
-                  <span className="bg-gradient-to-tl from-red-500 to-violet-600 text-transparent bg-clip-text">
+                  <span className="bg-gradient-to-tl from-red-500 to-primary-600 text-transparent bg-clip-text">
                     AI
                   </span>
                 </h1>
-                <p className="mx-auto max-w-[700px] text-violet-700 md:text-xl">
+                <p className="mx-auto max-w-[700px] text-primary md:text-xl">
                   Enhance patient outcomes with seamless, personalized
                   care—anytime, anywhere.
                 </p>
@@ -73,21 +73,21 @@ export default function Home() {
         </section>
         <section className="w-full py-12 md:py-24 lg:py-32 bg-background md:px-20">
           <div className="container px-4 md:px-6">
-            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-center mb-8 text-violet-900">
+            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl text-center mb-8 text-primary-900">
               Key Features
             </h2>
             <div className="grid gap-6 items-center md:grid-cols-2 lg:grid-cols-3">
               {features.map((feature, index) => (
-                <Card key={index} className="border-violet-100">
+                <Card key={index} className="border-primary-100">
                   <CardHeader>
                     <feature.icon
-                      className="w-6 h-6 mb-2 text-violet-600"
+                      className="w-6 h-6 mb-2 text-primary-600"
                       aria-hidden="true"
                     />
-                    <CardTitle className="text-violet-800">
+                    <CardTitle className="text-primary-800">
                       {feature.title}
                     </CardTitle>
-                    <CardDescription className="text-violet-600">
+                    <CardDescription className="text-primary-600">
                       {feature.description}
                     </CardDescription>
                   </CardHeader>
@@ -97,19 +97,19 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-violet-100 bg-white">
-        <p className="text-xs text-violet-600">
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t border-primary-100 bg-white">
+        <p className="text-xs text-primary-600">
           © {new Date().getFullYear()} Pulse AI. All rights reserved.
         </p>
         <nav className="sm:ml-auto flex gap-4 sm:gap-6">
           <Link
-            className="text-xs text-violet-600 hover:text-violet-800"
+            className="text-xs text-primary-600 hover:text-primary-800"
             href="/terms"
           >
             Terms of Service
           </Link>
           <Link
-            className="text-xs text-violet-600 hover:text-violet-800"
+            className="text-xs text-primary-600 hover:text-primary-800"
             href="/privacy"
           >
             Privacy
