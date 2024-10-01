@@ -49,6 +49,31 @@ const AddPatientInput = {
     type: "text",
   },
   age: { label: "Age", placeholder: "Enter patient age", type: "number" },
+  weight: {
+    label: "Weight",
+    placeholder: "Enter patient weight in kg",
+    type: "number",
+  },
+  height: {
+    label: "Height",
+    placeholder: "Enter patient height in cm",
+    type: "number",
+  },
+  bloodType: {
+    label: "Blood Type",
+    placeholder: "Select blood type",
+    type: "select",
+    options: [
+      { value: "A+", label: "A+" },
+      { value: "A-", label: "A-" },
+      { value: "B+", label: "B+" },
+      { value: "B-", label: "B-" },
+      { value: "AB+", label: "AB+" },
+      { value: "AB-", label: "AB-" },
+      { value: "O+", label: "O+" },
+      { value: "O-", label: "O-" },
+    ],
+  },
   gender: {
     label: "Gender",
     placeholder: "Select gender",

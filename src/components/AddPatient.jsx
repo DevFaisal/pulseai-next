@@ -30,6 +30,7 @@ export default function AddPatient({ doctors, setPatients }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = async (formData) => {
+    console.log("formData", formData);
     try {
       const newPatient = await api.addPatient(formData, hospitalId);
       setPatients((prev) => [...prev, newPatient]);
@@ -51,26 +52,6 @@ export default function AddPatient({ doctors, setPatients }) {
       : [{ value: "", label: "No doctors available" }];
 
   return (
-    // <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
-    //   <DialogTrigger asChild>
-    //     <Button size="sm">Add Patient</Button>
-    //   </DialogTrigger>
-    //   <DialogContent>
-    //     <DialogHeader>
-    //       <DialogTitle>Add New Patient</DialogTitle>
-    //       <DialogDescription>
-    //         Fill out the form to add a new patient.
-    //       </DialogDescription>
-    //     </DialogHeader>
-    //     {/* Using ReusableFormWithSelect */}
-    //     <ReusableFormWithSelect
-    //       schema={patientSchema}
-    //       inputs={inputs}
-    //       onSubmit={handleSubmit}
-    //     />
-    //     <DialogFooter></DialogFooter>
-    //   </DialogContent>
-    // </Dialog>
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button size="sm">Add Patient</Button>

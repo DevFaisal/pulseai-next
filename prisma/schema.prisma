@@ -36,6 +36,10 @@ model Patient {
   name             String
   age              Int
   gender           String
+  weight           Float
+  height           Float
+  bloodType        String
+  BMI              Float
   hospitalId       String       @db.ObjectId
   assignedDoctorId String?      @db.ObjectId
   hospital         Hospital     @relation(fields: [hospitalId], references: [id])

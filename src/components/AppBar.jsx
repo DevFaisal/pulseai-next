@@ -8,8 +8,14 @@ import { ModeToggle } from "./ModeToggle";
 export default function AppBar() {
   const { data: session, status } = useSession();
 
+  const links = [
+    { title: "Features", href: "#features" },
+    { title: "About", href: "#about" },
+    { title: "Contact", href: "#contact" },
+  ];
+
   return (
-    <header className="sticky top-0 z-50 flex items-center justify-between h-16 w-full px-4 lg:px-6  border-b border-border backdrop-blur-sm">
+    <main className="sticky top-0 z-50 flex items-center justify-between h-16 w-full px-4 lg:px-6  border-b border-border backdrop-blur-sm">
       {/* Brand logo and name */}
       <Link className="flex items-center space-x-2" href="/">
         <HeartPulse
@@ -40,27 +46,17 @@ export default function AppBar() {
         </nav>
       ) : (
         <nav className="ml-auto flex items-center gap-4 sm:gap-6">
-          {/* Navigation links for unauthenticated users */}
-          <Link
-            href="#features"
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-          >
-            Features
-          </Link>
-          <Link
-            href="#about"
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-          >
-            About
-          </Link>
-          <Link
-            href="#contact"
-            className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
-          >
-            Contact
-          </Link>
+          {links.map((link) => (
+            <Link
+              key={link.title}
+              href={link.href}
+              className="text-sm font-medium text-muted-foreground hover:text-primary"
+            >
+              {link.title}
+            </Link>
+          ))}
         </nav>
       )}
-    </header>
+    </main>
   );
 }

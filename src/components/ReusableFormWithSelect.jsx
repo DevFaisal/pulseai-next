@@ -17,67 +17,76 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { LoadingButton } from "./LoadingButton";
 
 const ReusableFormWithSelect = ({ schema, inputs, onSubmit }) => {
+  const defaultValues = Object.fromEntries(
+    Object.keys(inputs).map((key) => [key, inputs[key].defaultValue || ""])
+  );
+
   const form = useForm({
     resolver: zodResolver(schema),
-    defaultValues: Object.keys(inputs).reduce((acc, key) => {
-      acc[key] = "";
-      return acc;
-    }, {}),
+    defaultValues,
   });
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        {Object.entries(inputs).map(([key, input]) => (
-          <FormField
-            key={key}
-            control={form.control}
-            name={key}
-            render={({ field }) => (
-              <FormItem className="mb-4">
-                <FormLabel>{input.label}</FormLabel>
-                <FormControl>
-                  {/* Render Input or Select based on input type */}
-                  {input.type === "select" ? (
-                    input.options && input.options.length > 0 ? (
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={input.placeholder} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {input.options.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="grid grid-cols-2 gap-4">
+          {Object.entries(inputs).map(([key, input]) => (
+            <FormField
+              key={key}
+              control={form.control}
+              name={key}
+              render={({ field }) => (
+                <FormItem className="">
+                  <FormLabel>{input.label}</FormLabel>
+                  <FormControl>
+                    {input.type === "select" ? (
+                      input.options?.length ? (
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={input.placeholder} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {input.options.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      ) : (
+                        <Input placeholder="No options available" disabled />
+                      )
                     ) : (
                       <Input
-                        placeholder="No options available"
-                        type="text"
-                        disabled
+                        type={input.type}
+                        placeholder={input.placeholder}
+                        {...field}
                       />
-                    )
-                  ) : (
-                    <Input
-                      placeholder={input.placeholder}
-                      type={input.type}
-                      {...field}
-                    />
-                  )}
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+                    )}
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+        </div>
+        <div>
+          <LoadingButton
+            type="submit"
+            isLoading={form.formState.isSubmitting}
+            name="Save"
+            loadingText="Saving..."
           />
-        ))}
-        <Button type="submit">Submit</Button>
+        </div>
       </form>
     </Form>
   );

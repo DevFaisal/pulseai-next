@@ -23,6 +23,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useAPI } from "@/hooks/useAPI";
 import SpinnerLoader from "./SpinnerLoader";
+import { LoadingButton } from "@/components/LoadingButton";
 
 const patientSchema = z.object({
   name: z.string().nonempty("Name is required"),
@@ -52,6 +53,7 @@ export function EditPatient({ patient, doctors }) {
     defaultValues: {
       name: patient.name,
       age: String(patient.age),
+
       gender: patient.gender,
       assignedDoctor: patient.assignedDoctorId,
     },
@@ -169,9 +171,14 @@ export function EditPatient({ patient, doctors }) {
           </div>
 
           <DialogFooter>
-            <Button type="submit" disabled={loading}>
-              {loading ? <SpinnerLoader /> : "Save Changes"}
-            </Button>
+            <div>
+              <LoadingButton
+                type="submit"
+                isLoading={loading}
+                name="Save Changes"
+                loadingText="Saving..."
+              />
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>

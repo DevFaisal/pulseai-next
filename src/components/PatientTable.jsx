@@ -37,32 +37,35 @@ export default function PatientTable({ patients = [], setPatients, doctors }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {patients.map((patient, index) => (
-            <TableRow key={index}>
-              <TableCell>
-                <div className="font-bold">{patient.name}</div>
-              </TableCell>
-              <TableCell>
-                <div>{patient.age}</div>
-              </TableCell>
-              <TableCell>
-                <div>{patient.gender}</div>
-              </TableCell>
-              <TableCell>
-                <div>{patient.assignedDoctor?.name || ""}</div>
-              </TableCell>
-              <TableCell className="text-right">
-                {/* Edit Patient Dialog */}
-                <EditPatient patient={patient} doctors={doctors} />
-                {/* Delete Patient Dialog */}
-                <DeleteDialog
-                  title={"Delete Patient"}
-                  description={"Are you sure you want to delete this patient?"}
-                  onClick={handelDelete(patient.id)}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
+          {patients &&
+            patients.map((patient, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <div className="font-bold">{patient?.name}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{patient?.age}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{patient?.gender}</div>
+                </TableCell>
+                <TableCell>
+                  <div>{patient?.assignedDoctor?.name || ""}</div>
+                </TableCell>
+                <TableCell className="text-right">
+                  {/* Edit Patient Dialog */}
+                  <EditPatient patient={patient} doctors={doctors} />
+                  {/* Delete Patient Dialog */}
+                  <DeleteDialog
+                    title={"Delete Patient"}
+                    description={
+                      "Are you sure you want to delete this patient?"
+                    }
+                    onClick={handelDelete(patient?.id)}
+                  />
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </>

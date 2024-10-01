@@ -7,7 +7,16 @@ export async function POST(request) {
   try {
     const body = await request.json();
 
-    const { name, age, gender, hospitalId, assignedDoctor } = body;
+    const {
+      name,
+      age,
+      gender,
+      hospitalId,
+      assignedDoctor,
+      weight,
+      height,
+      bloodType,
+    } = body;
 
     if (!name || !age || !gender || !hospitalId || !assignedDoctor) {
       return NextResponse.json(
@@ -24,6 +33,10 @@ export async function POST(request) {
         name,
         age: parseInt(age, 10),
         gender,
+        weight: body.weight ? parseInt(body.weight, 10) : null,
+        height: body.height ? parseInt(body.height, 10) : null,
+        bloodType: body.bloodType || null,
+        BMI: calculateBMI(body.weight, body.height),
         hospital: {
           connect: {
             id: hospitalId,
@@ -93,4 +106,8 @@ export async function GET(request) {
       { status: 500 }
     );
   }
+}
+
+function calculateBMI(weight, height) {
+  return parseFloat((weight / Math.pow(height / 100, 2)).toFixed(2));
 }
