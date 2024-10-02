@@ -12,7 +12,11 @@ import DeleteDialog from "./DeleteDialog";
 import { deletePatient } from "@/server/actions/delete-patient";
 import { useState } from "react";
 
-export default function PatientTable({ patients = [], setPatients }) {
+export default function PatientTable({
+  patients = [],
+  setPatients,
+  doctors = [],
+}) {
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handelDelete = (id) => async () => {
@@ -58,7 +62,11 @@ export default function PatientTable({ patients = [], setPatients }) {
                 </TableCell>
                 <TableCell className="text-right">
                   {/* Edit Patient Dialog */}
-                  <EditPatient patient={patient} setPatients={setPatients} />
+                  <EditPatient
+                    patient={patient}
+                    setPatients={setPatients}
+                    doctors={doctors}
+                  />
                   {/* Delete Patient Dialog */}
                   <DeleteDialog
                     title={"Delete Patient"}

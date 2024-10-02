@@ -6,10 +6,9 @@ import { revalidatePath } from "next/cache";
 
 export async function fetchDoctors({ hospitalId }) {
   if (!ObjectId.isValid(hospitalId)) {
-    return NextResponse.json(
-      { error: "Invalid Hospital ID format" },
-      { status: 400 }
-    );
+    return {
+      error: "Invalid hospital ID",
+    };
   }
 
   try {
@@ -34,4 +33,3 @@ export async function fetchDoctors({ hospitalId }) {
     };
   }
 }
-

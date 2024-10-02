@@ -6,11 +6,14 @@ import AddPatient from "@/components/AddPatient";
 import { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
 import NotAvailable from "@/components/NotAvailable";
-import { fetchPatients } from "@/server/actions/fetch-patients";
 import { useSession } from "next-auth/react";
 import { fetchDoctors } from "@/server/actions/fetch-doctors";
+import { AdminPatientsSelector } from "@/store/AdminAtom";
+import { useRecoilValue } from "recoil";
 
-export default function Component() {
+export default function Patients() {
+  const patientsSelector = useRecoilValue(AdminPatientsSelector);
+
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -20,13 +23,13 @@ export default function Component() {
 
   useEffect(() => {
     const fetchPatientsData = async () => {
-      const patients = await fetchPatients({ hospitalId });
       const doctors = await fetchDoctors({ hospitalId });
-      setPatients(patients.data || []);
-      setDoctors(doctors.data || []);
-      setIsLoading(false);
+      setDoctors(doctors.data);
     };
     fetchPatientsData();
+
+    setPatients(patientsSelector.data);
+    setIsLoading(false);
   }, [hospitalId]);
 
   if (isLoading) {

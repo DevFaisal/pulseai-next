@@ -15,6 +15,7 @@ import {
 import DeleteDialog from "@/components/DeleteDialog";
 import Loading from "@/components/Loading";
 import NotAvailable from "@/components/NotAvailable";
+import ErrorPage from "@/components/ErrorPage";
 
 export default function Component() {
   const usersLoadable = useRecoilValueLoadable(usersDetailsSelector);
@@ -36,14 +37,7 @@ export default function Component() {
 
   // Handle error state
   if (usersLoadable.state === "hasError") {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen w-full">
-        <h1 className="text-2xl font-semibold text-red-500">
-          Error loading users
-        </h1>
-        <p>{usersLoadable.contents?.message || "Something went wrong."}</p>
-      </div>
-    );
+    return <ErrorPage message="Failed to load users" />;
   }
 
   // Render users table or empty state

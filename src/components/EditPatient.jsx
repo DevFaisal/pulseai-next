@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -20,25 +20,14 @@ import {
 } from "@/components/ui/select";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useAPI } from "@/hooks/useAPI";
-import SpinnerLoader from "./SpinnerLoader";
 import { LoadingButton } from "@/components/LoadingButton";
-import { fetchDoctors } from "@/server/actions/fetch-doctors";
-import { useSession } from "next-auth/react";
 import { updatePatient } from "@/server/actions/edit-patient";
 import { toast } from "sonner";
-import Loading from "./Loading";
-import { Spinner } from "./ui/spinner";
 import { EditPatientSchema } from "@/lib/inputValidation";
 
 export function EditPatient({ patient, setPatients, doctors }) {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setDialogOpen] = useState(false);
-
-  // if (!patient) {
-  //   return;
-  // }
 
   const {
     register,

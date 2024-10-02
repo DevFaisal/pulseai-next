@@ -173,7 +173,7 @@ export default function DashboardWrapper({ children }) {
             <div className="hidden items-center gap-2 sm:flex">
               <Hospital size={20} aria-hidden="true" />
               <span className="text-lg font-semibold">
-                <span className="text-orange-500">
+                <span className="text-violet-500">
                   {hospitalName.split(" ")[0]}
                 </span>{" "}
                 <span className="text-">{hospitalName.split(" ")[1]}</span>

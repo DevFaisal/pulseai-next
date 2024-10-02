@@ -47,8 +47,6 @@ export default function Doctors() {
     } catch (error) {
       console.error("Error deleting doctor:", error);
       toast.error("An unexpected error occurred. Please try again later.");
-
-      // If delete fails, re-fetch doctors or handle rollback UI
     }
   };
 
