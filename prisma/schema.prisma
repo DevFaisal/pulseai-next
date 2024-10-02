@@ -34,12 +34,14 @@ model Doctor {
 model Patient {
   id               String       @id @default(auto()) @map("_id") @db.ObjectId
   name             String
+  email            String
   age              Int
   gender           String
   weight           Float
   height           Float
   bloodType        String
   BMI              Float
+  token            String
   hospitalId       String       @db.ObjectId
   assignedDoctorId String?      @db.ObjectId
   hospital         Hospital     @relation(fields: [hospitalId], references: [id])

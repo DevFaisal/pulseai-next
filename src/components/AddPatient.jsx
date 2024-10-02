@@ -8,8 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import ReusableFormWithSelect from "@/components/ReusableFormWithSelect";
@@ -20,8 +18,6 @@ import { hospitalIdState } from "@/store/AdminAtom";
 import { patientSchema } from "@/lib/inputValidation";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 import { AddPatientsInBulk } from "./AddPatientsInBulk";
 import { createPatient } from "@/server/actions/create-patient";
 
@@ -37,7 +33,8 @@ export default function AddPatient({ doctors, setPatients }) {
         toast.error(newPatient.error);
         return;
       }
-      setPatients((prev) => [...prev, newPatient.data]);
+      setPatients((prev) => [
+        ...prev, newPatient.data]);
       setDialogOpen(false);
     } catch (error) {
       console.error("Error adding patient:", error);
