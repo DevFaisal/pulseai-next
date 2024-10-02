@@ -60,13 +60,15 @@ model Hospital {
 }
 
 model VitalSign {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  patientId     String   @db.ObjectId
-  timestamp     DateTime @default(now())
-  heartRate     Int?
-  bloodPressure String?
-  temperature   Float?
-  patient       Patient  @relation(fields: [patientId], references: [id])
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId        String   @db.ObjectId
+  timestamp        DateTime @default(now())
+  heartRate        Int?     @default(0)
+  bloodPressure    String?  @default("0/0")
+  temperature      Float?   @default(0)
+  respiratoryRate  Int?     @default(0)
+  oxygenSaturation Int?     @default(0)
+  patient          Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model Medication {

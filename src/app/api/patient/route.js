@@ -47,6 +47,15 @@ export async function POST(request) {
             id: assignedDoctor,
           },
         },
+        vitalSigns: {
+          create: {
+            heartRate: 0,
+            bloodPressure: "0/0",
+            temperature: 0,
+            respiratoryRate: 0,
+            oxygenSaturation: 0,
+          },
+        },
       },
     });
 

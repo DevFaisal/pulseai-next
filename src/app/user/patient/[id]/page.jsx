@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import {
   Card,
@@ -10,8 +11,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Progress } from "@/components/ui/progress";
 import {
   Table,
   TableBody,
@@ -23,34 +22,53 @@ import {
 import {
   Activity,
   AlertCircle,
-  ArrowLeft,
   Calendar,
   FileText,
   Heart,
-  PenLine,
   Pill,
   Stethoscope,
 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useRecoilState, useRecoilValue } from "recoil";
-import {
-  patientsDetailsSelector,
-  patientsDetailsState,
-} from "@/store/HospitalAtom";
+
+import { useRecoilValueLoadable } from "recoil";
+import { patientDetailsId } from "@/store/HospitalAtom";
+import Loading from "@/components/Loading";
+import ErrorPage from "@/components/ErrorPage";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function PatientDetailsPage({ params }) {
-  const [patientsDetails, setPatientsDetails] = useRecoilState(patientsDetailsState);
+  const patientId = params.id;
+  const patientDetailsLoadable = useRecoilValueLoadable(
+    patientDetailsId(patientId)
+  );
   const [selectedPatient, setSelectedPatient] = useState(null);
 
   useEffect(() => {
-    if (patientsDetails) {
-      const patient = patientsDetails.find(
-        (patient) => patient.id == params.id
-      );
-      setSelectedPatient(patient);
+    if (patientDetailsLoadable.state === "hasValue") {
+      console.log("Patient details loaded:", patientDetailsLoadable.contents);
+      setSelectedPatient(patientDetailsLoadable.contents);
     }
-  }, [params]);
-  console.log("SelectedPatients===>", selectedPatient);
+  }, [patientDetailsLoadable]);
+
+  // Handle loading, error, and success states
+  if (patientDetailsLoadable.state === "loading") {
+    return <Loading />;
+  }
+
+  if (patientDetailsLoadable.state === "hasError") {
+    return <ErrorPage />;
+  }
+
+  let vitals = {
+    bloodPressure: selectedPatient?.vitalSigns[0].bloodPressure + " mmHg",
+    heartRate: selectedPatient?.vitalSigns[0].heartRate + " bpm",
+    temperature: selectedPatient?.vitalSigns[0].temperature + "°F",
+    respiratoryRate:
+      selectedPatient?.vitalSigns[0].respiratoryRate + " breaths/min",
+    oxygenSaturation: selectedPatient?.vitalSigns[0].oxygenSaturation + "%",
+  };
+  console.log(vitals);
+
+  const patientDetails = patientDetailsLoadable.contents;
   // Mock patient data
   const patient = {
     id: 1,
@@ -248,9 +266,9 @@ export default function PatientDetailsPage({ params }) {
       <Tabs defaultValue="overview" className="mt-6">
         <TabsList>
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="vitals">Vitals & Lab Results</TabsTrigger>
+          <TabsTrigger value="vitals">Vitals</TabsTrigger>
           <TabsTrigger value="medications">Medications</TabsTrigger>
-          <TabsTrigger value="treatment">Treatment Plan</TabsTrigger>
+          <TabsTrigger value="dr-notes">Notes</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview">
@@ -303,7 +321,7 @@ export default function PatientDetailsPage({ params }) {
         <TabsContent value="vitals">
           <Card>
             <CardHeader>
-              <CardTitle>Vitals & Lab Results</CardTitle>
+              <CardTitle>Vitals</CardTitle>
               <CardDescription>Current vitals</CardDescription>
             </CardHeader>
             <CardContent>
@@ -311,7 +329,7 @@ export default function PatientDetailsPage({ params }) {
                 <div>
                   <h3 className="font-semibold mb-2">Current Vitals</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {Object.entries(patient.vitals).map(([key, value]) => (
+                    {Object.entries(vitals).map(([key, value]) => (
                       <div key={key} className="flex items-center">
                         <Heart className="h-5 w-5 mr-2 text-red-500" />
                         <div>
@@ -360,36 +378,15 @@ export default function PatientDetailsPage({ params }) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="treatment">
+        <TabsContent value="dr-notes">
           <Card>
             <CardHeader>
-              <CardTitle>Treatment Plan</CardTitle>
-              <CardDescription>
-                Current treatment recommendations and follow-up instructions
-              </CardDescription>
+              <CardTitle>Notes</CardTitle>
+              <CardDescription>Notes from the patient's doctor</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold mb-2">
-                    Dietary Recommendations
-                  </h3>
-                  <p>{patient.treatmentPlan.dietaryRecommendations}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">
-                    Exercise Recommendations
-                  </h3>
-                  <p>{patient.treatmentPlan.exerciseRecommendations}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">Medication Adjustments</h3>
-                  <p>{patient.treatmentPlan.medicationAdjustments}</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">Follow-up Instructions</h3>
-                  <p>{patient.treatmentPlan.followUpInstructions}</p>
-                </div>
+                <h1>No notes available</h1>
               </div>
             </CardContent>
           </Card>

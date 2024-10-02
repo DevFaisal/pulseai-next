@@ -2,51 +2,35 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import PatientTable from "@/components/PatientTable";
-import { useRecoilValueLoadable } from "recoil";
-import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
 import AddPatient from "@/components/AddPatient";
 import { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
-import NotAvailable from "@/components/NotAvailabe";
+import NotAvailable from "@/components/NotAvailable";
+import { fetchPatients } from "@/server/actions/fetch-patients";
+import { useSession } from "next-auth/react";
+import { fetchDoctors } from "@/server/actions/fetch-doctors";
 
 export default function Component() {
-  const patientsLoadable = useRecoilValueLoadable(AdminPatientsSelector);
-  const doctorsLoadable = useRecoilValueLoadable(AdminDoctorsSelector);
-
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const { data: sessionData } = useSession();
+  const hospitalId = sessionData?.user?.hospitalId;
+
   useEffect(() => {
-    if (patientsLoadable.state === "hasValue") {
-      setPatients(patientsLoadable.contents.data || []);
-    }
-    if (doctorsLoadable.state === "hasValue") {
-      setDoctors(doctorsLoadable.contents.data || []);
-    }
-    if (
-      patientsLoadable.state !== "loading" &&
-      doctorsLoadable.state !== "loading"
-    ) {
+    const fetchPatientsData = async () => {
+      const patients = await fetchPatients({ hospitalId });
+      const doctors = await fetchDoctors({ hospitalId });
+      setPatients(patients.data || []);
+      setDoctors(doctors.data || []);
       setIsLoading(false);
-    }
-  }, [patientsLoadable, doctorsLoadable]);
+    };
+    fetchPatientsData();
+  }, [hospitalId]);
 
-  if (
-    isLoading ||
-    patientsLoadable.state === "loading" ||
-    doctorsLoadable.state === "loading"
-  ) {
+  if (isLoading) {
     return <Loading />;
-  }
-
-  // Handle error states
-  if (patientsLoadable.state === "hasError") {
-    return <div>Error: {patientsLoadable.contents.message}</div>;
-  }
-
-  if (doctorsLoadable.state === "hasError") {
-    return <div>Error: {doctorsLoadable.contents.message}</div>;
   }
 
   return (

@@ -1,4 +1,3 @@
-"use client";
 import {
   Dialog,
   DialogTrigger,
@@ -10,13 +9,14 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
-import { toast } from "sonner";
-import { useState } from "react";
 
-export default function DeleteDialog({ id, onClick, title, description }) {
-  const [isDialogOpen, setDialogOpen] = useState(false);
-
+export default function DeleteDialog({
+  onClick,
+  title,
+  description,
+  isDialogOpen,
+  setDialogOpen,
+}) {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>

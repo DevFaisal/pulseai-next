@@ -1,5 +1,6 @@
 import { atom, selector } from "recoil";
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
 // Atom to store hospital ID
 export const hospitalIdState = atom({
@@ -25,7 +26,10 @@ const fetchData = async (url, hospitalId) => {
     return { error: true, message: `Error: Failed to fetch data from ${url}` };
   } catch (error) {
     console.error(`API Error [${url}]:`, error.message);
-    return { error: true, message: error.response?.data?.message || error.message };
+    return {
+      error: true,
+      message: error.response?.data?.message || error.message,
+    };
   }
 };
 
@@ -44,8 +48,9 @@ const checkAuthorization = (userRole, hospitalId) => {
 export const AdminPatientsSelector = selector({
   key: "AdminPatientsSelector",
   get: async ({ get }) => {
-    const hospitalId = get(hospitalIdState);
-    const userRole = get(userRoleState);
+    const { user } = await getSession();
+    const hospitalId = user.hospitalId;
+    const userRole = user.role;
 
     const authCheck = checkAuthorization(userRole, hospitalId);
     if (authCheck.error) return authCheck;

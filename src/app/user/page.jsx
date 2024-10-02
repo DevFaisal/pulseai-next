@@ -27,19 +27,19 @@ import {
   AlertTriangle,
   Clock,
 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
 import {
   patientsDetailsSelector,
   patientsDetailsState,
 } from "@/store/HospitalAtom";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
+import Loading from "@/components/Loading";
+import ErrorPage from "@/components/ErrorPage";
 
 export default function PulseAIRemoteOperatorDashboard() {
-  const [patientsDetails, setPatientsDetails] =
-    useRecoilState(patientsDetailsState);
-  const fetchedPatientsDetails = useRecoilValue(patientsDetailsSelector);
+  const [patientsDetails, setPatientsDetails] = useRecoilState(patientsDetailsState);
+  const fetchedPatientsDetails = useRecoilValueLoadable(patientsDetailsSelector);
 
   const router = useRouter();
   const kpis = {
@@ -48,6 +48,7 @@ export default function PulseAIRemoteOperatorDashboard() {
     aiInsights: 23,
     avgResponseTime: 8,
   };
+
   const patientCategories = [
     {
       name: "Chronic Disease",
@@ -94,9 +95,19 @@ export default function PulseAIRemoteOperatorDashboard() {
       time: "30 min ago",
     },
   ];
-  useEffect(() => {
-    setPatientsDetails(fetchedPatientsDetails);
-  }, [patientsDetails, fetchedPatientsDetails, setPatientsDetails]);
+
+  if (fetchedPatientsDetails.state === "loading") {
+    return <Loading />;
+  }
+  if (fetchedPatientsDetails.state === "hasValue") {
+    setPatientsDetails(fetchedPatientsDetails.contents);
+  }
+
+  if (fetchedPatientsDetails.state === "hasError" || !patientsDetails.length) {
+    return (
+      <ErrorPage message="Unable to fetch patient details. Please try again later." />
+    );
+  }
 
   const isLoading = !patientsDetails || patientsDetails.length === 0;
 
@@ -225,34 +236,37 @@ export default function PulseAIRemoteOperatorDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {patientsDetails.map((patient, index) => (
-                    <TableRow
-                      key={patient.id}
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => router.push(`/user/patient/${patient.id}`)}
-                    >
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>{patient.name}</TableCell>
-                      <TableCell>{patient.age}</TableCell>
-                      <TableCell>{patient.gender}</TableCell>
-                      <TableCell>{patient.assignedDoctor?.name}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            patient.status === "Stable"
-                              ? "secondary"
-                              : patient.status === "Needs Attention"
-                              ? "warning"
-                              : patient.status === "Critical"
-                              ? "destructive"
-                              : "default"
-                          }
-                        >
-                          {patient.status || "Stable"}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {patientsDetails &&
+                    patientsDetails?.map((patient, index) => (
+                      <TableRow
+                        key={patient.id}
+                        className="cursor-pointer hover:bg-muted/50"
+                        onClick={() =>
+                          router.push(`/user/patient/${patient.id}`)
+                        }
+                      >
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{patient.name}</TableCell>
+                        <TableCell>{patient.age}</TableCell>
+                        <TableCell>{patient.gender}</TableCell>
+                        <TableCell>{patient.assignedDoctor?.name}</TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              patient.status === "Stable"
+                                ? "secondary"
+                                : patient.status === "Needs Attention"
+                                ? "warning"
+                                : patient.status === "Critical"
+                                ? "destructive"
+                                : "default"
+                            }
+                          >
+                            {patient.status || "Stable"}
+                          </Badge>
+                        </TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             )}

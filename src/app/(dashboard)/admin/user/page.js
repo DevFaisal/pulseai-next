@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import DeleteDialog from "@/components/DeleteDialog";
 import Loading from "@/components/Loading";
-import NotAvailable from "@/components/NotAvailabe";
+import NotAvailable from "@/components/NotAvailable";
 
 export default function Component() {
   const usersLoadable = useRecoilValueLoadable(usersDetailsSelector);

@@ -10,7 +10,7 @@ import AddDoctor from "@/components/AddDoctor";
 import { useAPI } from "@/hooks/useAPI";
 import Loading from "@/components/Loading";
 import { toast } from "sonner";
-import NotAvailable from "@/components/NotAvailabe";
+import NotAvailable from "@/components/NotAvailable";
 
 // Configuration for the form inputs
 const formInput = Inputs.AddDoctorInput;

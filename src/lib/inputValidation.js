@@ -27,11 +27,17 @@ const patientSchema = z.object({
   assignedDoctor: z.string().nonempty("Assigned doctor is required"),
 });
 
-const UpdatePatientSchema = z.object({
+const EditPatientSchema = z.object({
   name: z.string().nonempty("Name is required"),
-  age: z.number().min(0, "Age must be a positive number"),
-  gender: z.string().nonempty("Gender is required"),
-  assignedDoctor: z.string().nonempty("Doctor assignment is required"),
+  age: z.preprocess(
+    (value) => Number(value),
+    z
+      .number()
+      .min(0, "Age must be a positive number")
+      .max(120, "Age is not valid")
+  ),
+  gender: z.enum(["Male", "Female"], { required_error: "Gender is required" }),
+  assignedDoctor: z.string().nonempty("Doctor selection is required"),
 });
 
-export { patientSchema, UpdatePatientSchema, doctorSchema };
+export { patientSchema, EditPatientSchema, doctorSchema };

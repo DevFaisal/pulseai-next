@@ -23,6 +23,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { AddPatientsInBulk } from "./AddPatientsInBulk";
+import { createPatient } from "@/server/actions/create-patient";
 
 export default function AddPatient({ doctors, setPatients }) {
   const hospitalId = useRecoilValue(hospitalIdState);
@@ -30,10 +31,13 @@ export default function AddPatient({ doctors, setPatients }) {
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = async (formData) => {
-    console.log("formData", formData);
     try {
-      const newPatient = await api.addPatient(formData, hospitalId);
-      setPatients((prev) => [...prev, newPatient]);
+      const newPatient = await createPatient({ formData, hospitalId });
+      if (newPatient.error) {
+        toast.error(newPatient.error);
+        return;
+      }
+      setPatients((prev) => [...prev, newPatient.data]);
       setDialogOpen(false);
     } catch (error) {
       console.error("Error adding patient:", error);

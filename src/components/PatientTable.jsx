@@ -6,17 +6,21 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import axios from "axios";
 import { toast } from "sonner";
 import { EditPatient } from "@/components/EditPatient";
 import DeleteDialog from "./DeleteDialog";
+import { deletePatient } from "@/server/actions/delete-patient";
+import { useState } from "react";
 
-export default function PatientTable({ patients = [], setPatients, doctors }) {
+export default function PatientTable({ patients = [], setPatients }) {
+  const [isDialogOpen, setDialogOpen] = useState(false);
+
   const handelDelete = (id) => async () => {
     try {
-      const res = await axios.delete(`/api/patient/${id}`);
-      if (res.status === 200) {
+      const res = await deletePatient({ patientId: id });
+      if (res.data) {
         setPatients((prev) => prev.filter((patient) => patient.id !== id));
+        setDialogOpen(false);
         toast.success("Patient deleted successfully");
       }
     } catch (error) {
@@ -54,7 +58,7 @@ export default function PatientTable({ patients = [], setPatients, doctors }) {
                 </TableCell>
                 <TableCell className="text-right">
                   {/* Edit Patient Dialog */}
-                  <EditPatient patient={patient} doctors={doctors} />
+                  <EditPatient patient={patient} setPatients={setPatients} />
                   {/* Delete Patient Dialog */}
                   <DeleteDialog
                     title={"Delete Patient"}
@@ -62,6 +66,8 @@ export default function PatientTable({ patients = [], setPatients, doctors }) {
                       "Are you sure you want to delete this patient?"
                     }
                     onClick={handelDelete(patient?.id)}
+                    isDialogOpen={isDialogOpen}
+                    setDialogOpen={setDialogOpen}
                   />
                 </TableCell>
               </TableRow>

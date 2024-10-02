@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -24,24 +24,21 @@ import * as z from "zod";
 import { useAPI } from "@/hooks/useAPI";
 import SpinnerLoader from "./SpinnerLoader";
 import { LoadingButton } from "@/components/LoadingButton";
+import { fetchDoctors } from "@/server/actions/fetch-doctors";
+import { useSession } from "next-auth/react";
+import { updatePatient } from "@/server/actions/edit-patient";
+import { toast } from "sonner";
+import Loading from "./Loading";
+import { Spinner } from "./ui/spinner";
+import { EditPatientSchema } from "@/lib/inputValidation";
 
-const patientSchema = z.object({
-  name: z.string().nonempty("Name is required"),
-  age: z.preprocess(
-    (value) => Number(value), // Ensure age is converted to a number
-    z
-      .number()
-      .min(0, "Age must be a positive number")
-      .max(120, "Age is not valid")
-  ),
-  gender: z.enum(["Male", "Female"], { required_error: "Gender is required" }),
-  assignedDoctor: z.string().nonempty("Doctor selection is required"),
-});
-
-export function EditPatient({ patient, doctors }) {
-  const api = useAPI();
+export function EditPatient({ patient, setPatients, doctors }) {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setDialogOpen] = useState(false);
+
+  // if (!patient) {
+  //   return;
+  // }
 
   const {
     register,
@@ -49,11 +46,10 @@ export function EditPatient({ patient, doctors }) {
     control,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(patientSchema),
+    resolver: zodResolver(EditPatientSchema),
     defaultValues: {
       name: patient.name,
       age: String(patient.age),
-
       gender: patient.gender,
       assignedDoctor: patient.assignedDoctorId,
     },
@@ -61,10 +57,18 @@ export function EditPatient({ patient, doctors }) {
 
   const onSubmit = async (data) => {
     setLoading(true);
-    console.log(data);
     try {
-      await api.updatePatient(data, patient.id);
-      setDialogOpen(false);
+      const res = await updatePatient({
+        formData: data,
+        patientId: patient.id,
+      });
+      if (res.data) {
+        setPatients((prev) =>
+          prev.map((p) => (p.id === patient.id ? res.data : p))
+        );
+        toast.success("Patient updated successfully");
+        setDialogOpen(false);
+      }
     } catch (error) {
       console.error("Error updating patient:", error);
     } finally {

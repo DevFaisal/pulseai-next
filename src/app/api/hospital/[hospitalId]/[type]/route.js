@@ -27,18 +27,11 @@ export async function GET(request, { params }) {
               name: true,
               age: true,
               gender: true,
-              weight: true,
-              height: true,
-              BMI: true,
-              bloodType: true,
               assignedDoctor: {
                 select: {
                   name: true,
                 },
               },
-              medications: true,
-              vitalSigns: true,
-              Threshold: true,
             },
           },
         },
