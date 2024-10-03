@@ -35,6 +35,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import icon from "@/app/icon/pulse-ai.svg";
+import { usePathname } from "next/navigation";
 
 const createNavItem = (label, href, icon, roles) => ({
   label,
@@ -72,6 +73,7 @@ export default function DashboardWrapper({ children }) {
   }, [session]);
 
   const navItems = getVisibleLinks(userRole);
+  const checkActivePath = useActivePath();
 
   const handleLogout = async () => {
     setLoading(true);
@@ -117,7 +119,12 @@ export default function DashboardWrapper({ children }) {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className="flex items-center rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                  className={`flex items-center rounded-md px-3 py-2 text-sm font-medium 
+                    ${
+                      checkActivePath(item.href)
+                        ? "bg-accent text-accent-foreground"
+                        : "text-muted-foreground"
+                    } text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground`}
                 >
                   <item.icon className="mr-3 h-5 w-5" aria-hidden="true" />
                   {item.label}
@@ -256,4 +263,14 @@ function DashboardSkeleton() {
       </div>
     </div>
   );
+}
+
+export function useActivePath() {
+  const pathname = usePathname();
+
+  const checkActivePath = (path) => {
+    return path === pathname;
+  };
+
+  return checkActivePath;
 }
