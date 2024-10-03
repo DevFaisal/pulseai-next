@@ -3,28 +3,21 @@
 import { useEffect, useState } from "react";
 import { useRecoilValueLoadable } from "recoil";
 import { AdminDoctorsSelector } from "@/store/AdminAtom";
-import ReusableTable from "@/components/ReusableTable";
-import Inputs from "@/lib/inputs";
-import { CardContent, Card } from "@/components/ui/card";
-import AddDoctor from "@/components/AddDoctor";
-import { useAPI } from "@/hooks/useAPI";
-import Loading from "@/components/Loading";
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
+import AddDoctor from "@/components/AddDoctor";
+import Loading from "@/components/Loading";
 import NotAvailable from "@/components/NotAvailable";
-
-// Configuration for the form inputs
-const formInput = Inputs.AddDoctorInput;
+import DoctorTable from "@/components/DoctorTable";
 
 export default function Doctors() {
   const doctorsLoadable = useRecoilValueLoadable(AdminDoctorsSelector);
   const [doctors, setDoctors] = useState([]);
   const [loading, setIsLoading] = useState(true);
 
-  const api = useAPI();
-
   useEffect(() => {
     if (doctorsLoadable.state === "hasValue") {
-      setDoctors(doctorsLoadable.contents.data || []);
+      setDoctors(doctorsLoadable.contents || []);
       setIsLoading(false);
     } else if (doctorsLoadable.state === "loading") {
       setIsLoading(true);
@@ -34,29 +27,6 @@ export default function Doctors() {
     }
   }, [doctorsLoadable]);
 
-  const handleDeleteDoctor = (id) => async () => {
-    try {
-      const result = await api.deleteDoctor(id);
-      if (result.status === 200) {
-        setDoctors((prevDoctors) =>
-          prevDoctors.filter((doctor) => doctor.id !== id)
-        );
-      } else {
-        throw new Error("Failed to delete doctor");
-      }
-    } catch (error) {
-      console.error("Error deleting doctor:", error);
-      toast.error("An unexpected error occurred. Please try again later.");
-    }
-  };
-
-  const columns = [
-    { header: "Name", accessor: "name" },
-    { header: "Specialty", accessor: "specialty" },
-    { header: "Contact", accessor: "phone" },
-    { header: "Email", accessor: "email" },
-  ];
-
   return (
     <div className="flex min-h-screen w-full flex-col">
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
@@ -65,19 +35,15 @@ export default function Doctors() {
           <AddDoctor setDoctors={setDoctors} />
         </div>
         <Card>
-          {loading ? (
-            <Loading />
-          ) : doctors.length > 0 ? (
-            <CardContent>
-              <ReusableTable
-                data={doctors}
-                columns={columns}
-                handleDelete={handleDeleteDoctor} // Passing only handleDelete, no need for `doctors`
-              />
-            </CardContent>
-          ) : (
-            <NotAvailable title="doctors" />
-          )}
+          <CardContent className="p-0">
+            {loading ? (
+              <Loading />
+            ) : doctors.length > 0 ? (
+              <DoctorTable doctors={doctors} setDoctors={setDoctors} />
+            ) : (
+              <NotAvailable title="doctors" />
+            )}
+          </CardContent>
         </Card>
       </main>
     </div>

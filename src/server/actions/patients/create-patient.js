@@ -1,7 +1,7 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { sendEmail } from "./sent-email";
+import { sendEmail } from "../sent-email";
 import Onboarding from "@/emails/Onboarding";
 import crypto from "crypto";
 

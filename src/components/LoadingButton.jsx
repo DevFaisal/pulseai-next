@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 export function LoadingButton({
   type = "submit",
   isLoading = false,
+  color = "bg-primary",
   name = "Submit",
   loadingText = "Loading...",
   onClick,
@@ -12,7 +13,7 @@ export function LoadingButton({
     <Button
       onClick={onClick}
       type={type}
-      className="w-full bg-primary hover:bg-primary text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+      className={`${color} w-full  hover:bg-primary text-white font-semibold py-2 px-4 rounded-md`}
       disabled={isLoading}
     >
       {isLoading ? (

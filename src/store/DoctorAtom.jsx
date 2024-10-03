@@ -1,11 +1,11 @@
-import { atomFamily, selectorFamily, useRecoilValue } from "recoil";
+import { atom, atomFamily, selectorFamily, useRecoilValue } from "recoil";
 import axios from "axios";
 import { userRoleState } from "@/store/AdminAtom";
 
 // Atom family for storing doctor data
-const doctorDataState = atomFamily({
+const doctorDataState = atom({
   key: "doctorDataState",
-  default: null,
+  default: [],
 });
 
 // Selector family for fetching doctor details by ID

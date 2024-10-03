@@ -14,48 +14,55 @@ import ReusableFormWithSelect from "@/components/ReusableFormWithSelect";
 import Inputs from "@/lib/inputs";
 import { useRecoilValue } from "recoil";
 import { hospitalIdState } from "@/store/AdminAtom";
-import { doctorSchema } from "@/lib/inputValidation";
+import { userSchema } from "@/lib/inputValidation";
 import { toast } from "sonner";
-import { createDoctor } from "@/server/actions/doctors/create-doctor";
+import { createUser } from "@/server/actions/users/create-user";
 
-export default function AddDoctor({ setDoctors }) {
+export default function AddUser({ setUsers }) {
   const hospitalId = useRecoilValue(hospitalIdState);
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = async (formData) => {
     try {
-      const newDoctor = await createDoctor({ formData, hospitalId });
+      const newUser = await createUser({
+        formData: {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: "USER",
+        },
+        hospitalId,
+      });
 
-      if (newDoctor.error) {
+      if (newUser.error) {
         toast.error(newDoctor.error);
         return;
       }
-
-      setDoctors((prev) => [...prev, newDoctor.data]);
+      setUsers((prev) => [...prev, newUser.data]);
       setDialogOpen(false);
     } catch (error) {
-      console.error("Error adding patient:", error);
-      toast.error("Error adding patient");
+      console.error("Error adding user:", error);
+      toast.error("Error adding user");
     }
   };
 
-  const inputs = Inputs.AddDoctorInput;
+  const inputs = Inputs.AddUserInput;
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
-        <Button size="sm">Add Doctor</Button>
+        <Button size="sm">Add User</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Doctor</DialogTitle>
+          <DialogTitle>Add New User</DialogTitle>
           <DialogDescription>
-            Fill out the form to add a new Doctor.
+            Fill out the form to add a new User.
           </DialogDescription>
         </DialogHeader>
         {/* Using ReusableFormWithSelect */}
         <ReusableFormWithSelect
-          schema={doctorSchema}
+          schema={userSchema}
           inputs={inputs}
           onSubmit={handleSubmit}
         />

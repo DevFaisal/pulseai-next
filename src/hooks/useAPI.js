@@ -3,18 +3,19 @@ import { toast } from "sonner";
 
 // hospitalId will be passed as an argument instead of calling the hook here
 export function useAPI() {
-  const deleteDoctor = async (id) => {
-    try {
-      const response = await axios.delete(`/api/doctor/${id}`);
-      if (response.status === 200) {
-        toast.success("Doctor deleted successfully");
-        return response;
-      }
-    } catch (error) {
-      toast.error("Failed to delete doctor");
-      console.error("Error deleting doctor:", error);
-    }
-  };
+  // const deleteDoctor = async (id) => {
+  //   try {
+  //     const response = await axios.delete(`/api/doctor/${id}`);
+  //     if (response.status === 200) {
+  //       toast.success("Doctor deleted successfully");
+  //       return response;
+  //     }
+  //   } catch (error) {
+  //     toast.error("Failed to delete doctor");
+  //     console.error("Error deleting doctor:", error);
+  //   }
+  // };
+  
   const addDoctor = async (formData, hospitalId) => {
     try {
       const response = await axios.post("/api/user", {
@@ -78,7 +79,6 @@ export function useAPI() {
   return {
     addPatient,
     updatePatient,
-    deleteDoctor,
     addDoctor,
     updatePatientMedication,
   };

@@ -1,8 +1,7 @@
 import { atom, selector } from "recoil";
-import axios from "axios";
 import { getSession } from "next-auth/react";
-import { fetchDoctors } from "@/server/actions/fetch-doctors";
-import { fetchPatients } from "@/server/actions/fetch-patients";
+import { fetchDoctors } from "@/server/actions/doctors/fetch-doctors";
+import { fetchPatients } from "@/server/actions/patients/fetch-patients";
 
 // Atom to store hospital ID
 export const hospitalIdState = atom({
@@ -22,8 +21,7 @@ export const AdminPatientsSelector = selector({
   get: async ({ get }) => {
     const { user } = await getSession();
     const hospitalId = user.hospitalId;
-
-    return await fetchPatients({ hospitalId });
+    return (await fetchPatients({ hospitalId })).data;
   },
 });
 
@@ -31,8 +29,8 @@ export const AdminPatientsSelector = selector({
 export const AdminDoctorsSelector = selector({
   key: "AdminDoctorsSelector",
   get: async ({ get }) => {
-    const hospitalId = get(hospitalIdState);
-
-    return await fetchDoctors({ hospitalId });
+    const { user } = await getSession();
+    const hospitalId = user.hospitalId;
+    return (await fetchDoctors({ hospitalId })).data;
   },
 });

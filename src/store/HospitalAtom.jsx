@@ -2,6 +2,7 @@ import { atom, selector, selectorFamily } from "recoil";
 import axios from "axios";
 import { hospitalIdState, userRoleState } from "@/store/AdminAtom";
 import { getSession } from "next-auth/react";
+import { fetchUsers } from "@/server/actions/users/fetch-users";
 
 // Atom for storing the details of a single patient
 export const patientsDetailsState = atom({
@@ -56,14 +57,14 @@ export const usersDetailsSelector = selector({
     const id = user.hospitalId;
 
     try {
-      const response = await axios.get(`/api/hospital/${id}/users`);
-      if (response.status === 200) {
-        return response.data;
-      }
-      throw new Error("Failed to fetch users data");
+      // const response = await axios.get(`/api/hospital/${id}/users`);
+      // if (response.status === 200) {
+      //   return response.data;
+      // }
+      return (await fetchUsers({ hospitalId: id })).data;
     } catch (error) {
       console.error(`Error fetching users data: ${error.message}`);
-      return { error: error.message || "An unexpected error occurred" }; // Always return an error
+      return { error: error.message || "An unexpected error occurred" };
     }
   },
 });

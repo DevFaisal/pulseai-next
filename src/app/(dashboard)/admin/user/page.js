@@ -1,28 +1,28 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
-import { useRecoilValueLoadable } from "recoil";
 import { useEffect, useState } from "react";
+import { useRecoilValueLoadable } from "recoil";
 import { usersDetailsSelector } from "@/store/HospitalAtom";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
   TableHead,
   TableHeader,
   TableRow,
-  TableCell,
 } from "@/components/ui/table";
-import DeleteDialog from "@/components/DeleteDialog";
+
 import Loading from "@/components/Loading";
 import NotAvailable from "@/components/NotAvailable";
 import ErrorPage from "@/components/ErrorPage";
+import AddUser from "@/components/AddUser";
+import UserTable from "@/components/UserTable";
 
-export default function Component() {
+export default function Users() {
   const usersLoadable = useRecoilValueLoadable(usersDetailsSelector);
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Effect to handle loadable state changes
   useEffect(() => {
     if (usersLoadable.state === "hasValue") {
       setUsers(usersLoadable.contents || []);
@@ -30,64 +30,47 @@ export default function Component() {
     setIsLoading(usersLoadable.state === "loading");
   }, [usersLoadable]);
 
-  // Handle loading state
   if (isLoading) {
     return <Loading />;
   }
 
-  // Handle error state
   if (usersLoadable.state === "hasError") {
     return <ErrorPage message="Failed to load users" />;
   }
 
-  // Render users table or empty state
   return (
     <div className="flex min-h-screen w-full flex-col">
       <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
         <div className="flex items-center justify-between mb-4 border-b pb-2">
-          <h1 className="text-3xl font-bold text-primary">Users</h1>
+          <h1 className="text-3xl font-bold text-primary">User Management</h1>
+          {/* Add user button can be added here if needed */}
+          <AddUser setUsers={setUsers} />
         </div>
-        <Card>
-          {users.length > 0 ? (
-            <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Since</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>
-                        <div className="font-bold">{user.name}</div>
-                      </TableCell>
-                      <TableCell>
-                        <div>{user.email}</div>
-                      </TableCell>
-                      <TableCell>
-                        <div>{new Date(user.createdAt).toDateString()}</div>
-                      </TableCell>
-                      <TableCell>
-                        <DeleteDialog
-                          title={"Delete User"}
-                          description={
-                            "Are you sure you want to delete this user?"
-                          }
-                          onClick={() => {}}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </CardContent>
-          ) : (
-            <NotAvailable title="users" />
-          )}
+        <Card className="shadow-md">
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50">
+                  <TableHead className="w-[250px] font-bold">User</TableHead>
+                  <TableHead className="w-[200px] font-bold">Email</TableHead>
+                  <TableHead className="w-[150px] font-bold">Role</TableHead>
+                  <TableHead className="w-[200px] font-bold">
+                    Member Since
+                  </TableHead>
+                  <TableHead className="w-[100px] font-bold text-center">
+                    Actions
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {users.length > 0 ? (
+                  <UserTable users={users} setUsers={setUsers} />
+                ) : (
+                  <NotAvailable title="users" />
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
         </Card>
       </main>
     </div>

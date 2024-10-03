@@ -1,3 +1,6 @@
+"use client";
+
+import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -7,35 +10,44 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import DeleteDialog from "@/components/DeleteDialog";
+import { deleteDoctor } from "@/server/actions/doctors/delete-doctor";
+import { Phone } from "lucide-react";
 
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import Button from "@/components/ui/button";
+export default function DoctorTable({ doctors = [], setDoctors }) {
+  
+  const handleDeleteDoctor = async (userId) => {
+    try {
+      const result = await deleteDoctor({ userId });
 
-export default function DoctorTable({ doctors = [] }) {
-  const handleDelete = (id) => {
-    // Perform delete operation
-    console.log(`Deleting doctor with id: ${id}`);
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+
+      setDoctors((prevDoctors) =>
+        prevDoctors.filter((doctor) => doctor.userId !== userId)
+      );
+
+      toast.success("Doctor deleted successfully");
+    } catch (error) {
+      console.error("Error deleting doctor:", error);
+      toast.error("An unexpected error occurred. Please try again later.");
+    }
   };
 
   return (
-    <div className="w-full overflow-x-auto">
-      <Table className="w-full">
+    <div className="w-full overflow-auto rounded-lg border border-gray-200 shadow-sm">
+      <Table>
         <TableCaption className="text-lg font-semibold mb-4">
-          A list of all doctors in your hospital
+          Hospital Staff Directory
         </TableCaption>
         <TableHeader>
-          <TableRow className="bg-primary/5">
-            <TableHead className="w-[200px] font-bold">Name</TableHead>
-            <TableHead className="w-[200px] font-bold">Specialty</TableHead>
+          <TableRow className="bg-gray-50">
+            <TableHead className="w-[250px] font-bold">Doctor</TableHead>
+            <TableHead className="w-[150px] font-bold">Specialty</TableHead>
             <TableHead className="w-[200px] font-bold">Contact</TableHead>
             <TableHead className="w-[100px] font-bold text-center">
               Action
@@ -46,60 +58,42 @@ export default function DoctorTable({ doctors = [] }) {
           {doctors.map((doctor) => (
             <TableRow
               key={doctor.id}
-              className="hover:bg-muted/50 transition-colors"
+              className="hover:bg-gray-50 transition-colors"
             >
-              <TableCell className="font-medium">{doctor.name}</TableCell>
-              <TableCell>{doctor.specialty}</TableCell>
-              <TableCell>{doctor.contact}</TableCell>
+              <TableCell className="flex items-center space-x-3">
+                <Avatar>
+                  <AvatarImage src={doctor.avatarUrl} alt={doctor.name} />
+                  <AvatarFallback>
+                    {doctor.name.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-bold text-lg">{doctor.name}</p>
+                  <p className="text-sm text-gray-500">{doctor.email}</p>
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge variant="secondary" className="font-semibold">
+                  {doctor.specialty}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <div className="flex items-center space-x-2">
+                  <Phone className="h-4 w-4 text-gray-400" />
+                  <span>{doctor.phone}</span>
+                </div>
+              </TableCell>
               <TableCell className="text-center">
-                {/* <Model onClick={() => handleDelete(doctor.id)} /> */}
-                {/* <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      <TrashIcon className="h-4 w-4" />
-                      <span className="sr-only">Delete</span>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Delete Patient</DialogTitle>
-                      <DialogDescription>
-                        Are you sure you want to delete this patient?
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <Button variant="outline">Cancel</Button>
-                      <Button variant="destructive">Delete</Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog> */}
+                <DeleteDialog
+                  title={`Remove ${doctor.name}`}
+                  description={`Are you sure you want to remove ${doctor.name} from the directory? This action cannot be undone.`}
+                  onDelete={() => handleDeleteDoctor(doctor.userId)}
+                />
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </div>
-  );
-}
-
-
-function TrashIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 6h18" />
-      <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-      <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-    </svg>
   );
 }

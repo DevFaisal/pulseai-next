@@ -2,17 +2,9 @@
 
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  CalendarDays,
-  Users,
-  UserPlus,
-  Activity,
-  TrendingUp,
-  DollarSign,
-} from "lucide-react";
-import { Bar, Line } from "react-chartjs-2";
+import { Users, UserPlus } from "lucide-react";
+import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -24,6 +16,8 @@ import {
   Legend,
   PointElement,
 } from "chart.js";
+import { useRecoilValue } from "recoil";
+import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
 
 ChartJS.register(
   CategoryScale,
@@ -37,16 +31,39 @@ ChartJS.register(
 );
 
 export default function AdminDashboard() {
-  // Mock data
-  const hospitalStats = {
-    totalDoctors: 50,
-    totalPatients: 1000,
-    activeAppointments: 120,
-    revenueThisMonth: 150000,
-  };
+  const patientsSelector = useRecoilValue(AdminPatientsSelector);
+  const doctorsSelector = useRecoilValue(AdminDoctorsSelector);
 
+
+  const hospitalStats = [
+    {
+      title: "Total Doctors",
+      icon: UserPlus,
+      number: doctorsSelector?.length || 0,
+    },
+    {
+      title: "Total Patients",
+      icon: Users,
+      number: patientsSelector?.length || 0,
+    },
+  ];
+
+  // Mock data
   const patientData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    labels: [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ],
     datasets: [
       {
         label: "New Patients",
@@ -59,56 +76,14 @@ export default function AdminDashboard() {
   return (
     <div className="container mx-auto p-4">
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Doctors</CardTitle>
-            <UserPlus className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {hospitalStats.totalDoctors}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Total Patients
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {hospitalStats.totalPatients}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Active Appointments
-            </CardTitle>
-            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {hospitalStats.activeAppointments}
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Revenue This Month
-            </CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              ${hospitalStats.revenueThisMonth.toLocaleString()}
-            </div>
-          </CardContent>
-        </Card>
+        {hospitalStats.map((stat) => (
+          <HeaderCard
+            key={stat.title}
+            title={stat.title}
+            Icon={stat.icon}
+            number={stat.number}
+          />
+        ))}
       </div>
       <Tabs defaultValue="patients" className="mt-6">
         <TabsList>
@@ -120,11 +95,25 @@ export default function AdminDashboard() {
               <CardTitle>New Patients Over Time</CardTitle>
             </CardHeader>
             <CardContent className="pt-2 h-[500px] w-full">
-              <Bar data={patientData} options={{ responsive: true  }} />
+              <Bar data={patientData} options={{ responsive: true }} />
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+function HeaderCard({ title, Icon, number }) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <Icon className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{number}</div>
+      </CardContent>
+    </Card>
   );
 }

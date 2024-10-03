@@ -125,10 +125,30 @@ const AddDoctorInput = {
   },
 };
 
+const AddUserInput = {
+  name: {
+    label: "Name",
+    type: "text",
+    placeholder: "John Doe",
+    type: "text",
+  },
+  email: {
+    label: "Email",
+    type: "email",
+    placeholder: "Enter email address",
+  },
+  password: {
+    label: "Password",
+    type: "password",
+    placeholder: "Enter password",
+  },
+};
+
 const Inputs = {
   AddPatientInput,
   AddDoctorInput,
   specialties,
+  AddUserInput,
 };
 
 export default Inputs;

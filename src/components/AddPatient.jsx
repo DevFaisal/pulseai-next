@@ -19,11 +19,17 @@ import { patientSchema } from "@/lib/inputValidation";
 import { toast } from "sonner";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { AddPatientsInBulk } from "./AddPatientsInBulk";
-import { createPatient } from "@/server/actions/create-patient";
+import { createPatient } from "@/server/actions/patients/create-patient";
+import { doctorDataState } from "@/store/DoctorAtom";
+import { useSession } from "next-auth/react";
 
-export default function AddPatient({ doctors, setPatients }) {
-  const hospitalId = useRecoilValue(hospitalIdState);
-  const api = useAPI();
+export default function AddPatient({ setPatients }) {
+
+  const { data } = useSession();
+  const hospitalId = data.user.hospitalId;
+  const doctors = useRecoilValue(doctorDataState);
+
+  
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = async (formData) => {
@@ -33,8 +39,7 @@ export default function AddPatient({ doctors, setPatients }) {
         toast.error(newPatient.error);
         return;
       }
-      setPatients((prev) => [
-        ...prev, newPatient.data]);
+      setPatients((prev) => [...prev, newPatient.data]);
       setDialogOpen(false);
     } catch (error) {
       console.error("Error adding patient:", error);
