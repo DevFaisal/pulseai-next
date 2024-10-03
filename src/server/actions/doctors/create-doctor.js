@@ -6,10 +6,7 @@ import { createUser } from "../users/create-user";
 import { revalidatePath } from "next/cache";
 
 export async function createDoctor({ formData, hospitalId }) {
-  console.log("F-Date", formData);
-  const { name, specialty, email, contact } = formData;
-
-  console.log(formData);
+  const { name, specialty, email, password, contact } = formData;
 
   try {
     if (!ObjectId.isValid(hospitalId)) {
@@ -22,7 +19,7 @@ export async function createDoctor({ formData, hospitalId }) {
       formData: {
         name: "Dr. " + name,
         email: email,
-        password: "password",
+        password: password,
         role: "DOCTOR",
       },
       hospitalId: hospitalId,

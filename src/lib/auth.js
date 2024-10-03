@@ -49,6 +49,7 @@ export const NEXT_AUTH = {
               },
             },
           });
+
           if (!user) {
             return null;
           }
@@ -62,7 +63,6 @@ export const NEXT_AUTH = {
             credentials.password,
             user.password
           );
-
           if (!isValidPassword) {
             return null;
           }
@@ -72,7 +72,7 @@ export const NEXT_AUTH = {
             email: user.email,
             role: user.role,
             hospitalId: user.Hospital.id,
-            hospitalName : user.Hospital.name,
+            hospitalName: user.Hospital.name,
           };
         } catch (error) {
           console.error("Authorization error:", error);

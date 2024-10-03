@@ -40,6 +40,7 @@ export async function createUser({ formData, hospitalId }) {
     }
 
     // Hash the password
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create the new user
