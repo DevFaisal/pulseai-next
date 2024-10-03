@@ -81,8 +81,6 @@ export async function createPatient({ formData, hospitalId }) {
       react: Onboarding({ name: newPatient.name, token: newPatient.token }),
     });
 
-    console.log("Email sent:", sendMail);
-
     return {
       data: { ...newPatient, assignedDoctor: { name: doctor.name } },
     };
