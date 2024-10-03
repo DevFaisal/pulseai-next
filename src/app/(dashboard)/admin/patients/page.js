@@ -10,6 +10,7 @@ import AddPatient from "@/components/AddPatient";
 import Loading from "@/components/Loading";
 import NotAvailable from "@/components/NotAvailable";
 import { doctorDataState } from "@/store/DoctorAtom";
+import ChildrenWrapper from "@/components/ChildrenWrapper";
 
 export default function Patients() {
   const patientsSelector = useRecoilValue(AdminPatientsSelector);
@@ -36,22 +37,18 @@ export default function Patients() {
   }
 
   return (
-    <div className="flex min-h-screen w-full flex-col">
-      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-        <div className="flex items-center justify-between mb-4 border-b pb-2">
-          <h1 className="text-3xl font-bold text-primary">Patients</h1>
-          <AddPatient setPatients={setPatients} />
-        </div>
-        <Card className="shadow-md">
-          <CardContent className="p-0">
-            {patients.length > 0 ? (
-              <PatientTable patients={patients} setPatients={setPatients} />
-            ) : (
-              <NotAvailable title="patients" />
-            )}
-          </CardContent>
-        </Card>
-      </main>
-    </div>
+    <ChildrenWrapper
+      title={"Patients"}
+      description={"Manage and view patient details"}
+      LeftComponent={() => <AddPatient setPatients={setPatients} />}
+    >
+      <div>
+        {patients.length > 0 ? (
+          <PatientTable patients={patients} setPatients={setPatients} />
+        ) : (
+          <NotAvailable title="patients" />
+        )}
+      </div>
+    </ChildrenWrapper>
   );
 }

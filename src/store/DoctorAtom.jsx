@@ -1,6 +1,5 @@
 import { atom, atomFamily, selectorFamily, useRecoilValue } from "recoil";
-import axios from "axios";
-import { userRoleState } from "@/store/AdminAtom";
+import { fetchDoctorsPatients } from "@/server/actions/doctors/fetch-doctors";
 
 // Atom family for storing doctor data
 const doctorDataState = atom({
@@ -14,24 +13,12 @@ const doctorDetailsSelector = selectorFamily({
   get:
     (id) =>
     async ({ get }) => {
-      const userRole = get(userRoleState); // Get the current user role
-
-      // Ensure that only the DOCTOR role can access this selector
-      if (userRole !== "DOCTOR") {
-        return {
-          error:
-            "Access denied: You must be a doctor to view this information.",
-        };
-      }
-
       try {
-        console.log("Fetching doctor details...");
-        const response = await axios.get(`/api/doctor/${id}`); // Fetch doctor details
-        if (response.status === 200) {
-          return response.data; // Return the doctor data if the request is successful
-        } else {
-          throw new Error("Failed to fetch doctor data");
+        const res = await fetchDoctorsPatients({ userId: id });
+        if (res.error) {
+          throw new Error(res.error);
         }
+        return res.data;
       } catch (error) {
         console.error(`Error fetching doctor data: ${error.message}`);
         return { error: error.message || "An unexpected error occurred" };
@@ -39,5 +26,4 @@ const doctorDetailsSelector = selectorFamily({
     },
 });
 
-// Exporting the atom family and selector family for usage in components
 export { doctorDataState, doctorDetailsSelector };

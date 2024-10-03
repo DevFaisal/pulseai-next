@@ -18,6 +18,7 @@ import {
 } from "chart.js";
 import { useRecoilValue } from "recoil";
 import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
+import { usersDetailsSelector } from "@/store/HospitalAtom";
 
 ChartJS.register(
   CategoryScale,
@@ -33,7 +34,7 @@ ChartJS.register(
 export default function AdminDashboard() {
   const patientsSelector = useRecoilValue(AdminPatientsSelector);
   const doctorsSelector = useRecoilValue(AdminDoctorsSelector);
-
+  const usersLoadable = useRecoilValue(usersDetailsSelector);
 
   const hospitalStats = [
     {
@@ -45,6 +46,11 @@ export default function AdminDashboard() {
       title: "Total Patients",
       icon: Users,
       number: patientsSelector?.length || 0,
+    },
+    {
+      title: "Total Users",
+      icon: Users,
+      number: usersLoadable?.length || 0,
     },
   ];
 

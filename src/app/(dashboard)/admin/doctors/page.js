@@ -9,6 +9,7 @@ import AddDoctor from "@/components/AddDoctor";
 import Loading from "@/components/Loading";
 import NotAvailable from "@/components/NotAvailable";
 import DoctorTable from "@/components/DoctorTable";
+import ChildrenWrapper from "@/components/ChildrenWrapper";
 
 export default function Doctors() {
   const doctorsLoadable = useRecoilValueLoadable(AdminDoctorsSelector);
@@ -28,24 +29,20 @@ export default function Doctors() {
   }, [doctorsLoadable]);
 
   return (
-    <div className="flex min-h-screen w-full flex-col">
-      <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-6">
-        <div className="flex items-center justify-between mb-4 border-b pb-2">
-          <h1 className="text-3xl font-bold text-primary">Doctors</h1>
-          <AddDoctor setDoctors={setDoctors} />
-        </div>
-        <Card>
-          <CardContent className="p-0">
-            {loading ? (
-              <Loading />
-            ) : doctors.length > 0 ? (
-              <DoctorTable doctors={doctors} setDoctors={setDoctors} />
-            ) : (
-              <NotAvailable title="doctors" />
-            )}
-          </CardContent>
-        </Card>
-      </main>
-    </div>
+    <ChildrenWrapper
+      title={"Doctors"}
+      description={"Manage and view doctor details"}
+      LeftComponent={() => <AddDoctor setDoctors={setDoctors} />}
+    >
+      <div>
+        {loading ? (
+          <Loading />
+        ) : doctors.length > 0 ? (
+          <DoctorTable doctors={doctors} setDoctors={setDoctors} />
+        ) : (
+          <NotAvailable title="doctors" />
+        )}
+      </div>
+    </ChildrenWrapper>
   );
 }
