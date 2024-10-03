@@ -1,5 +1,8 @@
 "use client";
+
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { signOut, useSession } from "next-auth/react";
 import {
   Bell,
@@ -13,6 +16,9 @@ import {
   Users,
   BriefcaseMedical,
   UserRoundPen,
+  Settings,
+  HelpCircle,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,12 +30,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/ModeToggle";
-import Image from "next/image";
-import icon from "@/app/icon/pulse-ai.svg";
-import DashboardSkeleton from "./DashboardSkeleton";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import icon from "@/app/icon/pulse-ai.svg";
 
 const createNavItem = (label, href, icon, roles) => ({
   label,
@@ -79,13 +84,22 @@ export default function DashboardWrapper({ children }) {
     }
   };
 
-  // Wait for session to load before rendering
   if (status === "loading") {
     return <DashboardSkeleton />;
   }
 
   if (!session?.user) {
-    return <div>Unauthorized. Please log in.</div>;
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Unauthorized</h1>
+          <p className="mb-4">Please log in to access this page.</p>
+          <Button asChild>
+            <Link href="/">Log In</Link>
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -123,7 +137,7 @@ export default function DashboardWrapper({ children }) {
                   <span className="sr-only">Open navigation menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-64">
+              <SheetContent side="left" className="w-64 p-0">
                 <nav className="flex h-full flex-col">
                   <div className="flex h-16 items-center border-b border-border px-6">
                     <Link
@@ -160,9 +174,9 @@ export default function DashboardWrapper({ children }) {
             </Sheet>
             <h1 className="flex text-lg font-semibold items-center justify-center gap-5">
               {userRole === "admin" && (
-                <div className="mb-1">
-                  <Badge>Admin</Badge>
-                </div>
+                <Badge variant="admin" className="uppercase  ">
+                  Admin
+                </Badge>
               )}
               <div>
                 Welcome, <span className="text-primary">{username}</span>
@@ -173,36 +187,72 @@ export default function DashboardWrapper({ children }) {
             <div className="hidden items-center gap-2 sm:flex">
               <Hospital size={20} aria-hidden="true" />
               <span className="text-lg font-semibold">
-                <span className="text-violet-500">
+                <span className="text-primary">
                   {hospitalName.split(" ")[0]}
                 </span>{" "}
-                <span className="text-">{hospitalName.split(" ")[1]}</span>
+                <span>{hospitalName.split(" ")[1]}</span>
               </span>
             </div>
             <ModeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <CircleUser className="h-6 w-6" />
-                  <span className="sr-only">Open user menu</span>
+                  <Avatar>
+                    <AvatarImage src={session.user.image} alt={username} />
+                    <AvatarFallback>{username.charAt(0)}</AvatarFallback>
+                  </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <HelpCircle className="mr-2 h-4 w-4" />
+                  <span>Support</span>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onSelect={handleLogout} disabled={loading}>
-                  {loading ? "Logging out..." : "Logout"}
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>{loading ? "Logging out..." : "Logout"}</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </header>
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-muted">
-          <div className="mx-auto max-w-7xl">{children}</div>
+          <div className="mx-auto max-w-8xl">{children}</div>
         </main>
+      </div>
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="flex h-screen bg-background">
+      <div className="hidden w-64 flex-shrink-0 border-r border-border bg-card md:block">
+        <Skeleton className="h-16 w-full" />
+        <div className="p-4 space-y-4">
+          {Array(5)
+            .fill(0)
+            .map((_, i) => (
+              <Skeleton key={i} className="h-10 w-full" />
+            ))}
+        </div>
+      </div>
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <Skeleton className="h-16 w-full" />
+        <div className="flex-1 p-4 sm:p-6">
+          <Skeleton className="h-[200px] w-full mb-4" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Skeleton className="h-[300px] w-full" />
+            <Skeleton className="h-[300px] w-full" />
+          </div>
+        </div>
       </div>
     </div>
   );
