@@ -40,7 +40,7 @@ export default function DoctorTable({ doctors = [], setDoctors }) {
   return (
     <Table>
       <TableHeader>
-        <TableRow className="bg-gray-50">
+        <TableRow>
           <TableHead className="w-[250px] font-bold">Doctor</TableHead>
           <TableHead className="w-[150px] font-bold">Specialty</TableHead>
           <TableHead className="w-[200px] font-bold">Contact</TableHead>
@@ -53,7 +53,7 @@ export default function DoctorTable({ doctors = [], setDoctors }) {
         {doctors.map((doctor) => (
           <TableRow
             key={doctor.id}
-            className="hover:bg-gray-50 transition-colors"
+            className="hover:bg-muted/50 transition-colors"
           >
             <TableCell className="flex items-center space-x-3">
               <Avatar>
