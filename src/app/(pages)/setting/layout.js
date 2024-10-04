@@ -7,8 +7,8 @@ export const metadata = {
 
 export default function SettingLayout({ children }) {
   return (
-    <DashboardWrapper>
-      <div className="w-full h-full">{children}</div>
-    </DashboardWrapper>
+    <div className="w-full h-screen bg-muted">
+      <div className="mx-auto max-w-4xl">{children}</div>
+    </div>
   );
 }
