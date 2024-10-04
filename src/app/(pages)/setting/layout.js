@@ -1,8 +1,8 @@
 import DashboardWrapper from "@/components/DashboardWrapper";
 
 export const metadata = {
-  title: "Dashboard",
-  description: "Welcome to the dashboard",
+  title: "Settings",
+  description: "Settings",
 };
 
 export default function SettingLayout({ children }) {
