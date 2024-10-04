@@ -107,9 +107,11 @@ export function DiagnoseManager({ patient, onDiagnoseSubmit }) {
         )}
       </CardContent>
       <CardFooter>
-        <Button onClick={handleSubmit} className="w-full">
-          Submit Diagnosis
-        </Button>
+        <div>
+          <Button onClick={handleSubmit} className="w-full">
+            Submit Diagnosis
+          </Button>
+        </div>
       </CardFooter>
     </Card>
   );

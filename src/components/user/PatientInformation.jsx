@@ -66,7 +66,6 @@ import ActionDrawer, { VitalsDrawerExample } from "@/components/Drawer";
 
 export function PatientInformation({ patient }) {
   if (!patient) return null;
-
   return (
     <Card className="w-full">
       <CardHeader>
@@ -77,7 +76,7 @@ export function PatientInformation({ patient }) {
             </CardTitle>
             <CardDescription>View and manage patient details</CardDescription>
           </div>
-          <StatusBadge status={patient.status} />
+          <StatusBadge status={patient.status || "Stable"} />
         </div>
       </CardHeader>
       <CardContent>
@@ -87,15 +86,15 @@ export function PatientInformation({ patient }) {
               <InfoItem label="Name" value={patient.name} />
               <InfoItem label="Age" value={patient.age.toString()} />
               <InfoItem label="Gender" value={patient.gender} />
-              <InfoItem label="Contact Info" value={patient.contact} />
+              <InfoItem label="Blood Type" value={patient.bloodType} />
             </div>
             <InfoItem
               label="Clinical Notes"
-              value={patient.clinicalNotes || "No clinical notes available."}
+              value={patient.doctorNote || "No clinical notes available."}
             />
             <InfoItem
               label="Diagnosis"
-              value={patient.diagnosis || "No diagnosis available."}
+              value={patient.icdCode || "No diagnosis available."}
             />
             <VitalsDrawerExample />
           </div>

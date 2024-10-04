@@ -20,16 +20,7 @@ import { DiagnoseManager } from "./DiagnoseManager";
 export default function ActionDialog({
   selectedPatient,
   setSelectedPatient,
-  medication,
-  newMedication,
-  setNewMedication,
-  handleAddMedication,
-  thresholds,
-  newThreshold,
-  setNewThreshold,
-  handleAddThreshold,
   onDiagnoseSubmit,
-  handleFinalSave,
 }) {
   const [activeTab, setActiveTab] = React.useState("information");
 
@@ -68,30 +59,26 @@ export default function ActionDialog({
               />
             </TabsContent>
             <TabsContent value="medication">
-              <MedicationManager
-                medication={medication}
-                patient={selectedPatient}
-                newMedication={newMedication}
-                setNewMedication={setNewMedication}
-                handleAddMedication={handleAddMedication}
-              />
+              <MedicationManager patient={selectedPatient} />
             </TabsContent>
             <TabsContent value="thresholds">
               <ThresholdManager
-                thresholds={thresholds}
-                newThreshold={newThreshold}
-                setNewThreshold={setNewThreshold}
-                handleAddThreshold={handleAddThreshold}
+                patient={selectedPatient}
+                // thresholds={thresholds}
+                // setThresholds={setThresholds}
+                // newThreshold={newThreshold}
+                // setNewThreshold={setNewThreshold}
+                // handleAddThreshold={handleAddThreshold}
               />
             </TabsContent>
           </ScrollArea>
         </Tabs>
-        <DialogFooter>
+        {/* <DialogFooter>
           <Button variant="outline" onClick={() => setSelectedPatient(null)}>
             Cancel
           </Button>
           <Button onClick={handleFinalSave}>Save Changes</Button>
-        </DialogFooter>
+        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

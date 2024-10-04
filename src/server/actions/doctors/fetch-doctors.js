@@ -68,6 +68,9 @@ export async function fetchDoctorsPatients({ userId }) {
             name: true,
             age: true,
             gender: true,
+            bloodType: true,
+            doctorNote: true,
+            icdCode: true,
             vitalSigns: {
               select: {
                 id: true,
@@ -82,8 +85,15 @@ export async function fetchDoctorsPatients({ userId }) {
                 name: true,
                 dosage: true,
                 frequency: true,
-                startDate: true,
-                endDate: true,
+              },
+            },
+            Threshold: {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+                min: true,
+                max: true,
               },
             },
           },

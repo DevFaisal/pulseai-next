@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { use, useCallback, useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -19,13 +19,54 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Trash2 } from "lucide-react";
+import {
+  deleteMedication,
+  UpdateMedication,
+} from "@/server/actions/patients/patient-medications";
+import { toast } from "sonner";
 
-export function MedicationManager({
-  medication,
-  newMedication,
-  setNewMedication,
-  handleAddMedication,
-}) {
+export function MedicationManager({ patient }) {
+  const [medication, setMedication] = useState([]);
+  const [newMedication, setNewMedication] = useState({
+    name: "",
+    dosage: "",
+    frequency: "",
+  });
+
+  useEffect(() => {
+    if (patient?.medications) {
+      setMedication(patient.medications);
+    }
+  }, []);
+
+  const handleAddMedication = async () => {
+    const res = await UpdateMedication({
+      patientId: patient.id,
+      medication: newMedication,
+    });
+
+    if (res.error) {
+      toast.error(res.error);
+      return;
+    }
+    toast.success("Medication added successfully");
+    if (res.data) {
+      setMedication(res.data.medications);
+      setNewMedication({ name: "", dosage: "", frequency: "" });
+    }
+  };
+
+  const handleRemoveMedication = async (id) => {
+    const res = await deleteMedication({ medicationId: id });
+    if (res.error) {
+      toast.error(res.error);
+      return;
+    }
+    toast.success("Medication removed successfully");
+    setMedication((prev) => prev.filter((med) => med.id !== id));
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -40,14 +81,25 @@ export function MedicationManager({
                 <TableHead>Name</TableHead>
                 <TableHead>Dosage</TableHead>
                 <TableHead>Frequency</TableHead>
+                <TableHead className="w-[100px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {medication?.map((medication, index) => (
+              {medication.map((medication, index) => (
                 <TableRow key={index}>
                   <TableCell>{medication.name}</TableCell>
                   <TableCell>{medication.dosage}</TableCell>
                   <TableCell>{medication.frequency}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleRemoveMedication(medication.id)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span className="sr-only">Remove Medicine</span>
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

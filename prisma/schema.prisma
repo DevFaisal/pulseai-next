@@ -42,6 +42,8 @@ model Patient {
   bloodType        String
   BMI              Float
   token            String
+  icdCode          String?
+  doctorNote       String?
   hospitalId       String       @db.ObjectId
   assignedDoctorId String?      @db.ObjectId
   hospital         Hospital     @relation(fields: [hospitalId], references: [id])
@@ -74,28 +76,40 @@ model VitalSign {
 }
 
 model Medication {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  patientId String   @db.ObjectId
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String  @db.ObjectId
   name      String
   dosage    String
   frequency String
-  startDate DateTime
-  endDate   DateTime
-  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  // startDate DateTime
+  // endDate   DateTime
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
 
 model Threshold {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  doctorId  String  @db.ObjectId
-  vitalType String
-  minValue  Float
-  maxValue  Float
-  patientId String  @db.ObjectId
-  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  // doctorId  String    @db.ObjectId
+  name      String
+  type     VitalType
+  min       Float
+  max       Float
+  patientId String    @db.ObjectId
+  patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, type])
 }
 
 enum Role {
   ADMIN
   USER
   DOCTOR
+}
+
+enum VitalType {
+  HEART_RATE
+  BLOOD_PRESSURE
+  TEMPERATURE
+  BLOOD_GLUCOSE
+  RESPIRATORY_RATE
+  OXYGEN_SATURATION
 }

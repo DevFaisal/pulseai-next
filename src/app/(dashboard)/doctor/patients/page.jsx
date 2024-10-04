@@ -8,6 +8,8 @@ import { useSession } from "next-auth/react";
 import PatientList from "@/components/user/PatientList";
 import ActionDialog from "@/components/user/ActionDialog";
 import ChildrenWrapper from "@/components/ChildrenWrapper";
+import { DiagnosePatient } from "@/server/actions/patients/diagnose-patient";
+import { toast } from "sonner";
 
 export default function DoctorDashboard() {
   const { data: session } = useSession();
@@ -16,25 +18,8 @@ export default function DoctorDashboard() {
 
   const [patients, setPatients] = useState([]);
   const [diagnose, setDiagnose] = useState(null);
-  const [medication, setMedication] = useState([
-    { id: 1, name: "Aspirin", dosage: "100mg", frequency: "Daily" },
-  ]);
-  const [thresholds, setThresholds] = useState([
-    { id: 1, name: "Blood Pressure", min: 80, max: 120, unit: "mmHg" },
-  ]);
 
   const [selectedPatient, setSelectedPatient] = useState(null);
-
-  const [newMedication, setNewMedication] = useState({
-    name: "",
-    dosage: "",
-    frequency: "",
-  });
-  const [newThreshold, setNewThreshold] = useState({
-    name: "",
-    value: 0,
-    unit: "",
-  });
 
   useEffect(() => {
     if (doctorDetails?.patients) {
@@ -42,28 +27,29 @@ export default function DoctorDashboard() {
     }
   }, [doctorDetails]);
 
-  const handleAddMedication = useCallback(() => {
-    setMedication((prev) => [
-      ...prev,
-      { ...newMedication, id: prev.length + 1 },
-    ]);
-    setNewMedication({ name: "", dosage: "", frequency: "" });
-  }, [newMedication]);
-
-  const handleAddThreshold = useCallback(() => {
-    setThresholds((prev) => [
-      ...prev,
-      { ...newThreshold, id: prev.length + 1 },
-    ]);
-    setNewThreshold({ name: "", value: 0, unit: "" });
-  }, [newThreshold]);
-
   const onDiagnoseSubmit = useCallback((diagnosis) => {
     setDiagnose(diagnosis);
   }, []);
 
   const handleFinalSave = async () => {
-    console.log("Saving changes to patient", medication, thresholds, diagnose);
+    try {
+      const res = await DiagnosePatient({
+        patientId: selectedPatient.id,
+        diagnose,
+        newMedication,
+        thresholds,
+      });
+      if (res.error) {
+        console.error("Failed to save changes", res.error);
+        toast.error("Failed to save changes");
+        return;
+      }
+      toast.success("Changes saved successfully");
+      console.log(res);
+    } catch (error) {
+      console.error("Failed to save changes", error);
+      toast.error("Failed to save changes");
+    }
   };
 
   return (
@@ -81,14 +67,14 @@ export default function DoctorDashboard() {
       <ActionDialog
         selectedPatient={selectedPatient}
         setSelectedPatient={setSelectedPatient}
-        medication={medication}
-        newMedication={newMedication}
-        setNewMedication={setNewMedication}
-        newThreshold={newThreshold}
-        setNewThreshold={setNewThreshold}
-        handleAddMedication={handleAddMedication}
-        handleAddThreshold={handleAddThreshold}
-        thresholds={thresholds}
+        // newMedication={newMedication}
+        // setNewMedication={setNewMedication}
+        // thresholds={thresholds}
+        // setMedication={setMedication}
+        // newThreshold={newThreshold}
+        // setNewThreshold={setNewThreshold}
+        // handleAddThreshold={handleAddThreshold}
+        // setThresholds={setThresholds}
         onDiagnoseSubmit={onDiagnoseSubmit}
         handleFinalSave={handleFinalSave}
       />

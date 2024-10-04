@@ -140,7 +140,7 @@
 
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -168,36 +168,47 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  deleteThreshold,
+  UpdateThreshold,
+} from "@/server/actions/patients/patient-threshold";
 
 const thresholdTypes = [
-  { name: "Heart Rate", value: "heart_rate", unit: "bpm" },
-  { name: "Blood Glucose", value: "blood_glucose", unit: "mg/dL" },
-  { name: "Blood Pressure", value: "blood_pressure", unit: "mmHg" },
-  { name: "Respiratory Rate", value: "respiratory_rate", unit: "bpm" },
-  { name: "Temperature", value: "temperature", unit: "°C" },
-  { name: "Oxygen Saturation", value: "oxygen_saturation", unit: "%" },
+  { name: "Heart Rate", value: "HEART_RATE", unit: "bpm" },
+  { name: "Blood Glucose", value: "BLOOD_GLUCOSE", unit: "mg/dL" },
+  { name: "Blood Pressure", value: "BLOOD_PRESSURE", unit: "mmHg" },
+  { name: "Respiratory Rate", value: "RESPIRATORY_RATE", unit: "bpm" },
+  { name: "Temperature", value: "TEMPERATURE", unit: "°C" },
+  { name: "Oxygen Saturation", value: "OXYGEN_SATURATION", unit: "%" },
 ];
 
-export function ThresholdManager({
-  thresholds,
-  setThresholds,
-  handleAddThreshold,
-}) {
+export function ThresholdManager({ patient }) {
   const [selectedType, setSelectedType] = useState("");
   const [minValue, setMinValue] = useState("");
   const [maxValue, setMaxValue] = useState("");
+  const [thresholds, setThresholds] = useState([]);
+  const [newThreshold, setNewThreshold] = useState({
+    name: "",
+    value: 0,
+    unit: "",
+  });
 
-  const handleTypeChange = useCallback((value) => {
-    setSelectedType(value);
+  useEffect(() => {
+    if (patient?.Threshold) {
+      setThresholds(patient.Threshold);
+    }
   }, []);
 
-  const handleAddThresholdHere = useCallback(() => {
+  const handleTypeChange = useCallback(
+    (value) => {
+      setSelectedType(value);
+    },
+    [thresholds]
+  );
+
+  const handleAddThreshold = useCallback(async () => {
     if (!selectedType || !minValue || !maxValue) {
-      toast({
-        title: "Error",
-        description: "Please select a type and enter min and max values",
-        variant: "destructive",
-      });
+      toast.error("Please fill all fields");
       return;
     }
 
@@ -210,14 +221,28 @@ export function ThresholdManager({
     }
 
     const newThreshold = {
-      id: Date.now().toString(),
       name:
         thresholdTypes.find((type) => type.value === selectedType)?.name || "",
+      type:
+        thresholdTypes.find((type) => type.value === selectedType)?.value || "",
       min,
       max,
     };
-    handleAddThreshold();
-    // setThresholds((prev) => [...prev, newThreshold]);
+
+    const res = await UpdateThreshold({
+      patientId: patient.id,
+      threshold: newThreshold,
+    });
+    if (res.error) {
+      toast.error(res.error);
+      return;
+    }
+    setThresholds((prev) => [
+      ...prev?.filter((threshold) => threshold.type !== selectedType),
+      ,
+      res.data,
+    ]);
+
     setSelectedType("");
     setMinValue("");
     setMaxValue("");
@@ -226,12 +251,14 @@ export function ThresholdManager({
   }, [selectedType, minValue, maxValue, setThresholds]);
 
   const handleRemoveThreshold = useCallback(
-    (id) => {
+    async (id) => {
+      const res = await deleteThreshold({ thresholdId: id });
+      if (res.error) { 
+        toast.error(res.error);
+        return;
+      }
       setThresholds((prev) => prev.filter((threshold) => threshold.id !== id));
-      toast({
-        title: "Success",
-        description: "Threshold range removed successfully",
-      });
+      toast.success("Threshold range removed successfully");
     },
     [setThresholds]
   );
@@ -256,8 +283,8 @@ export function ThresholdManager({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {thresholds.map((threshold) => (
-                <TableRow key={threshold.id}>
+              {thresholds.map((threshold, index) => (
+                <TableRow key={index}>
                   <TableCell>{threshold.name}</TableCell>
                   <TableCell>{threshold.min}</TableCell>
                   <TableCell>{threshold.max}</TableCell>
