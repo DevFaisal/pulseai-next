@@ -21,7 +21,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function MedicationManager({
-  patient,
+  medication,
   newMedication,
   setNewMedication,
   handleAddMedication,
@@ -29,7 +29,7 @@ export function MedicationManager({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Medications</CardTitle>
+        <CardTitle className="text-2xl font-bold">Medications</CardTitle>
         <CardDescription>Manage patient medications</CardDescription>
       </CardHeader>
       <CardContent>
@@ -43,7 +43,7 @@ export function MedicationManager({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {patient?.medications?.map((medication, index) => (
+              {medication?.map((medication, index) => (
                 <TableRow key={index}>
                   <TableCell>{medication.name}</TableCell>
                   <TableCell>{medication.dosage}</TableCell>
@@ -84,7 +84,7 @@ export function MedicationManager({
               })
             }
           />
-          <Button onClick={() => handleAddMedication(patient.id)}>Add</Button>
+          <Button onClick={handleAddMedication}>Add</Button>
         </div>
       </CardContent>
     </Card>

@@ -64,7 +64,7 @@ export default function PatientList({ patients = [], setSelectedPatient }) {
                 onClick={() => setSelectedPatient(patient)}
               >
                 <Eye className="mr-2 h-4 w-4" />
-                View Details
+                View & Diagnose
               </Button>
             </TableCell>
           </TableRow>

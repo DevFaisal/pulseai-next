@@ -5,12 +5,9 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useRecoilValue } from "recoil";
 import { doctorDetailsSelector } from "@/store/DoctorAtom";
 import { useSession } from "next-auth/react";
-import { useAPI } from "@/hooks/useAPI";
 import PatientList from "@/components/user/PatientList";
 import ActionDialog from "@/components/user/ActionDialog";
 import ChildrenWrapper from "@/components/ChildrenWrapper";
-import { addMedication } from "@/server/actions/patients/add-medication";
-import { toast } from "sonner";
 
 export default function DoctorDashboard() {
   const { data: session } = useSession();
@@ -18,13 +15,16 @@ export default function DoctorDashboard() {
   const doctorDetails = useRecoilValue(doctorDetailsSelector(doctorId));
 
   const [patients, setPatients] = useState([]);
+  const [diagnose, setDiagnose] = useState(null);
+  const [medication, setMedication] = useState([
+    { id: 1, name: "Aspirin", dosage: "100mg", frequency: "Daily" },
+  ]);
   const [thresholds, setThresholds] = useState([
-    { id: 1, name: "Blood Pressure", value: 140, unit: "mmHg" },
-    { id: 2, name: "Blood Glucose", value: 126, unit: "mg/dL" },
-    { id: 3, name: "Heart Rate", value: 100, unit: "bpm" },
+    { id: 1, name: "Blood Pressure", min: 80, max: 120, unit: "mmHg" },
   ]);
 
   const [selectedPatient, setSelectedPatient] = useState(null);
+
   const [newMedication, setNewMedication] = useState({
     name: "",
     dosage: "",
@@ -36,40 +36,35 @@ export default function DoctorDashboard() {
     unit: "",
   });
 
-  const api = useAPI();
-
   useEffect(() => {
     if (doctorDetails?.patients) {
       setPatients(doctorDetails.patients);
     }
   }, [doctorDetails]);
 
-const handleAddMedication = useCallback(
-    async (patientId) => {
-      try {
-        const res = await addMedication({ formData: newMedication, patientId });
-        if (res.data) {
-          setSelectedPatient((prev) => ({
-            ...prev,
-            medications: [...(prev.medications || []), newMedication],
-          }));
-          setNewMedication({ name: "", dosage: "", frequency: "" });
-          toast.success("Medication added successfully");
-        }
-      } catch (error) {
-        console.error("Error adding medication:", error);
-      }
-    },
-    [newMedication, api]
-  );
+  const handleAddMedication = useCallback(() => {
+    setMedication((prev) => [
+      ...prev,
+      { ...newMedication, id: prev.length + 1 },
+    ]);
+    setNewMedication({ name: "", dosage: "", frequency: "" });
+  }, [newMedication]);
 
-const handleAddThreshold = useCallback(() => {
+  const handleAddThreshold = useCallback(() => {
     setThresholds((prev) => [
       ...prev,
       { ...newThreshold, id: prev.length + 1 },
     ]);
     setNewThreshold({ name: "", value: 0, unit: "" });
   }, [newThreshold]);
+
+  const onDiagnoseSubmit = useCallback((diagnosis) => {
+    setDiagnose(diagnosis);
+  }, []);
+
+  const handleFinalSave = async () => {
+    console.log("Saving changes to patient", medication, thresholds, diagnose);
+  };
 
   return (
     <>
@@ -86,6 +81,7 @@ const handleAddThreshold = useCallback(() => {
       <ActionDialog
         selectedPatient={selectedPatient}
         setSelectedPatient={setSelectedPatient}
+        medication={medication}
         newMedication={newMedication}
         setNewMedication={setNewMedication}
         newThreshold={newThreshold}
@@ -93,6 +89,8 @@ const handleAddThreshold = useCallback(() => {
         handleAddMedication={handleAddMedication}
         handleAddThreshold={handleAddThreshold}
         thresholds={thresholds}
+        onDiagnoseSubmit={onDiagnoseSubmit}
+        handleFinalSave={handleFinalSave}
       />
     </>
   );
