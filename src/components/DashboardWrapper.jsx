@@ -35,7 +35,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import icon from "@/app/icon/pulse-ai.svg";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 const createNavItem = (label, href, icon, roles) => ({
   label,
@@ -63,6 +63,8 @@ export default function DashboardWrapper({ children }) {
   const [username, setUsername] = useState("");
   const [hospitalName, setHospitalName] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     if (session?.user) {
@@ -214,8 +216,13 @@ export default function DashboardWrapper({ children }) {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
+                  <button
+                    onClick={() => router.push("/setting")}
+                    className="flex"
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </button>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <HelpCircle className="mr-2 h-4 w-4" />

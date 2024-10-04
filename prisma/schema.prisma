@@ -15,7 +15,7 @@ model User {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   role       Role      @default(USER)
-  Hospital   Hospital? @relation(fields: [hospitalId], references: [id])
+  Hospital   Hospital? @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
   hospitalId String?   @db.ObjectId
 }
 
@@ -26,9 +26,11 @@ model Doctor {
   specialty  String?
   phone      String?
   email      String    @unique
-  Hospital   Hospital? @relation(fields: [hospitalId], references: [id])
+  Hospital   Hospital? @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
   hospitalId String?   @db.ObjectId
   patients   Patient[]
+
+  @@unique([userId, hospitalId, email])
 }
 
 model Patient {
@@ -46,8 +48,8 @@ model Patient {
   doctorNote       String?
   hospitalId       String       @db.ObjectId
   assignedDoctorId String?      @db.ObjectId
-  hospital         Hospital     @relation(fields: [hospitalId], references: [id])
-  assignedDoctor   Doctor?      @relation(fields: [assignedDoctorId], references: [id])
+  hospital         Hospital     @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
+  assignedDoctor   Doctor?      @relation(fields: [assignedDoctorId], references: [id], onDelete: Cascade)
   vitalSigns       VitalSign[]
   medications      Medication[]
   Threshold        Threshold[]
@@ -90,7 +92,7 @@ model Threshold {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
   // doctorId  String    @db.ObjectId
   name      String
-  type     VitalType
+  type      VitalType
   min       Float
   max       Float
   patientId String    @db.ObjectId
