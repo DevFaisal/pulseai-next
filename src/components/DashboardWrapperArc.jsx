@@ -69,7 +69,6 @@ export default function DashboardWrapperAce({ children }) {
     return <Dashboard />;
   }
 
-  const checkActivePath = useActivePath();
   const dashboardLinks = [
     createNavItem(
       "Dashboard",
@@ -215,7 +214,6 @@ export const LogoIcon = () => {
   );
 };
 
-
 const Dashboard = () => {
   return (
     <div className="flex flex-1">
@@ -240,13 +238,3 @@ const Dashboard = () => {
     </div>
   );
 };
-
-export function useActivePath() {
-  const pathname = usePathname();
-
-  const checkActivePath = (path) => {
-    return path === pathname;
-  };
-
-  return checkActivePath;
-}
