@@ -42,7 +42,18 @@ export default function PulseAIRemoteOperatorDashboard() {
   const [patientsDetails, setPatientsDetails] =
     useRecoilState(patientsDetailsState);
   const fetchedPatientsDetails = useRecoilValueLoadable(AdminPatientsSelector);
-  console.log(fetchedPatientsDetails);
+
+  useEffect(() => {
+    if (fetchedPatientsDetails.state === "hasValue") {
+      setPatientsDetails(fetchedPatientsDetails.contents);
+    }
+    if (fetchedPatientsDetails.state === "loading") {
+      <Loading />;
+    }
+    if (fetchedPatientsDetails.state === "hasValue") {
+      setPatientsDetails(fetchedPatientsDetails.contents);
+    }
+  }, [fetchedPatientsDetails]);
 
   const router = useRouter();
   const kpis = {
@@ -98,13 +109,6 @@ export default function PulseAIRemoteOperatorDashboard() {
       time: "30 min ago",
     },
   ];
-
-  if (fetchedPatientsDetails.state === "loading") {
-    return <Loading />;
-  }
-  if (fetchedPatientsDetails.state === "hasValue") {
-    setPatientsDetails(fetchedPatientsDetails.contents);
-  }
 
   // if (fetchedPatientsDetails.state === "hasError" || !patientsDetails.length) {
   //   return (
