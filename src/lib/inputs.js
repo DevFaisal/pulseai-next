@@ -144,11 +144,30 @@ const AddUserInput = {
   },
 };
 
+const UserPasswordInput = {
+  currentPassword: {
+    label: "Current Password",
+    type: "password",
+    placeholder: "Enter current password",
+  },
+  newPassword: {
+    label: "New Password",
+    type: "password",
+    placeholder: "Enter new password",
+  },
+  confirmPassword: {
+    label: "Confirm Password",
+    type: "password",
+    placeholder: "Confirm new password",
+  },
+};
+
 const Inputs = {
   AddPatientInput,
   AddDoctorInput,
   specialties,
   AddUserInput,
+  UserPasswordInput,
 };
 
 export default Inputs;

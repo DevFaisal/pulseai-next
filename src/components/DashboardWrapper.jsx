@@ -121,7 +121,7 @@ export default function DashboardWrapper({ children }) {
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`flex items-center rounded-md px-3 py-2 text-sm font-medium 
+                  className={`flex items-center rounded-md px-3 py-2 text-sm font-medium
                     ${
                       checkActivePath(item.href)
                         ? "bg-accent text-accent-foreground"
@@ -215,14 +215,9 @@ export default function DashboardWrapper({ children }) {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <button
-                    onClick={() => router.push("/setting")}
-                    className="flex"
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </button>
+                <DropdownMenuItem onClick={(e) => router.push("/setting")}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <HelpCircle className="mr-2 h-4 w-4" />

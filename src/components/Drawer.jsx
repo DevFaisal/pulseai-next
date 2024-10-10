@@ -29,7 +29,7 @@ export default function ActionDrawer({ patient }) {
   return (
     <Drawer>
       <DrawerTrigger asChild>
-        <Button variant="outline">View Vitals</Button>
+        <Button>View Vitals</Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>

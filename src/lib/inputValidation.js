@@ -40,10 +40,37 @@ const EditPatientSchema = z.object({
   assignedDoctor: z.string().nonempty("Doctor selection is required"),
 });
 
+const UserPasswordSchema = z.object({
+  currentPassword: z.string().min(6, "Password must be at least 6 characters"),
+  newPassword: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+      "Password must contain at least one letter, one number, and one special character"
+    )
+    .max(50, "Password must be at most 50 characters"),
+
+  confirmPassword: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .regex(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+      "Password must contain at least one letter, one number, and one special character"
+    )
+    .max(50, "Password must be at most 50 characters"),
+});
+
 const userSchema = z.object({
   name: z.string().nonempty("Name is required"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-export { patientSchema, EditPatientSchema, doctorSchema, userSchema };
+export {
+  patientSchema,
+  EditPatientSchema,
+  doctorSchema,
+  userSchema,
+  UserPasswordSchema,
+};

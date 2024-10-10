@@ -25,7 +25,7 @@ export const patientsDetailsSelector = selector({
       throw new Error("Failed to fetch patients data");
     } catch (error) {
       console.error(`Error fetching patients data: ${error.message}`);
-      return { error: error.message || "An unexpected error occurred" }; // Always return an error
+      return { error: error.message || "An unexpected error occurred" };
     }
   },
 });
@@ -55,12 +55,7 @@ export const usersDetailsSelector = selector({
   get: async ({ get }) => {
     const { user } = await getSession();
     const id = user.hospitalId;
-
     try {
-      // const response = await axios.get(`/api/hospital/${id}/users`);
-      // if (response.status === 200) {
-      //   return response.data;
-      // }
       return (await fetchUsers({ hospitalId: id })).data;
     } catch (error) {
       console.error(`Error fetching users data: ${error.message}`);

@@ -34,6 +34,7 @@ import { patientDetailsId } from "@/store/HospitalAtom";
 import Loading from "@/components/Loading";
 import ErrorPage from "@/components/ErrorPage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { VitalsDrawerExample } from "@/components/Drawer";
 
 export default function PatientDetailsPage({ params }) {
   const patientId = params.id;
@@ -243,7 +244,7 @@ export default function PatientDetailsPage({ params }) {
             <div className="grid grid-cols-2 gap-4">
               <Button className="h-20 flex flex-col items-center justify-center">
                 <Activity className="h-6 w-6 mb-2" />
-                View Vitals
+                <VitalsDrawerExample />
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center">
                 <Pill className="h-6 w-6 mb-2" />

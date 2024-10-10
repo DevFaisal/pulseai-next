@@ -96,7 +96,9 @@ export function PatientInformation({ patient }) {
               label="Diagnosis"
               value={patient.icdCode || "No diagnosis available."}
             />
-            <VitalsDrawerExample />
+            <div className="flex justify-end space-x-4">
+              <VitalsDrawerExample />
+            </div>
           </div>
         </ScrollArea>
       </CardContent>

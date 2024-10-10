@@ -67,14 +67,6 @@ export default function DoctorDashboard() {
       <ActionDialog
         selectedPatient={selectedPatient}
         setSelectedPatient={setSelectedPatient}
-        // newMedication={newMedication}
-        // setNewMedication={setNewMedication}
-        // thresholds={thresholds}
-        // setMedication={setMedication}
-        // newThreshold={newThreshold}
-        // setNewThreshold={setNewThreshold}
-        // handleAddThreshold={handleAddThreshold}
-        // setThresholds={setThresholds}
         onDiagnoseSubmit={onDiagnoseSubmit}
         handleFinalSave={handleFinalSave}
       />

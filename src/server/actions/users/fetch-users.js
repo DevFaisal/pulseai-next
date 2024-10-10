@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
+import { UserPasswordSchema } from "@/lib/inputValidation";
 
 export async function fetchUsers({ hospitalId }) {
   if (!ObjectId.isValid(hospitalId)) {
@@ -130,38 +131,31 @@ export async function updateUserName({ id, name }) {
   }
 }
 
-export async function updateUserPassword({ id, oldPassword, password }) {
+export async function updateUserPassword({
+  id,
+  currentPassword,
+  confirmPassword,
+  newPassword,
+}) {
   if (!ObjectId.isValid(id)) {
     return {
       error: "Invalid User ID format",
     };
   }
-  if (!oldPassword || !password) {
+
+  const { error } = UserPasswordSchema.safeParse({
+    currentPassword,
+    newPassword,
+    confirmPassword,
+  });
+
+  if (error) {
     return {
-      error: "Password fields cannot be empty",
+      error: error.message,
     };
   }
-  if (oldPassword === password) {
-    return {
-      error: "New password cannot be the same as the old password",
-    };
-  }
-  if (password.length < 8) {
-    return {
-      error: "Password must be at least 8 characters long",
-    };
-  }
-  if (password.length > 50) {
-    return {
-      error: "Password must be less than 50 characters long",
-    };
-  }
-  if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/.test(password)) {
-    return {
-      error:
-        "Password must contain at least one uppercase letter, one lowercase letter, and one number",
-    };
-  }
+  console.log("Old pAssword", currentPassword)
+  console.log("New pAssword", newPassword)
   const user = await prisma.user.findUnique({
     where: {
       id: id,
@@ -172,13 +166,13 @@ export async function updateUserPassword({ id, oldPassword, password }) {
       error: "User not found",
     };
   }
-  const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+  const passwordMatch = await bcrypt.compare(currentPassword, user.password);
   if (!passwordMatch) {
     return {
       error: "Incorrect password",
     };
   }
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
   try {
     await prisma.user.update({
       where: {

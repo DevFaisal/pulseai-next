@@ -23,7 +23,10 @@ import {
 } from "@/server/actions/users/fetch-users";
 import { toast } from "sonner";
 import Loading from "@/components/Loading";
-// import { getUserData, updateUserName, updateUserPassword } from "./actions";
+import { UserPasswordSchema } from "@/lib/inputValidation";
+import ReusableForm from "@/components/ReusableForm";
+import Inputs from "@/lib/inputs";
+import NotAvailable from "@/components/NotAvailable";
 
 export default function SettingPage() {
   const [user, setUser] = useState(null);
@@ -74,22 +77,16 @@ export default function SettingPage() {
   };
 
   const handlePasswordSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const currentPassword = formData.get("current-password");
-    const newPassword = formData.get("new-password");
-    const confirmPassword = formData.get("confirm-password");
-
-    if (newPassword !== confirmPassword) {
+    if (e.newPassword !== e.confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
-
     try {
       const res = await updateUserPassword({
         id: user.id,
-        oldPassword: currentPassword,
-        password: newPassword,
+        currentPassword: e.currentPassword,
+        confirmPassword: e.confirmPassword,
+        newPassword: e.newPassword,
       });
       if (res.error) {
         toast.error(res.error);
@@ -107,7 +104,7 @@ export default function SettingPage() {
   }
 
   if (!user) {
-    return <div>No user data available</div>;
+    return <NotAvailable title={"User"} />;
   }
 
   return (
@@ -162,41 +159,20 @@ export default function SettingPage() {
 
         <TabsContent value="password">
           <Card>
-            <form onSubmit={handlePasswordSubmit}>
-              <CardHeader>
-                <CardTitle>Change Password</CardTitle>
-                <CardDescription>
-                  Change your password here. We recommend using a strong, unique
-                  password.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <Label htmlFor="current-password">Current Password</Label>
-                <Input
-                  id="current-password"
-                  name="current-password"
-                  type="password"
-                  required
-                />
-                <Label htmlFor="new-password">New Password</Label>
-                <Input
-                  id="new-password"
-                  name="new-password"
-                  type="password"
-                  required
-                />
-                <Label htmlFor="confirm-password">Confirm New Password</Label>
-                <Input
-                  id="confirm-password"
-                  name="confirm-password"
-                  type="password"
-                  required
-                />
-              </CardContent>
-              <CardFooter>
-                <Button type="submit">Change Password</Button>
-              </CardFooter>
-            </form>
+            <CardHeader>
+              <CardTitle>Change Password</CardTitle>
+              <CardDescription>
+                Change your password here. We recommend using a strong, unique
+                password.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <ReusableForm
+                inputs={Inputs.UserPasswordInput}
+                schema={UserPasswordSchema}
+                onSubmit={handlePasswordSubmit}
+              />
+            </CardContent>
           </Card>
         </TabsContent>
       </Tabs>

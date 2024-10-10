@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -22,6 +22,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useSession } from "next-auth/react";
+import { doctorDetailsSelector } from "@/store/DoctorAtom";
+import { useRecoilValue } from "recoil";
+import { useRouter } from "next/navigation";
 
 ChartJS.register(
   CategoryScale,
@@ -33,56 +37,51 @@ ChartJS.register(
 );
 
 export default function DoctorDashboard() {
+  const { data: session } = useSession();
+  const doctorId = session?.user?.id;
+  const doctorDetails = useRecoilValue(doctorDetailsSelector(doctorId));
+
+
+  const router = useRouter();
+
   const [doctor] = useState({
     name: "Dr. Jane Smith",
     avatar: "/placeholder.svg?height=80&width=80",
   });
 
-  const [stats] = useState({
-    totalPatients: 1250,
-    diagnosedPatients: 1100,
-    pendingDiagnoses: 150,
-    appointmentsToday: 8,
-  });
+  const [stats, setStats] = useState({});
 
-  const [recentPatients] = useState([
-    {
-      id: 1,
-      name: "John Doe",
-      age: 45,
-      lastVisit: "2023-09-28",
-      status: "Diagnosed",
-    },
-    {
-      id: 2,
-      name: "Alice Johnson",
-      age: 32,
-      lastVisit: "2023-09-27",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      name: "Bob Williams",
-      age: 58,
-      lastVisit: "2023-09-26",
-      status: "Diagnosed",
-    },
-    {
-      id: 4,
-      name: "Emma Brown",
-      age: 29,
-      lastVisit: "2023-09-25",
-      status: "Diagnosed",
-    },
-    {
-      id: 5,
-      name: "Michael Davis",
-      age: 51,
-      lastVisit: "2023-09-24",
-      status: "Pending",
-    },
-  ]);
+  const [recentPatients, setRecentPatients] = useState([]);
 
+  useEffect(() => {
+    if (doctorDetails?.patients) {
+      // const diagnosedPatients = doctorDetails.patients.filter(
+      //   (patient) => patient.diagnoses.length > 0
+      // );
+      // const pendingDiagnoses = doctorDetails.patients.filter(
+      //   (patient) => patient.diagnoses.length === 0
+      // );
+
+      setStats({
+        totalPatients: doctorDetails.patients.length,
+        diagnosedPatients: 0, //diagnosedPatients.length
+        pendingDiagnoses: 0, //pendingDiagnoses.length
+        appointmentsToday: 8,
+      });
+
+      setRecentPatients(
+        doctorDetails.patients.slice(0, 5).map((patient) => ({
+          id: patient.id,
+          name: patient.name,
+          age: patient.age,
+          lastVisit: patient.lastVisit,
+          // status: patient.diagnoses.length > 0 ? "Diagnosed" : "Pending",
+        }))
+      );
+    }
+  }, []);
+
+  // Mock chart data
   const chartData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
@@ -182,7 +181,14 @@ export default function DoctorDashboard() {
               </TableBody>
             </Table>
             <div className="mt-4 flex justify-end">
-              <Button variant="outline">View All Patients</Button>
+              <Button
+                onClick={() => {
+                  router.push("/doctor/patients");
+                }}
+                variant="outline"
+              >
+                View All Patients
+              </Button>
             </div>
           </CardContent>
         </Card>

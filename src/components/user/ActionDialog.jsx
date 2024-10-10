@@ -5,7 +5,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -13,7 +12,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PatientInformation } from "./PatientInformation";
 import { MedicationManager } from "@/components/user/MedicationManager";
 import { ThresholdManager } from "@/components/user/ThresholdManager";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DiagnoseManager } from "./DiagnoseManager";
 
@@ -62,23 +60,10 @@ export default function ActionDialog({
               <MedicationManager patient={selectedPatient} />
             </TabsContent>
             <TabsContent value="thresholds">
-              <ThresholdManager
-                patient={selectedPatient}
-                // thresholds={thresholds}
-                // setThresholds={setThresholds}
-                // newThreshold={newThreshold}
-                // setNewThreshold={setNewThreshold}
-                // handleAddThreshold={handleAddThreshold}
-              />
+              <ThresholdManager patient={selectedPatient} />
             </TabsContent>
           </ScrollArea>
         </Tabs>
-        {/* <DialogFooter>
-          <Button variant="outline" onClick={() => setSelectedPatient(null)}>
-            Cancel
-          </Button>
-          <Button onClick={handleFinalSave}>Save Changes</Button>
-        </DialogFooter> */}
       </DialogContent>
     </Dialog>
   );

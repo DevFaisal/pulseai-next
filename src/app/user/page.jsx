@@ -36,10 +36,13 @@ import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import Loading from "@/components/Loading";
 import ErrorPage from "@/components/ErrorPage";
+import { AdminPatientsSelector } from "@/store/AdminAtom";
 
 export default function PulseAIRemoteOperatorDashboard() {
-  const [patientsDetails, setPatientsDetails] = useRecoilState(patientsDetailsState);
-  const fetchedPatientsDetails = useRecoilValueLoadable(patientsDetailsSelector);
+  const [patientsDetails, setPatientsDetails] =
+    useRecoilState(patientsDetailsState);
+  const fetchedPatientsDetails = useRecoilValueLoadable(AdminPatientsSelector);
+  console.log(fetchedPatientsDetails);
 
   const router = useRouter();
   const kpis = {
@@ -103,11 +106,11 @@ export default function PulseAIRemoteOperatorDashboard() {
     setPatientsDetails(fetchedPatientsDetails.contents);
   }
 
-  if (fetchedPatientsDetails.state === "hasError" || !patientsDetails.length) {
-    return (
-      <ErrorPage message="Unable to fetch patient details. Please try again later." />
-    );
-  }
+  // if (fetchedPatientsDetails.state === "hasError" || !patientsDetails.length) {
+  //   return (
+  //     <ErrorPage message="Unable to fetch patient details. Please try again later." />
+  //   );
+  // }
 
   const isLoading = !patientsDetails || patientsDetails.length === 0;
 
