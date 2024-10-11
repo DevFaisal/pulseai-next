@@ -122,7 +122,7 @@ export default function PulseAIRemoteOperatorDashboard() {
     <main className="">
       <div className="px-4 py-6 sm:px-0">
         {/* KPIs */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        {/* <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
           <TopCard
             title="Total Patients"
             header={patientsDetails?.length || 0}
@@ -147,7 +147,7 @@ export default function PulseAIRemoteOperatorDashboard() {
             description="Time to resolve critical alerts"
             icon={<Clock className="h-4 w-4 text-muted-foreground" />}
           />
-        </div>
+        </div> */}
         {/* Patient Categories and Real-time Monitoring */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 mb-8">
           <Card>
@@ -178,6 +178,7 @@ export default function PulseAIRemoteOperatorDashboard() {
             </CardContent>
           </Card>
 
+          
           {/* Recent Alerts and AI Insights */}
           <Card>
             <CardHeader>
