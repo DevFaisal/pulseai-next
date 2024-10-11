@@ -24,12 +24,10 @@ import { doctorDataState } from "@/store/DoctorAtom";
 import { useSession } from "next-auth/react";
 
 export default function AddPatient({ setPatients }) {
-
   const { data } = useSession();
   const hospitalId = data.user.hospitalId;
   const doctors = useRecoilValue(doctorDataState);
 
-  
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = async (formData) => {
@@ -50,12 +48,11 @@ export default function AddPatient({ setPatients }) {
   // Form fields definition with select inputs
   const inputs = Inputs.AddPatientInput;
   inputs.assignedDoctor.options =
-    doctors.length >= 0
-      ? doctors?.map((doctor) => ({
-          value: doctor.id,
-          label: doctor.name,
-        }))
-      : [{ value: "", label: "No doctors available" }];
+    doctors?.length >= 0 &&
+    doctors?.map((doctor) => ({
+      value: doctor.id,
+      label: doctor.name,
+    }));
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setDialogOpen}>

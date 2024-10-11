@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 import crypto from "crypto";
 
 const prisma = new PrismaClient();
@@ -7,7 +8,7 @@ const prisma = new PrismaClient();
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, location } = body;
+    const { name, location, email, password } = body;
 
     // Validate request body
     if (!name) {
@@ -32,6 +33,20 @@ export async function POST(request) {
         hospitalCode,
       },
     });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const masterAdmin = await prisma.user.create({
+      data: {
+        name: "Admin",
+        email: email,
+        password: hashedPassword,
+        role: "ADMIN",
+        hospitalId: hospital.id,
+      },
+    });
+
+    console.log("Admin created: ", masterAdmin);
 
     return NextResponse.json(hospital, { status: 201 });
   } catch (error) {

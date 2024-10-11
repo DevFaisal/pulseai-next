@@ -45,26 +45,13 @@ export default function Users() {
       description={"Manage and view user details"}
       LeftComponent={() => <AddUser setUsers={setUsers} />}
     >
-      <Table>
-        <TableHeader>
-          <TableRow className="bg-muted/50">
-            <TableHead className="w-[250px] font-bold">User</TableHead>
-            <TableHead className="w-[200px] font-bold">Email</TableHead>
-            <TableHead className="w-[150px] font-bold">Role</TableHead>
-            <TableHead className="w-[200px] font-bold">Member Since</TableHead>
-            <TableHead className="w-[100px] font-bold text-center">
-              Actions
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {users.length > 0 ? (
-            <UserTable users={users} setUsers={setUsers} />
-          ) : (
-            <NotAvailable title="users" />
-          )}
-        </TableBody>
-      </Table>
+      <>
+        {users.length > 0 ? (
+          <UserTable users={users} setUsers={setUsers} />
+        ) : (
+          <NotAvailable title="users" />
+        )}
+      </>
     </ChildrenWrapper>
   );
 }

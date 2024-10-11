@@ -171,8 +171,8 @@ const loginSchema = z.object({
 
 const loginInputs = [
   {
-    label: "H-Code",
-    placeholder: "Enter your H-Code",
+    label: "Healthcare Code",
+    placeholder: "Enter your Healthcare Code",
     type: "text",
     name: "hospitalCode",
     icon: Hospital,
@@ -248,9 +248,7 @@ export default function Login() {
                 name={input.name}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="">
-                      {input.label}
-                    </FormLabel>
+                    <FormLabel className="">{input.label}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <input.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary h-5 w-5" />

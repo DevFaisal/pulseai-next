@@ -8,7 +8,7 @@ import { hospitalIdState, userRoleState } from "@/store/AdminAtom";
 function RecoilRootProvider({ children }) {
   return (
     <RecoilRoot>
-      <FetchHospitalId />
+      <FetchHospitalId /> 
       {children}
     </RecoilRoot>
   );

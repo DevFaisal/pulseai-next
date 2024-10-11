@@ -140,11 +140,11 @@ export default function DashboardWrapperAce({ children }) {
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={true}>
-        <SidebarBody className="justify-between gap-10">
+        <SidebarBody className="justify-between h-screen gap-10">
           <div className="flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-            <>
+            <div>
               <Logo />
-            </>
+            </div>
             <div className="mt-8 flex flex-col gap-2">
               {navItems.map((item, idx) => (
                 <SidebarLink key={idx} link={item} />

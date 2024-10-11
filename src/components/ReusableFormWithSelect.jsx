@@ -28,7 +28,6 @@ const ReusableFormWithSelect = ({ schema, inputs, onSubmit }) => {
     resolver: zodResolver(schema),
     defaultValues,
   });
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -43,7 +42,7 @@ const ReusableFormWithSelect = ({ schema, inputs, onSubmit }) => {
                   <FormLabel>{input.label}</FormLabel>
                   <FormControl>
                     {input.type === "select" ? (
-                      input.options?.length ? (
+                      input?.options?.length > 0 ? (
                         <Select
                           value={field.value}
                           onValueChange={field.onChange}
@@ -52,7 +51,7 @@ const ReusableFormWithSelect = ({ schema, inputs, onSubmit }) => {
                             <SelectValue placeholder={input.placeholder} />
                           </SelectTrigger>
                           <SelectContent>
-                            {input.options.map((option) => (
+                            {input?.options.map((option) => (
                               <SelectItem
                                 key={option.value}
                                 value={option.value}

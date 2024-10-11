@@ -60,12 +60,12 @@ export default function PatientDetailsPage({ params }) {
   }
 
   let vitals = {
-    bloodPressure: selectedPatient?.vitalSigns[0].bloodPressure + " mmHg",
-    heartRate: selectedPatient?.vitalSigns[0].heartRate + " bpm",
-    temperature: selectedPatient?.vitalSigns[0].temperature + "°F",
-    respiratoryRate:
-      selectedPatient?.vitalSigns[0].respiratoryRate + " breaths/min",
-    oxygenSaturation: selectedPatient?.vitalSigns[0].oxygenSaturation + "%",
+    // bloodPressure: selectedPatient?.vitalSigns[0]?.bloodPressure + " mmHg",
+    // heartRate: selectedPatient?.vitalSigns[0]?.heartRate + " bpm",
+    // temperature: selectedPatient?.vitalSigns[0]?.temperature + "°F",
+    // respiratoryRate:
+    //   selectedPatient?.vitalSigns[0]?.respiratoryRate + " breaths/min",
+    // oxygenSaturation: selectedPatient?.vitalSigns[0]?.oxygenSaturation + "%",
   };
   console.log(vitals);
 
@@ -330,7 +330,7 @@ export default function PatientDetailsPage({ params }) {
                 <div>
                   <h3 className="font-semibold mb-2">Current Vitals</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {Object.entries(vitals).map(([key, value]) => (
+                    {/* {Object.entries(vitals).map(([key, value]) => (
                       <div key={key} className="flex items-center">
                         <Heart className="h-5 w-5 mr-2 text-red-500" />
                         <div>
@@ -340,7 +340,7 @@ export default function PatientDetailsPage({ params }) {
                           <p className="text-lg font-semibold">{value}</p>
                         </div>
                       </div>
-                    ))}
+                    ))} */}
                   </div>
                 </div>
               </div>

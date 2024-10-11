@@ -2,7 +2,7 @@
 
 export default function GlobalError({ error, reset }) {
   return (
-    <html className="flex items-center justify-center min-h-screen bg-gray-100">
+    <html className="flex items-center justify-center min-h-screen">
       <body className="flex flex-col items-center justify-center p-4">
         <h2 className="text-2xl font-bold text-red-600 mb-4">
           Something went wrong!

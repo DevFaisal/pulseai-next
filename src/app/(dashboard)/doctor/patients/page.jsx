@@ -53,7 +53,7 @@ export default function DoctorDashboard() {
   };
 
   return (
-    <>
+    <div>
       <ChildrenWrapper
         title={"Patients"}
         description={"View and manage your patients"}
@@ -70,6 +70,6 @@ export default function DoctorDashboard() {
         onDiagnoseSubmit={onDiagnoseSubmit}
         handleFinalSave={handleFinalSave}
       />
-    </>
+    </div>
   );
 }

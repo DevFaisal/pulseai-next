@@ -15,7 +15,7 @@ export default function AppBar() {
   ];
 
   return (
-    <main className="sticky top-0 z-50 flex items-center justify-between h-16 w-full px-4 lg:px-6  border-b border-border backdrop-blur-sm">
+    <main className=" top-0 left-0 right-0 z-50 bg-opacity-90 flex items-center justify-between h-16 w-full px-4 lg:px-6  backdrop-blur-sm">
       {/* Brand logo and name */}
       <Link className="flex items-center space-x-2" href="/">
         <HeartPulse
