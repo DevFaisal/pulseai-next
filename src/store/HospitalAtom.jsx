@@ -3,6 +3,7 @@ import axios from "axios";
 import { hospitalIdState, userRoleState } from "@/store/AdminAtom";
 import { getSession } from "next-auth/react";
 import { fetchUsers } from "@/server/actions/users/fetch-users";
+import { fetchPatientById } from "@/server/actions/patients/fetch-patients";
 
 // Atom for storing the details of a single patient
 export const patientsDetailsState = atom({
@@ -37,9 +38,13 @@ export const patientDetailsId = selectorFamily({
     (patientId) =>
     async ({ get }) => {
       try {
-        const response = await axios.get(`/api/patient/${patientId}`);
-        if (response.status === 200) {
-          return response.data;
+        // const response = await axios.get(`/api/patient/${patientId}`);
+        // if (response.status === 200) {
+        //   return response.data;
+        // }
+        const res = await fetchPatientById({ patientId });
+        if (res.data) {
+          return res.data;
         }
         throw new Error("Failed to fetch patient data");
       } catch (error) {

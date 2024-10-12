@@ -62,3 +62,35 @@ export async function fetchPatients({ hospitalId }) {
     };
   }
 }
+
+//fetch Patients by id
+export async function fetchPatientById({ patientId }) {
+  if (!ObjectId.isValid(patientId)) {
+    return {
+      error: "Invalid patientId",
+    };
+  }
+
+  try {
+    const patient = await prisma.patient.findUnique({
+      where: {
+        id: patientId,
+      },
+    });
+
+    if (!patient) {
+      return {
+        message: "No patient found",
+      };
+    }
+
+    return {
+      data: patient,
+    };
+  } catch (error) {
+    console.error("Error fetching patient:", error);
+    return {
+      error: "Error fetching patient",
+    };
+  }
+}

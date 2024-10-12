@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -27,16 +27,14 @@ import {
   AlertTriangle,
   Clock,
 } from "lucide-react";
-import { useRecoilState, useRecoilValue, useRecoilValueLoadable } from "recoil";
-import {
-  patientsDetailsSelector,
-  patientsDetailsState,
-} from "@/store/HospitalAtom";
+import { useRecoilState, useRecoilValueLoadable } from "recoil";
+import { patientsDetailsState } from "@/store/HospitalAtom";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import Loading from "@/components/other/Loading";
 import ErrorPage from "@/components/other/ErrorPage";
 import { AdminPatientsSelector } from "@/store/AdminAtom";
+import AppBar from "@/components/other/AppBar";
 
 export default function PulseAIRemoteOperatorDashboard() {
   const [patientsDetails, setPatientsDetails] =
@@ -110,19 +108,13 @@ export default function PulseAIRemoteOperatorDashboard() {
     },
   ];
 
-  // if (fetchedPatientsDetails.state === "hasError" || !patientsDetails.length) {
-  //   return (
-  //     <ErrorPage message="Unable to fetch patient details. Please try again later." />
-  //   );
-  // }
-
   const isLoading = !patientsDetails || patientsDetails.length === 0;
 
   return (
-    <main className="">
-      <div className="px-4 py-6 sm:px-0">
+    <main>
+      <div>
         {/* KPIs */}
-        {/* <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
           <TopCard
             title="Total Patients"
             header={patientsDetails?.length || 0}
@@ -147,7 +139,7 @@ export default function PulseAIRemoteOperatorDashboard() {
             description="Time to resolve critical alerts"
             icon={<Clock className="h-4 w-4 text-muted-foreground" />}
           />
-        </div> */}
+        </div>
         {/* Patient Categories and Real-time Monitoring */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 mb-8">
           <Card>
@@ -253,10 +245,15 @@ export default function PulseAIRemoteOperatorDashboard() {
                         }
                       >
                         <TableCell>{index + 1}</TableCell>
-                        <TableCell>{patient.name}</TableCell>
-                        <TableCell>{patient.age}</TableCell>
+                        <TableCell>
+                          {patient.firstName + " " + patient.lastName}
+                        </TableCell>
+                        <TableCell>
+                          {new Date().getFullYear() -
+                            new Date(patient.dateOfBirth).getFullYear()}
+                        </TableCell>
                         <TableCell>{patient.gender}</TableCell>
-                        <TableCell>{patient.assignedDoctor?.name}</TableCell>
+                        <TableCell>{patient.Doctor?.name}</TableCell>
                         <TableCell>
                           <Badge
                             variant={
