@@ -163,7 +163,7 @@ export async function createPatient({ formData, hospitalId }) {
         familyConditions: familyConditions || null,
         noKnownFamilyHistory: noKnownFamilyHistory || false,
         hospitalId: hospitalId,
-        doctorId: "66fffe62722b57002b8736c6",
+        doctorId: doctorAssigned,
       },
     });
 
