@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import DeleteDialog from "@/components/DeleteDialog";
+import DeleteDialog from "@/components/other/DeleteDialog";
 import { deleteDoctor } from "@/server/actions/doctors/delete-doctor";
 import { Phone } from "lucide-react";
 

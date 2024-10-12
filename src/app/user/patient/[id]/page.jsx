@@ -31,10 +31,10 @@ import {
 
 import { useRecoilValueLoadable } from "recoil";
 import { patientDetailsId } from "@/store/HospitalAtom";
-import Loading from "@/components/Loading";
-import ErrorPage from "@/components/ErrorPage";
+import Loading from "@/components/other/Loading";
+import ErrorPage from "@/components/other/ErrorPage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { VitalsDrawerExample } from "@/components/Drawer";
+import { VitalsDrawerExample } from "@/components/other/Drawer";
 
 export default function PatientDetailsPage({ params }) {
   const patientId = params.id;

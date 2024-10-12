@@ -15,20 +15,36 @@ export async function fetchPatients({ hospitalId }) {
       where: {
         hospitalId: hospitalId,
       },
+      // select: {
+      //   id: true,
+      //   name: true,
+      //   age: true,
+      //   hospitalId: true,
+      //   gender: true,
+      //   assignedDoctor: {
+      //     select: {
+      //       name: true,
+      //     },
+      //   },
+      //   assignedDoctorId: true,
+      // },
       select: {
         id: true,
-        name: true,
-        age: true,
-        hospitalId: true,
+        firstName: true,
+        lastName: true,
         gender: true,
-        assignedDoctor: {
+        dateOfBirth: true,
+        medicalConditions: true,
+        Doctor: {
           select: {
+            id: true,
             name: true,
           },
         },
-        assignedDoctorId: true,
       },
     });
+
+    console.log("Patients", patients);
 
     if (!patients.length) {
       return {

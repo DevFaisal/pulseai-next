@@ -22,11 +22,11 @@ import {
   updateUserPassword,
 } from "@/server/actions/users/fetch-users";
 import { toast } from "sonner";
-import Loading from "@/components/Loading";
+import Loading from "@/components/other/Loading";
 import { UserPasswordSchema } from "@/lib/inputValidation";
-import ReusableForm from "@/components/ReusableForm";
+import ReusableForm from "@/components/other/ReusableForm";
 import Inputs from "@/lib/inputs";
-import NotAvailable from "@/components/NotAvailable";
+import NotAvailable from "@/components/other/NotAvailable";
 
 export default function SettingPage() {
   const [user, setUser] = useState(null);

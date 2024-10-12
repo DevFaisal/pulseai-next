@@ -12,12 +12,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import Loading from "@/components/Loading";
-import NotAvailable from "@/components/NotAvailable";
-import ErrorPage from "@/components/ErrorPage";
-import AddUser from "@/components/AddUser";
-import UserTable from "@/components/UserTable";
-import ChildrenWrapper from "@/components/ChildrenWrapper";
+import Loading from "@/components/other/Loading";
+import NotAvailable from "@/components/other/NotAvailable";
+import ErrorPage from "@/components/other/ErrorPage";
+import AddUser from "@/components/user/AddUser";
+import UserTable from "@/components/user/UserTable";
+import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 
 export default function Users() {
   const usersLoadable = useRecoilValueLoadable(usersDetailsSelector);

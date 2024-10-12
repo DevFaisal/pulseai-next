@@ -5,8 +5,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Heart, Users, Bell, PlusCircle, Activity, Lock } from "lucide-react";
-import AppBar from "@/components/AppBar";
-import Login from "@/components/Login";
+import AppBar from "@/components/other/AppBar";
+import Login from "@/components/other/Login";
 import Link from "next/link";
 
 const features = [

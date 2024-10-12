@@ -9,8 +9,8 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { EditPatient } from "@/components/EditPatient";
-import DeleteDialog from "@/components/DeleteDialog";
+import { EditPatient } from "@/components/patient/EditPatient";
+import DeleteDialog from "@/components/other/DeleteDialog";
 import { deletePatient } from "@/server/actions/patients/delete-patient";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -52,33 +52,40 @@ export default function PatientTable({ patients = [], setPatients }) {
               <Avatar>
                 <AvatarImage src={patient.avatarUrl} alt={patient.name} />
                 <AvatarFallback>
-                  {patient.name.slice(0, 2).toUpperCase()}
+                  {patient.firstName.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <p className="font-medium">{patient.name}</p>
+                <p className="font-medium">
+                  {patient.firstName + " " + patient.lastName}
+                </p>
                 <p className="text-sm text-muted-foreground">
                   Patient ID: {patient.id}
                 </p>
               </div>
             </TableCell>
-            <TableCell>{patient.age}</TableCell>
             <TableCell>
-              <Badge variant="outline">{patient.gender}</Badge>
+              {patient.dateOfBirth
+                ? new Date().getFullYear() -
+                  new Date(patient.dateOfBirth).getFullYear()
+                : "N/A"}
             </TableCell>
             <TableCell>
-              {patient.assignedDoctor ? (
+              <Badge variant="outline">{patient.gender.toUpperCase()}</Badge>
+            </TableCell>
+            <TableCell>
+              {patient.Doctor ? (
                 <div className="flex items-center space-x-2">
                   <Avatar className="h-6 w-6">
-                    <AvatarImage
+                    {/* <AvatarImage
                       src={patient.assignedDoctor.avatarUrl}
-                      alt={patient.assignedDoctor.name}
-                    />
+                      alt={patient.Doctor.name}
+                    /> */}
                     <AvatarFallback>
                       <Stethoscope className="h-4 w-4" />
                     </AvatarFallback>
                   </Avatar>
-                  <span>{patient.assignedDoctor.name}</span>
+                  <span>{patient.Doctor.name}</span>
                 </div>
               ) : (
                 <span className="text-muted-foreground italic">

@@ -5,11 +5,11 @@ import { useRecoilValueLoadable } from "recoil";
 import { AdminDoctorsSelector } from "@/store/AdminAtom";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import AddDoctor from "@/components/AddDoctor";
-import Loading from "@/components/Loading";
-import NotAvailable from "@/components/NotAvailable";
-import DoctorTable from "@/components/DoctorTable";
-import ChildrenWrapper from "@/components/ChildrenWrapper";
+import AddDoctor from "@/components/doctor/AddDoctor";
+import Loading from "@/components/other/Loading";
+import NotAvailable from "@/components/other/NotAvailable";
+import DoctorTable from "@/components/doctor/DoctorTable";
+import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 
 export default function Doctors() {
   const doctorsLoadable = useRecoilValueLoadable(AdminDoctorsSelector);

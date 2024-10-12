@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import { Card, CardContent } from "@/components/ui/card";
 import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
-import PatientTable from "@/components/PatientTable";
-import AddPatient from "@/components/AddPatient";
-import Loading from "@/components/Loading";
-import NotAvailable from "@/components/NotAvailable";
+import PatientTable from "@/components/patient/PatientTable";
+import Loading from "@/components/other/Loading";
+import NotAvailable from "@/components/other/NotAvailable";
 import { doctorDataState } from "@/store/DoctorAtom";
-import ChildrenWrapper from "@/components/ChildrenWrapper";
+import ChildrenWrapper from "@/components/other/ChildrenWrapper";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function Patients() {
   const patientsSelector = useRecoilValue(AdminPatientsSelector);
@@ -20,6 +20,7 @@ export default function Patients() {
   const [isLoading, setIsLoading] = useState(true);
   const setDoctorsAtom = useSetRecoilState(doctorDataState);
 
+  const router = useRouter();
   const { data: sessionData } = useSession();
   const hospitalId = sessionData?.user?.hospitalId;
 
@@ -40,7 +41,13 @@ export default function Patients() {
     <ChildrenWrapper
       title={"Patients"}
       description={"Manage and view patient details"}
-      LeftComponent={() => <AddPatient setPatients={setPatients} />}
+      LeftComponent={() => (
+        <div>
+          <Button onClick={() => router.push("patients/add-patient")}>
+            Add Patient
+          </Button>
+        </div>
+      )}
     >
       <div>
         {patients.length > 0 ? (

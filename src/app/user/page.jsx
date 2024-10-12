@@ -34,8 +34,8 @@ import {
 } from "@/store/HospitalAtom";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
-import Loading from "@/components/Loading";
-import ErrorPage from "@/components/ErrorPage";
+import Loading from "@/components/other/Loading";
+import ErrorPage from "@/components/other/ErrorPage";
 import { AdminPatientsSelector } from "@/store/AdminAtom";
 
 export default function PulseAIRemoteOperatorDashboard() {
@@ -178,7 +178,6 @@ export default function PulseAIRemoteOperatorDashboard() {
             </CardContent>
           </Card>
 
-          
           {/* Recent Alerts and AI Insights */}
           <Card>
             <CardHeader>

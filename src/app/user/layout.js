@@ -1,4 +1,4 @@
-import AppBar from "@/components/AppBar";
+import AppBar from "@/components/other/AppBar";
 
 export const metadata = {
   title: "User Dashboard - Pulse AI",

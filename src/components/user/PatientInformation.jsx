@@ -62,7 +62,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "../ui/button";
-import ActionDrawer, { VitalsDrawerExample } from "@/components/Drawer";
+import ActionDrawer, { VitalsDrawerExample } from "@/components/other/Drawer";
 
 export function PatientInformation({ patient }) {
   if (!patient) return null;

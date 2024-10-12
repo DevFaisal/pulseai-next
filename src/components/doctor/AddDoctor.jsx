@@ -10,7 +10,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import ReusableFormWithSelect from "@/components/ReusableFormWithSelect";
+import ReusableFormWithSelect from "@/components/other/ReusableFormWithSelect";
 import Inputs from "@/lib/inputs";
 import { useRecoilValue } from "recoil";
 import { hospitalIdState } from "@/store/AdminAtom";

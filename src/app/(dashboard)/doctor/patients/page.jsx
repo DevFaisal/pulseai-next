@@ -7,7 +7,7 @@ import { doctorDetailsSelector } from "@/store/DoctorAtom";
 import { useSession } from "next-auth/react";
 import PatientList from "@/components/user/PatientList";
 import ActionDialog from "@/components/user/ActionDialog";
-import ChildrenWrapper from "@/components/ChildrenWrapper";
+import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 import { DiagnosePatient } from "@/server/actions/patients/diagnose-patient";
 import { toast } from "sonner";
 

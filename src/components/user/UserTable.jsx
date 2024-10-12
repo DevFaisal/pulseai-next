@@ -1,8 +1,15 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import DeleteDialog from "@/components/DeleteDialog";
+import DeleteDialog from "@/components/other/DeleteDialog";
 import { CalendarDays, Mail, Trash2 } from "lucide-react";
-import { TableRow, TableCell, Table, TableHeader, TableHead, TableBody } from "@/components/ui/table";
+import {
+  TableRow,
+  TableCell,
+  Table,
+  TableHeader,
+  TableHead,
+  TableBody,
+} from "@/components/ui/table";
 import { deleteUser } from "@/server/actions/users/delete-user";
 import { toast } from "sonner";
 

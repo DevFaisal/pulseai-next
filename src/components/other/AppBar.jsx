@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { HeartPulse, LogOut } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import { ModeToggle } from "./ModeToggle";
+import { ModeToggle } from "@/components/other/ModeToggle";
 
 export default function AppBar() {
   const { data: session, status } = useSession();
