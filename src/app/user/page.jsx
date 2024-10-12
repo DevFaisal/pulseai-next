@@ -32,9 +32,7 @@ import { patientsDetailsState } from "@/store/HospitalAtom";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import Loading from "@/components/other/Loading";
-import ErrorPage from "@/components/other/ErrorPage";
 import { AdminPatientsSelector } from "@/store/AdminAtom";
-import AppBar from "@/components/other/AppBar";
 
 export default function PulseAIRemoteOperatorDashboard() {
   const [patientsDetails, setPatientsDetails] =

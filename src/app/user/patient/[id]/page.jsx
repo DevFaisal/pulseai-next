@@ -26,13 +26,14 @@ import Loading from "@/components/other/Loading";
 import ErrorPage from "@/components/other/ErrorPage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VitalsDrawerExample } from "@/components/other/Drawer";
+import { useRouter } from "next/navigation";
 
 export default function PatientDetailsPage({ params }) {
   const patientId = params.id;
   const patientDetailsLoadable = useRecoilValueLoadable(
     patientDetailsId(patientId)
   );
-
+  const router = useRouter();
   if (patientDetailsLoadable.state === "loading") {
     return <Loading />;
   }
@@ -112,9 +113,12 @@ export default function PatientDetailsPage({ params }) {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
-              <Button className="h-20 flex flex-col items-center justify-center">
+              <Button
+                onClick={() => router.push(`/user/patient/vitals`)}
+                className="h-20 flex flex-col items-center justify-center"
+              >
                 <Activity className="h-6 w-6 mb-2" />
-                <VitalsDrawerExample />
+                Vitals
               </Button>
               <Button className="h-20 flex flex-col items-center justify-center">
                 <Pill className="h-6 w-6 mb-2" />
