@@ -53,7 +53,6 @@ export default function AddDoctor({ setDoctors }) {
             Fill out the form to add a new Doctor.
           </DialogDescription>
         </DialogHeader>
-        {/* Using ReusableFormWithSelect */}
         <ReusableFormWithSelect
           schema={doctorSchema}
           inputs={inputs}

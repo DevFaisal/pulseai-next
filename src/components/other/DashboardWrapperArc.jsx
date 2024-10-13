@@ -27,6 +27,7 @@ import { signOut, useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { ModeToggle } from "./ModeToggle";
 
 const createNavItem = (label, href, icon, roles) => ({
   label,
@@ -136,7 +137,7 @@ export default function DashboardWrapperAce({ children }) {
   return (
     <div
       className={cn(
-        "rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden h-screen"
+        "rounded-md flex flex-col md:flex-row bg-muted dark:bg-muted w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden h-screen"
       )}
     >
       <Sidebar open={open} setOpen={setOpen} animate={true}>
@@ -163,6 +164,9 @@ export default function DashboardWrapperAce({ children }) {
             </button>
           </div>
           <div>
+            <div>
+              <ModeToggle />
+            </div>
             <SidebarLink
               link={{
                 label: username,

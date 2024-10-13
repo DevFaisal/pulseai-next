@@ -83,3 +83,56 @@ export async function fetchDoctorsPatients({ userId }) {
     };
   }
 }
+
+export async function fetchDetailsForAdmin({ hospitalId }) {
+  if (!ObjectId.isValid(hospitalId)) {
+    return {
+      error: "Invalid hospital ID",
+    };
+  }
+
+  try {
+    const particularHospitalDetails = await prisma.hospital.findUnique({
+      where: {
+        id: hospitalId,
+      },
+      select: {
+        doctors: {
+          where: {
+            hospitalId: hospitalId,
+          },
+        },
+        patients: {
+          where: {
+            hospitalId: hospitalId,
+          },
+        },
+        users: {
+          where: {
+            hospitalId: hospitalId,
+            role: {
+              equals: "USER",
+            },
+          },
+        },
+      },
+    });
+    if (!particularHospitalDetails) {
+      return {
+        error: "Hospital not found",
+      };
+    }
+    return {
+      data: {
+        doctors: particularHospitalDetails.doctors.length,
+        patients: particularHospitalDetails.patients.length,
+        users: particularHospitalDetails.users.length,
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching hospital details:", error);
+    return {
+      error: "Error fetching hospital details",
+    };
+  }
+}

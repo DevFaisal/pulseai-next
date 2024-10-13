@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRecoilValueLoadable } from "recoil";
 import { AdminDoctorsSelector } from "@/store/AdminAtom";
-import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import AddDoctor from "@/components/doctor/AddDoctor";
 import Loading from "@/components/other/Loading";

@@ -15,8 +15,20 @@ import { deletePatient } from "@/server/actions/patients/delete-patient";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Stethoscope } from "lucide-react";
+import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
+import { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 
-export default function PatientTable({ patients = [], setPatients }) {
+export default function PatientTable() {
+  const [patients, setPatients] = useState([]);
+
+  const patientsSelector = useRecoilValue(AdminPatientsSelector);
+  const doctorsSelector = useRecoilValue(AdminDoctorsSelector);
+
+  useEffect(() => {
+    setPatients(patientsSelector || []);
+  }, [patientsSelector, doctorsSelector]);
+
   const handleDeletePatient = async (id) => {
     try {
       const res = await deletePatient({ patientId: id });

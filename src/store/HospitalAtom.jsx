@@ -4,6 +4,7 @@ import { hospitalIdState, userRoleState } from "@/store/AdminAtom";
 import { getSession } from "next-auth/react";
 import { fetchUsers } from "@/server/actions/users/fetch-users";
 import { fetchPatientById } from "@/server/actions/patients/fetch-patients";
+import { fetchDetailsForAdmin } from "@/server/actions/doctors/fetch-doctors";
 
 // Atom for storing the details of a single patient
 export const patientsDetailsState = atom({
@@ -38,10 +39,6 @@ export const patientDetailsId = selectorFamily({
     (patientId) =>
     async ({ get }) => {
       try {
-        // const response = await axios.get(`/api/patient/${patientId}`);
-        // if (response.status === 200) {
-        //   return response.data;
-        // }
         const res = await fetchPatientById({ patientId });
         if (res.data) {
           return res.data;
@@ -52,6 +49,19 @@ export const patientDetailsId = selectorFamily({
         return { error: error.message || "An unexpected error occurred" }; // Always return an error
       }
     },
+});
+
+export const adminDashboardDetailsSelector = selector({
+  key: "adminDashboardDetailsSelector",
+  get: async ({ get }) => {
+    const hospitalId = get(hospitalIdState);
+    try {
+      return (await fetchDetailsForAdmin({ hospitalId })).data;
+    } catch (error) {
+      console.error(`Error fetching admin details: ${error.message}`);
+      return { error: error.message || "An unexpected error occurred" };
+    }
+  },
 });
 
 // Selector for fetching all users of a hospital
