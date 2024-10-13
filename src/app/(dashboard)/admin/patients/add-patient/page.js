@@ -32,6 +32,7 @@ import {
 import { toast } from "sonner";
 import { doctorDataState } from "@/store/DoctorAtom";
 import { useRecoilValue } from "recoil";
+import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 
 const steps = [
   "General Details",
@@ -49,6 +50,7 @@ const generalDetailsSchema = z.object({
   dob: z.string().min(1, "Date of birth is required"),
   gender: z.string().min(1, "Gender is required"),
   weight: z.string().min(1, "Weight is required"),
+  height: z.string().min(1, "Height is required"),
 });
 const healthBackgroundSchema = z.object({
   medicalConditions: z.string().min(1, "Medical condition is required"),
@@ -155,7 +157,7 @@ export default function AddPatient() {
       toast.success("Patient added successfully");
       form.reset();
       // setCurrentStep(0);
-      window.location.href = "/dashboard/admin/patients";
+      window.location.href = "/admin/patients";
     } catch (error) {
       console.error("Error submitting form:", error);
       toast.error("Error submitting form");
@@ -304,6 +306,23 @@ export default function AddPatient() {
                       <Input
                         type="number"
                         placeholder="Enter patient's weight"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="generalDetails.height"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Height (cm)</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Enter patient's height"
                         {...field}
                       />
                     </FormControl>
@@ -760,73 +779,75 @@ export default function AddPatient() {
   };
 
   return (
-    <Tabs defaultValue="add-patient" className="w-full">
-      <TabsList>
-        <TabsTrigger value="add-patient">Add Patient</TabsTrigger>
-        <TabsTrigger value="add-patient-bulk">Bulk Add</TabsTrigger>
-      </TabsList>
-      <TabsContent value="add-patient">
-        <div className="p-4 bg-background rounded-md">
-          <h1 className="text-3xl font-bold mb-6">Add Patient</h1>
-          <div className="mb-8">
-            <div className="flex justify-between">
-              {steps.map((step, index) => (
-                <div key={index} className="flex flex-col items-center">
-                  <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                      index <= currentStep
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {index < currentStep ? (
-                      <Check className="w-5 h-5" />
-                    ) : (
-                      index + 1
-                    )}
+    <ChildrenWrapper>
+      <Tabs defaultValue="add-patient" className="w-full">
+        <TabsList>
+          <TabsTrigger value="add-patient">Add Patient</TabsTrigger>
+          <TabsTrigger value="add-patient-bulk">Bulk Add</TabsTrigger>
+        </TabsList>
+        <TabsContent value="add-patient">
+          <div className="p-4 bg-background rounded-md">
+            <h1 className="text-3xl font-bold mb-6">Add Patient</h1>
+            <div className="mb-8">
+              <div className="flex justify-between">
+                {steps.map((step, index) => (
+                  <div key={index} className="flex flex-col items-center">
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                        index <= currentStep
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {index < currentStep ? (
+                        <Check className="w-5 h-5" />
+                      ) : (
+                        index + 1
+                      )}
+                    </div>
+                    <span className="text-sm mt-2">{step}</span>
                   </div>
-                  <span className="text-sm mt-2">{step}</span>
-                </div>
-              ))}
-            </div>
-            <div className="h-2 bg-muted mt-4 rounded-full">
-              <div
-                className="h-full bg-primary rounded-full transition-all duration-300 ease-in-out"
-                style={{
-                  width: `${((currentStep + 1) / steps.length) * 100}%`,
-                }}
-              ></div>
-            </div>
-          </div>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
-              {renderStep()}
-              <div className="mt-8 flex justify-between">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-                  disabled={currentStep === 0}
-                >
-                  Previous
-                </Button>
-                <Button type="button" onClick={handleNext}>
-                  {currentStep === steps.length - 1 ? "Submit" : "Next"}
-                  {currentStep !== steps.length - 1 && (
-                    <ChevronRight className="ml-2 h-4 w-4" />
-                  )}
-                </Button>
+                ))}
               </div>
-            </form>
-          </Form>
-        </div>
-      </TabsContent>
-      <TabsContent value="add-patient-bulk">
-        <div>
-          <h1>Bulk Add Patients</h1>
-          {/* Implement bulk add functionality here */}
-        </div>
-      </TabsContent>
-    </Tabs>
+              <div className="h-2 bg-muted mt-4 rounded-full">
+                <div
+                  className="h-full bg-primary rounded-full transition-all duration-300 ease-in-out"
+                  style={{
+                    width: `${((currentStep + 1) / steps.length) * 100}%`,
+                  }}
+                ></div>
+              </div>
+            </div>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)}>
+                {renderStep()}
+                <div className="mt-8 flex justify-between">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+                    disabled={currentStep === 0}
+                  >
+                    Previous
+                  </Button>
+                  <Button type="button" onClick={handleNext}>
+                    {currentStep === steps.length - 1 ? "Submit" : "Next"}
+                    {currentStep !== steps.length - 1 && (
+                      <ChevronRight className="ml-2 h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </div>
+        </TabsContent>
+        <TabsContent value="add-patient-bulk">
+          <div>
+            <h1>Bulk Add Patients</h1>
+            {/* Implement bulk add functionality here */}
+          </div>
+        </TabsContent>
+      </Tabs>
+    </ChildrenWrapper>
   );
 }

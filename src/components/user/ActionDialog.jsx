@@ -30,7 +30,9 @@ export default function ActionDialog({
       <DialogContent className="sm:max-w-[700px]">
         <DialogHeader>
           <DialogTitle>
-            Diagnose {selectedPatient?.name || "Patient"}
+            Diagnose{" "}
+            {selectedPatient?.firstName + " " + selectedPatient?.lastName ||
+              "Patient"}
           </DialogTitle>
           <DialogDescription>
             Diagnose the patient, manage their medication and thresholds, then

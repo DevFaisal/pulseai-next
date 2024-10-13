@@ -83,10 +83,21 @@ export function PatientInformation({ patient }) {
         <ScrollArea className="h-[300px] pr-4">
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4">
-              <InfoItem label="Name" value={patient.name} />
-              <InfoItem label="Age" value={patient.age.toString()} />
+              <InfoItem
+                label="Name"
+                value={patient.firstName + " " + patient.lastName}
+              />
+              <InfoItem
+                label="Age"
+                value={
+                  patient.dateOfBirth
+                    ? new Date().getFullYear() -
+                      new Date(patient.dateOfBirth).getFullYear()
+                    : "N/A"
+                }
+              />
               <InfoItem label="Gender" value={patient.gender} />
-              <InfoItem label="Blood Type" value={patient.bloodType} />
+              <InfoItem label="BMI" value={patient.bmi} />
             </div>
             <InfoItem
               label="Clinical Notes"

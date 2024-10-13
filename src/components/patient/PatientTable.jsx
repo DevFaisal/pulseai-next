@@ -50,7 +50,7 @@ export default function PatientTable({ patients = [], setPatients }) {
           >
             <TableCell className="flex items-center space-x-3">
               <Avatar>
-                <AvatarImage src={patient.avatarUrl} alt={patient.name} />
+                <AvatarImage src={patient.avatarUrl} alt={patient.firstName} />
                 <AvatarFallback>
                   {patient.firstName.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
@@ -77,10 +77,6 @@ export default function PatientTable({ patients = [], setPatients }) {
               {patient.Doctor ? (
                 <div className="flex items-center space-x-2">
                   <Avatar className="h-6 w-6">
-                    {/* <AvatarImage
-                      src={patient.assignedDoctor.avatarUrl}
-                      alt={patient.Doctor.name}
-                    /> */}
                     <AvatarFallback>
                       <Stethoscope className="h-4 w-4" />
                     </AvatarFallback>
@@ -96,8 +92,8 @@ export default function PatientTable({ patients = [], setPatients }) {
             <TableCell className="text-right space-x-2">
               <EditPatient patient={patient} setPatients={setPatients} />
               <DeleteDialog
-                title={`Remove ${patient.name}`}
-                description={`Are you sure you want to remove ${patient.name} from the hospital? This action cannot be undone.`}
+                title={`Remove ${patient.firstName} ${patient.lastName}`}
+                description={`Are you sure you want to remove ${patient.firstName} ${patient.lastName} from the hospital? This action cannot be undone.`}
                 onDelete={() => handleDeletePatient(patient.id)}
               />
             </TableCell>

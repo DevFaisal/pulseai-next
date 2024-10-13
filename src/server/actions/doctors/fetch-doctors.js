@@ -52,6 +52,8 @@ export async function fetchDoctorsPatients({ userId }) {
         error: "User not found",
       };
     }
+
+    console.log("user", user);
     const doctor = await prisma.doctor.findUnique({
       where: {
         userId: userId,
@@ -62,42 +64,7 @@ export async function fetchDoctorsPatients({ userId }) {
         name: true,
         email: true,
         specialty: true,
-        patients: {
-          select: {
-            id: true,
-            name: true,
-            age: true,
-            gender: true,
-            bloodType: true,
-            doctorNote: true,
-            icdCode: true,
-            vitalSigns: {
-              select: {
-                id: true,
-                heartRate: true,
-                bloodPressure: true,
-                temperature: true,
-              },
-            },
-            medications: {
-              select: {
-                id: true,
-                name: true,
-                dosage: true,
-                frequency: true,
-              },
-            },
-            Threshold: {
-              select: {
-                id: true,
-                name: true,
-                type: true,
-                min: true,
-                max: true,
-              },
-            },
-          },
-        },
+        patients: true,
       },
     });
 

@@ -15,19 +15,6 @@ export async function fetchPatients({ hospitalId }) {
       where: {
         hospitalId: hospitalId,
       },
-      // select: {
-      //   id: true,
-      //   name: true,
-      //   age: true,
-      //   hospitalId: true,
-      //   gender: true,
-      //   assignedDoctor: {
-      //     select: {
-      //       name: true,
-      //     },
-      //   },
-      //   assignedDoctorId: true,
-      // },
       select: {
         id: true,
         firstName: true,
@@ -43,8 +30,6 @@ export async function fetchPatients({ hospitalId }) {
         },
       },
     });
-
-    console.log("Patients", patients);
 
     if (!patients.length) {
       return {
@@ -65,6 +50,7 @@ export async function fetchPatients({ hospitalId }) {
 
 //fetch Patients by id
 export async function fetchPatientById({ patientId }) {
+  console.log("patientId", patientId);
   if (!ObjectId.isValid(patientId)) {
     return {
       error: "Invalid patientId",

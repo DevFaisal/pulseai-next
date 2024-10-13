@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -27,22 +27,29 @@ import ErrorPage from "@/components/other/ErrorPage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VitalsDrawerExample } from "@/components/other/Drawer";
 import { useRouter } from "next/navigation";
+import { fetchPatientById } from "@/server/actions/patients/fetch-patients";
 
 export default function PatientDetailsPage({ params }) {
   const patientId = params.id;
-  const patientDetailsLoadable = useRecoilValueLoadable(
-    patientDetailsId(patientId)
-  );
+  const [patient, setPatient] = useState({});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetchPatientById({ patientId });
+      if (res.error) {
+        console.error(`Error fetching patient data: ${res.error}`);
+        return;
+      }
+      setPatient(res.data);
+    };
+    fetchData();
+  }, [patientId]);
+
   const router = useRouter();
-  if (patientDetailsLoadable.state === "loading") {
+
+  if (!patient.id) {
     return <Loading />;
   }
-
-  if (patientDetailsLoadable.state === "hasError") {
-    return <ErrorPage />;
-  }
-
-  const patient = patientDetailsLoadable.contents;
 
   return (
     <div className="px-4 py-6 sm:px-0">
@@ -57,8 +64,8 @@ export default function PatientDetailsPage({ params }) {
                   alt={`${patient.firstName} ${patient.lastName}`}
                 />
                 <AvatarFallback>
-                  {patient.firstName[0]}
-                  {patient.lastName[0]}
+                  {patient.firstName && patient.firstName[0]}
+                  {patient.lastName && patient.lastName[0]}
                 </AvatarFallback>
               </Avatar>
               <div>
@@ -89,8 +96,8 @@ export default function PatientDetailsPage({ params }) {
                 <p>{patient.diet}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-500">Alcohol</p>
-                <p>{patient.alcohol}</p>
+                <p className="text-sm font-medium text-gray-500">BMI</p>
+                <p>{patient.bmi}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Smoking</p>

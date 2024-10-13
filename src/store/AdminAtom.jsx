@@ -21,7 +21,8 @@ export const AdminPatientsSelector = selector({
   get: async ({ get }) => {
     const { user } = await getSession();
     const hospitalId = user.hospitalId;
-    return (await fetchPatients({ hospitalId })).data;
+    const res = (await fetchPatients({ hospitalId })).data;
+    return res;
   },
 });
 

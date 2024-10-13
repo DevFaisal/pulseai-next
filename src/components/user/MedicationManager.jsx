@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -22,28 +22,53 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Trash2 } from "lucide-react";
 import {
   deleteMedication,
+  fetchMedications,
   UpdateMedication,
 } from "@/server/actions/patients/patient-medications";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function MedicationManager({ patient }) {
-  const [medication, setMedication] = useState([]);
+  const [medications, setMedications] = useState([]);
   const [newMedication, setNewMedication] = useState({
     name: "",
-    dosage: "",
+    type: "PILL",
     frequency: "",
+    duration: "",
+    startDate: "",
+    endDate: "",
+    notes: "",
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    schedule: [],
   });
 
   useEffect(() => {
-    if (patient?.medications) {
-      setMedication(patient.medications);
-    }
-  }, []);
+    const fetchMed = async () => {
+      const res = await fetchMedications({ patientId: patient?.id });
+      if (res.error) {
+        toast.error(res.error);
+        return;
+      }
+      setMedications(res.data);
+    };
+    fetchMed();
+  }, [patient]);
 
   const handleAddMedication = async () => {
     const res = await UpdateMedication({
       patientId: patient.id,
-      medication: newMedication,
+      medication: {
+        ...newMedication,
+        schedule: calculateSchedule(newMedication),
+        startDate: new Date(newMedication.startDate).toISOString(),
+        endDate: new Date(newMedication.endDate).toISOString(),
+      },
     });
 
     if (res.error) {
@@ -52,8 +77,18 @@ export function MedicationManager({ patient }) {
     }
     toast.success("Medication added successfully");
     if (res.data) {
-      setMedication(res.data.medications);
-      setNewMedication({ name: "", dosage: "", frequency: "" });
+      setMedications(res.data.medications);
+      setNewMedication({
+        name: "",
+        type: "TABLET",
+        frequency: "",
+        duration: "",
+        startDate: "",
+        endDate: "",
+        notes: "",
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        schedule: [],
+      });
     }
   };
 
@@ -64,7 +99,7 @@ export function MedicationManager({ patient }) {
       return;
     }
     toast.success("Medication removed successfully");
-    setMedication((prev) => prev.filter((med) => med.id !== id));
+    setMedications((prev) => prev.filter((med) => med.id !== id));
   };
 
   return (
@@ -74,22 +109,32 @@ export function MedicationManager({ patient }) {
         <CardDescription>Manage patient medications</CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[200px] mb-4 border rounded-md">
+        <ScrollArea className="h-[300px] mb-4 border rounded-md">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Dosage</TableHead>
+                <TableHead>Type</TableHead>
                 <TableHead>Frequency</TableHead>
+                <TableHead>Duration</TableHead>
+                <TableHead>Start Date</TableHead>
+                <TableHead>End Date</TableHead>
                 <TableHead className="w-[100px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {medication.map((medication, index) => (
-                <TableRow key={index}>
+              {medications.map((medication) => (
+                <TableRow key={medication.id}>
                   <TableCell>{medication.name}</TableCell>
-                  <TableCell>{medication.dosage}</TableCell>
+                  <TableCell>{medication.type}</TableCell>
                   <TableCell>{medication.frequency}</TableCell>
+                  <TableCell>{medication.duration}</TableCell>
+                  <TableCell>
+                    {new Date(medication.startDate).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(medication.endDate).toLocaleDateString()}
+                  </TableCell>
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -105,40 +150,94 @@ export function MedicationManager({ patient }) {
             </TableBody>
           </Table>
         </ScrollArea>
-        <div className="flex space-x-2">
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <Input
             placeholder="Medication name"
             value={newMedication.name}
             onChange={(e) =>
-              setNewMedication({
-                ...newMedication,
-                name: e.target.value,
-              })
+              setNewMedication({ ...newMedication, name: e.target.value })
             }
           />
-          <Input
-            placeholder="Dosage"
-            value={newMedication.dosage}
-            onChange={(e) =>
-              setNewMedication({
-                ...newMedication,
-                dosage: e.target.value,
-              })
+          <Select
+            value={newMedication.type}
+            onValueChange={(value) =>
+              setNewMedication({ ...newMedication, type: value })
             }
-          />
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="TABLET">Tablet</SelectItem>
+              <SelectItem value="CAPSULE">Capsule</SelectItem>
+              <SelectItem value="INHALER">Inhaler</SelectItem>
+              <SelectItem value="LIQUID">Liquid</SelectItem>
+              <SelectItem value="INJECTION">Injection</SelectItem>
+              <SelectItem value="DROPS">Drops</SelectItem>
+            </SelectContent>
+          </Select>
           <Input
             placeholder="Frequency"
             value={newMedication.frequency}
             onChange={(e) =>
-              setNewMedication({
-                ...newMedication,
-                frequency: e.target.value,
-              })
+              setNewMedication({ ...newMedication, frequency: e.target.value })
             }
           />
-          <Button onClick={handleAddMedication}>Add</Button>
+          <Input
+            placeholder="Duration"
+            value={newMedication.duration}
+            onChange={(e) =>
+              setNewMedication({ ...newMedication, duration: e.target.value })
+            }
+          />
+          <Input
+            type="date"
+            placeholder="Start Date"
+            value={newMedication.startDate}
+            onChange={(e) =>
+              setNewMedication({ ...newMedication, startDate: e.target.value })
+            }
+          />
+          <Input
+            type="date"
+            placeholder="End Date"
+            value={newMedication.endDate}
+            onChange={(e) =>
+              setNewMedication({ ...newMedication, endDate: e.target.value })
+            }
+          />
+          <Input
+            placeholder="Notes"
+            value={newMedication.notes}
+            onChange={(e) =>
+              setNewMedication({ ...newMedication, notes: e.target.value })
+            }
+          />
         </div>
+        <Button onClick={handleAddMedication} className="w-full">
+          Add Medication
+        </Button>
       </CardContent>
     </Card>
   );
+}
+
+function calculateSchedule(newMedication) {
+  const schedule = [];
+  const { frequency, duration, startDate, timezone } = newMedication;
+  const start = new Date(startDate);
+  const end = new Date(startDate);
+  end.setDate(end.getDate() + parseInt(duration));
+  const diff = end - start;
+  const days = diff / (1000 * 60 * 60 * 24); 
+  for (let i = 0; i < days; i++) {
+    const date = new Date(start);
+    date.setDate(date.getDate() + i);
+    schedule.push({
+      date: date.toISOString(),
+      timezone,
+      frequency,
+    });
+  }
+  return schedule;
 }

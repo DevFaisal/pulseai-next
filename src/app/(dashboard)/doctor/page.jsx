@@ -41,7 +41,6 @@ export default function DoctorDashboard() {
   const doctorId = session?.user?.id;
   const doctorDetails = useRecoilValue(doctorDetailsSelector(doctorId));
 
-
   const router = useRouter();
 
   const [doctor] = useState({

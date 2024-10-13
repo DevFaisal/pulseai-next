@@ -67,6 +67,9 @@ model Patient {
   dateOfBirth DateTime
   gender      String
   weight      Float
+  height      Float
+  token       String
+  bmi         Float
 
   // Health Background
   medicalConditions String?
@@ -132,15 +135,39 @@ model VitalSign {
 }
 
 model Medication {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  patientId String  @db.ObjectId
+  id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  patientId String         @db.ObjectId
   name      String
-  dosage    String
+  type      MedicationType
   frequency String
-  // startDate DateTime
-  // endDate   DateTime
-  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  duration  String
+  startDate DateTime
+  endDate   DateTime
+  notes     String?
+  timezone  String
+  schedule  Json[]
+  patient   Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
+
+// {
+//     "name": "Citrizen - Anti Alergix",
+//     "type": "Tablet",
+//     "frequency": "Once a day",
+//     "Duration": "3 days",
+//     "startDate": "2024-10-01T08:00:00Z",
+//     "endDate": "2024-10-03T08:00:00Z",
+//     "notes": "Take with water after food. Drink plenty of fluids.",
+//     "timezone": "Dubai",
+//     "schedule": [
+//         {
+//             "period": "Night",
+//             "beforeAfterMeal": "After meal",
+//             "specificTime": "09:00 PM",
+//             "alert": true,
+//             "status": ""
+//         }
+//     ]
+// }
 
 model Threshold {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -168,4 +195,13 @@ enum VitalType {
   BLOOD_GLUCOSE
   RESPIRATORY_RATE
   OXYGEN_SATURATION
+}
+
+enum MedicationType {
+  LIQUID
+  CAPSULE
+  TABLET
+  INJECTION
+  INHALER
+  DROPS
 }

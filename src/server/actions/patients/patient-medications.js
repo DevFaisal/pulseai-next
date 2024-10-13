@@ -3,11 +3,32 @@
 import prisma from "@/lib/prisma";
 import { ObjectId } from "mongodb";
 
-export async function UpdateMedication({ patientId, medication }) {
+export async function fetchMedications({ patientId }) {
   if (!ObjectId.isValid(patientId)) {
     return { error: "Invalid patient ID" };
   }
 
+  try {
+    const patientMedications = await prisma.medication.findMany({
+      where: {
+        patientId: patientId,
+      },
+    });
+    if (!patientMedications) {
+      return { error: "Patient Medications not found" };
+    }
+    return { data: patientMedications };
+  } catch (error) {
+    console.error(error);
+    return { error: "An error occurred" };
+  }
+}
+
+export async function UpdateMedication({ patientId, medication }) {
+  if (!ObjectId.isValid(patientId)) {
+    return { error: "Invalid patient ID" };
+  }
+  console.log(patientId, medication);
   try {
     const patient = await prisma.patient.findUnique({
       where: {
@@ -18,24 +39,33 @@ export async function UpdateMedication({ patientId, medication }) {
       return { error: "Patient not found" };
     }
 
-    const updateMedication = await prisma.patient.update({
-      where: {
-        id: patientId,
-      },
+    const med = await prisma.medication.create({
       data: {
-        medications: {
-          create: medication,
-        },
-      },
-      select: {
-        medications: true,
+        ...medication,
+        patientId: patientId,
       },
     });
-    if (!updateMedication) {
+
+    // const updateMedication = await prisma.patient.update({
+    //   where: {
+    //     id: patientId,
+    //   },
+    //   data: {
+    //     Medication: {
+    //       update: {
+    //         ...medication,
+    //       },
+    //     },
+    //   },
+    //   select: {
+    //     medications: true,
+    //   },
+    // });
+    if (!med) {
       return { error: "Failed to update patient" };
     }
 
-    return { data: updateMedication };
+    return { data: med };
   } catch (error) {
     console.error(error);
     return { error: "An error occurred" };

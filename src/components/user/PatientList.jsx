@@ -34,16 +34,23 @@ export default function PatientList({ patients = [], setSelectedPatient }) {
                 <Avatar>
                   <AvatarImage src={patient.avatarUrl} alt={patient.name} />
                   <AvatarFallback>
-                    {patient.name.slice(0, 2).toUpperCase()}
+                    {patient.firstName.slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-semibold">{patient.name}</p>
+                  <p className="font-semibold">
+                    {patient.firstName + " " + patient.lastName}
+                  </p>
                 </div>
               </div>
             </TableCell>
-            <TableCell>{patient.age}</TableCell>
-            <TableCell>{patient.gender}</TableCell>
+            <TableCell>
+              {patient.dateOfBirth
+                ? new Date().getFullYear() -
+                  new Date(patient.dateOfBirth).getFullYear()
+                : "N/A"}
+            </TableCell>
+            <TableCell>{patient.gender.toUpperCase()}</TableCell>
             <TableCell>
               <Badge
                 variant={
