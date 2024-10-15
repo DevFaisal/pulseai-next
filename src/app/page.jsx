@@ -13,27 +13,26 @@ import { useRouter } from "next/navigation";
 
 export default function PulseAILandingPage() {
   const router = useRouter();
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-violet-50 to-white text-gray-900">
+    <div className="min-h-screen bg-gradient-to-b from-violet-50 to-background text-foreground dark:from-violet-950 dark:to-background">
       {/* Hero Section */}
       <section className="relative overflow-hidden py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-4 text-violet-900">
+            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-4 text-violet-900 dark:text-violet-100">
               AI-Powered Health Management
             </h1>
-            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
               Accurate symptom analysis & real-time insights for proactive care.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button className="bg-violet-600 hover:bg-violet-700 text-white">
+              <Button className="bg-violet-600 hover:bg-violet-700 text-white dark:bg-violet-500 dark:hover:bg-violet-600">
                 Get Started
               </Button>
               <Button
                 onClick={() => router.push("/login")}
                 variant="outline"
-                className="border-violet-600 text-violet-600 hover:bg-violet-50"
+                className="border-violet-600 text-violet-600 hover:bg-violet-50 dark:border-violet-400 dark:text-violet-400 dark:hover:bg-violet-950"
               >
                 Login
               </Button>
@@ -56,15 +55,15 @@ export default function PulseAILandingPage() {
               x2="100%"
               y2="100%"
             >
-              <stop offset="0%" stopColor="#8B5CF6" />
-              <stop offset="100%" stopColor="#6D28D9" />
+              <stop offset="0%" stopColor="var(--violet-600)" />
+              <stop offset="100%" stopColor="var(--violet-800)" />
             </linearGradient>
           </defs>
         </div>
       </section>
 
       {/* Role-Based Information Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {[
@@ -86,10 +85,10 @@ export default function PulseAILandingPage() {
             ].map((role) => (
               <Card
                 key={role.title}
-                className="border-violet-200 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-violet-400"
+                className="border-violet-200 dark:border-violet-800 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:border-violet-400 dark:hover:border-violet-600"
               >
                 <CardHeader>
-                  <div className="w-12 h-12 mx-auto mb-4 text-violet-600">
+                  <div className="w-12 h-12 mx-auto mb-4 text-violet-600 dark:text-violet-400">
                     <role.icon className="w-full h-full" />
                   </div>
                   <CardTitle className="text-center text-xl font-semibold">
@@ -103,7 +102,7 @@ export default function PulseAILandingPage() {
                   <div className="mt-4 text-center">
                     <Button
                       variant="link"
-                      className="text-violet-600 hover:text-violet-700"
+                      className="text-violet-600 hover:text-violet-700 dark:text-violet-400 dark:hover:text-violet-300"
                     >
                       Learn More <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
@@ -116,11 +115,11 @@ export default function PulseAILandingPage() {
       </section>
 
       {/* Feature Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-muted">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 items-center">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl mb-6">
+              <h2 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl mb-6">
                 Powerful Features for Modern Healthcare
               </h2>
               <ul className="space-y-4">
@@ -131,7 +130,7 @@ export default function PulseAILandingPage() {
                 ].map((feature, index) => (
                   <li key={index} className="flex items-center">
                     <svg
-                      className="h-6 w-6 text-violet-600 mr-2"
+                      className="h-6 w-6 text-violet-600 dark:text-violet-400 mr-2"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -160,9 +159,9 @@ export default function PulseAILandingPage() {
       </section>
 
       {/* Interactive Demo Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl mb-12">
+          <h2 className="text-3xl font-bold tracking-tight text-center text-foreground sm:text-4xl mb-12">
             Experience Pulse AI in Action
           </h2>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -185,12 +184,12 @@ export default function PulseAILandingPage() {
             ].map((feature, index) => (
               <Card
                 key={index}
-                className="border-violet-200 transition-all duration-300 hover:shadow-lg"
+                className="border-violet-200 dark:border-violet-800 transition-all duration-300 hover:shadow-lg"
               >
                 <img
                   src={feature.image}
                   alt={feature.title}
-                  className="w-full h-40 object-cover rounded-t-lg"
+                  className="w-full h-40 object-cover rounded-t-lg dark:opacity-80"
                 />
                 <CardHeader>
                   <CardTitle className="text-center text-lg">
@@ -204,9 +203,9 @@ export default function PulseAILandingPage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-muted">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-center text-gray-900 sm:text-4xl mb-12">
+          <h2 className="text-3xl font-bold tracking-tight text-center text-foreground sm:text-4xl mb-12">
             What Our Users Say
           </h2>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -230,14 +229,16 @@ export default function PulseAILandingPage() {
                 role: "Patient",
               },
             ].map((testimonial, index) => (
-              <Card key={index} className="bg-white">
+              <Card key={index} className="bg-card">
                 <CardContent className="pt-6">
-                  <blockquote className="text-center text-gray-700">
+                  <blockquote className="text-center text-card-foreground">
                     "{testimonial.quote}"
                   </blockquote>
                   <div className="mt-6 text-center">
                     <p className="font-semibold">{testimonial.name}</p>
-                    <p className="text-sm text-gray-500">{testimonial.role}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {testimonial.role}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -247,26 +248,26 @@ export default function PulseAILandingPage() {
       </section>
 
       {/* Call-to-Action Banner */}
-      <section className="bg-violet-600 py-12">
+      <section className="bg-violet-600 dark:bg-violet-800 py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl mb-6">
             Transform Healthcare with Pulse AI
           </h2>
-          <Button className="bg-white text-violet-600 hover:bg-gray-100">
+          <Button className="bg-white text-violet-600 hover:bg-gray-100 dark:bg-violet-200 dark:text-violet-900 dark:hover:bg-violet-100">
             Get Started Now
           </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-violet-900 text-white py-12">
+      <footer className="bg-violet-900 dark:bg-violet-950 text-white py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
               <img
                 src="https://pulsehealthcare.ai/pulse-ai.svg"
                 alt="Pulse AI Logo"
-                className="h-8"
+                className="h-8 dark:invert"
               />
             </div>
             <nav className="flex gap-6">
