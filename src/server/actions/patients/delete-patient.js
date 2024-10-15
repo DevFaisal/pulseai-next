@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { ObjectId } from "mongodb";
+import { revalidatePath } from "next/cache";
 
 export async function deletePatient({ patientId }) {
   try {
@@ -19,6 +20,8 @@ export async function deletePatient({ patientId }) {
         error: "Patient not found",
       };
     }
+
+    revalidatePath("/admin/patients");
 
     return {
       data: deletedPatient,

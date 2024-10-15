@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -16,20 +15,14 @@ import DeleteDialog from "@/components/other/DeleteDialog";
 import { deleteDoctor } from "@/server/actions/doctors/delete-doctor";
 import { Phone } from "lucide-react";
 
-export default function DoctorTable({ doctors = [], setDoctors }) {
+export default function DoctorTable({ doctors = [] }) {
   const handleDeleteDoctor = async (userId) => {
     try {
       const result = await deleteDoctor({ userId });
-
       if (result.error) {
         toast.error(result.error);
         return;
       }
-
-      setDoctors((prevDoctors) =>
-        prevDoctors.filter((doctor) => doctor.userId !== userId)
-      );
-
       toast.success("Doctor deleted successfully");
     } catch (error) {
       console.error("Error deleting doctor:", error);

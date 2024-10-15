@@ -33,28 +33,6 @@ model Doctor {
   @@unique([userId, hospitalId, email])
 }
 
-// model Patient {
-//   id               String       @id @default(auto()) @map("_id") @db.ObjectId
-//   name             String
-//   email            String
-//   age              Int
-//   gender           String
-//   weight           Float
-//   height           Float
-//   bloodType        String
-//   BMI              Float
-//   token            String
-//   icdCode          String?
-//   doctorNote       String?
-//   hospitalId       String       @db.ObjectId
-//   assignedDoctorId String?      @db.ObjectId
-//   hospital         Hospital     @relation(fields: [hospitalId], references: [id], onDelete: Cascade)
-//   assignedDoctor   Doctor?      @relation(fields: [assignedDoctorId], references: [id], onDelete: Cascade)
-//   vitalSigns       VitalSign[]
-//   medications      Medication[]
-//   Threshold        Threshold[]
-// }
-
 model Patient {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   createdAt DateTime @default(now())
@@ -132,10 +110,13 @@ model VitalSign {
   respiratoryRate  Int?     @default(0)
   oxygenSaturation Int?     @default(0)
   patient          Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId, timestamp])
 }
 
 model Medication {
   id        String         @id @default(auto()) @map("_id") @db.ObjectId
+  patient   Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
   patientId String         @db.ObjectId
   name      String
   type      MedicationType
@@ -146,38 +127,18 @@ model Medication {
   notes     String?
   timezone  String
   schedule  Json[]
-  patient   Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
-}
 
-// {
-//     "name": "Citrizen - Anti Alergix",
-//     "type": "Tablet",
-//     "frequency": "Once a day",
-//     "Duration": "3 days",
-//     "startDate": "2024-10-01T08:00:00Z",
-//     "endDate": "2024-10-03T08:00:00Z",
-//     "notes": "Take with water after food. Drink plenty of fluids.",
-//     "timezone": "Dubai",
-//     "schedule": [
-//         {
-//             "period": "Night",
-//             "beforeAfterMeal": "After meal",
-//             "specificTime": "09:00 PM",
-//             "alert": true,
-//             "status": ""
-//         }
-//     ]
-// }
+  @@index([patientId, startDate, endDate])
+}
 
 model Threshold {
   id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  // doctorId  String    @db.ObjectId
   name      String
   type      VitalType
   min       Float
   max       Float
-  patientId String    @db.ObjectId
   patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patientId String    @db.ObjectId
 
   @@unique([patientId, type])
 }

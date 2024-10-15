@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -33,6 +33,7 @@ import { toast } from "sonner";
 import { doctorDataState } from "@/store/DoctorAtom";
 import { useRecoilValue } from "recoil";
 import ChildrenWrapper from "@/components/other/ChildrenWrapper";
+import { fetchDoctors } from "@/server/actions/doctors/fetch-doctors";
 
 const steps = [
   "General Details",
@@ -98,7 +99,17 @@ export default function AddPatient() {
   const session = useSession();
   const { data: user } = session;
   const id = user?.user?.hospitalId;
-  const doctors = useRecoilValue(doctorDataState);
+  const [doctors, setDoctors] = useState([]);
+
+  useEffect(() => {
+    const fetchDoctorsData = async () => {
+      const res = await fetchDoctors({ hospitalId: id });
+      setDoctors(res.data);
+    };
+    fetchDoctorsData();
+  }, []);
+
+  console.log(doctors);
 
   const form = useForm({
     resolver: zodResolver(formSchema),

@@ -1,5 +1,6 @@
+"use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -9,7 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectTrigger,
@@ -28,6 +28,8 @@ const ReusableFormWithSelect = ({ schema, inputs, onSubmit }) => {
     resolver: zodResolver(schema),
     defaultValues,
   });
+
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

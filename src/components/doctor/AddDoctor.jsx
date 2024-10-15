@@ -1,6 +1,4 @@
 "use client";
-
-import React, { useState } from "react";
 import {
   Dialog,
   DialogTrigger,
@@ -17,25 +15,24 @@ import { hospitalIdState } from "@/store/AdminAtom";
 import { doctorSchema } from "@/lib/inputValidation";
 import { toast } from "sonner";
 import { createDoctor } from "@/server/actions/doctors/create-doctor";
+import { useState } from "react";
 
-export default function AddDoctor({ setDoctors }) {
+export default function AddDoctor() {
   const hospitalId = useRecoilValue(hospitalIdState);
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = async (formData) => {
     try {
       const newDoctor = await createDoctor({ formData, hospitalId });
-
       if (newDoctor.error) {
         toast.error(newDoctor.error);
         return;
       }
-
-      setDoctors((prev) => [...prev, newDoctor.data]);
-      setDialogOpen(false);
     } catch (error) {
-      console.error("Error adding patient:", error);
-      toast.error("Error adding patient");
+      console.error("Error adding doctor:", error);
+      toast.error("Error adding doctor. Please try again later.");
+    } finally {
+      setDialogOpen(false);
     }
   };
 
@@ -53,6 +50,7 @@ export default function AddDoctor({ setDoctors }) {
             Fill out the form to add a new Doctor.
           </DialogDescription>
         </DialogHeader>
+
         <ReusableFormWithSelect
           schema={doctorSchema}
           inputs={inputs}

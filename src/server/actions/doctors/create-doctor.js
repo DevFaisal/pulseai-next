@@ -45,7 +45,7 @@ export async function createDoctor({ formData, hospitalId }) {
       },
     });
 
-    revalidatePath("/admin/doctors");
+    revalidatePath("/");
 
     return {
       data: doctor,

@@ -15,27 +15,15 @@ import { deletePatient } from "@/server/actions/patients/delete-patient";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Stethoscope } from "lucide-react";
-import { AdminDoctorsSelector, AdminPatientsSelector } from "@/store/AdminAtom";
-import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
 
-export default function PatientTable() {
-  const [patients, setPatients] = useState([]);
-
-  const patientsSelector = useRecoilValue(AdminPatientsSelector);
-  const doctorsSelector = useRecoilValue(AdminDoctorsSelector);
-
-  useEffect(() => {
-    setPatients(patientsSelector || []);
-  }, [patientsSelector, doctorsSelector]);
-
+export default function PatientTable({ patients }) {
   const handleDeletePatient = async (id) => {
     try {
       const res = await deletePatient({ patientId: id });
-      if (res.data) {
-        setPatients((prev) => prev.filter((patient) => patient.id !== id));
-        toast.success("Patient deleted successfully");
-      }
+      // if (res.data) {
+      //   setPatients((prev) => prev.filter((patient) => patient.id !== id));
+      //   toast.success("Patient deleted successfully");
+      // }
     } catch (error) {
       toast.error("Error deleting patient");
     }
@@ -102,7 +90,7 @@ export default function PatientTable() {
               )}
             </TableCell>
             <TableCell className="text-right space-x-2">
-              <EditPatient patient={patient} setPatients={setPatients} />
+              {/* <EditPatient patient={patient} setPatients={setPatients} /> */}
               <DeleteDialog
                 title={`Remove ${patient.firstName} ${patient.lastName}`}
                 description={`Are you sure you want to remove ${patient.firstName} ${patient.lastName} from the hospital? This action cannot be undone.`}
