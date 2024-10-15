@@ -19,8 +19,11 @@ export default function PulseAILandingPage() {
       <section className="relative overflow-hidden py-20 sm:py-32">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-6xl mb-4 text-violet-900 dark:text-violet-100">
-              AI-Powered Health Management
+            <h1 className="text-3xl text-nowrap font-semibold tracking-tight sm:text-6xl py-4 text-violet-800 dark:text-violet-200">
+              Pulse AI | Health Management
+            </h1>
+            <h1 className="text-2xl font-bold tracking-tight sm:text-3xl mb-4 text-muted-foreground">
+              {"AI-Powered Health Management"}
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
               Accurate symptom analysis & real-time insights for proactive care.
