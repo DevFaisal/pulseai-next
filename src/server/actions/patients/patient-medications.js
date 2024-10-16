@@ -28,7 +28,6 @@ export async function UpdateMedication({ patientId, medication }) {
   if (!ObjectId.isValid(patientId)) {
     return { error: "Invalid patient ID" };
   }
-  console.log(patientId, medication);
   try {
     const patient = await prisma.patient.findUnique({
       where: {
