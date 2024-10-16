@@ -43,7 +43,6 @@ export async function deleteDoctor({ userId }) {
     }
 
     revalidatePath("/");
-
     return {
       success: true,
     };

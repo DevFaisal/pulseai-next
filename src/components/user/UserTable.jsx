@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import DeleteDialog from "@/components/other/DeleteDialog";
@@ -13,7 +15,7 @@ import {
 import { deleteUser } from "@/server/actions/users/delete-user";
 import { toast } from "sonner";
 
-export default function UserTable({ users = [], setUsers }) {
+export default function UserTable({ users = [] }) {
   const handleDeleteUser = async (userId) => {
     const deletedUser = deleteUser({ userId });
     if (deletedUser.error) {
@@ -21,7 +23,7 @@ export default function UserTable({ users = [], setUsers }) {
       return;
     }
     toast.success("User deleted successfully");
-    setUsers(users.filter((user) => user.id !== userId));
+    // setUsers(users.filter((user) => user.id !== userId));
   };
   return (
     <Table>

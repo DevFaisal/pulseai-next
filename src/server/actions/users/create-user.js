@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import { revalidatePath } from "next/cache";
 
 export async function createUser({ formData, hospitalId }) {
   const { name, email, password, role } = formData;
@@ -61,7 +62,7 @@ export async function createUser({ formData, hospitalId }) {
         error: "Failed to create user",
       };
     }
-
+    revalidatePath("/");
     return {
       data: user,
     };

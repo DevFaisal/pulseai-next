@@ -1,57 +1,27 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRecoilValueLoadable } from "recoil";
-import { usersDetailsSelector } from "@/store/HospitalAtom";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
-import Loading from "@/components/other/Loading";
 import NotAvailable from "@/components/other/NotAvailable";
-import ErrorPage from "@/components/other/ErrorPage";
 import AddUser from "@/components/user/AddUser";
 import UserTable from "@/components/user/UserTable";
 import ChildrenWrapper from "@/components/other/ChildrenWrapper";
+import { fetchUsers } from "@/server/actions/users/fetch-users";
+import { getServerSession } from "next-auth";
+import { NEXT_AUTH } from "@/lib/auth";
 
-export default function Users() {
-  const usersLoadable = useRecoilValueLoadable(usersDetailsSelector);
-  const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    if (usersLoadable.state === "hasValue") {
-      setUsers(usersLoadable.contents || []);
-    }
-    setIsLoading(usersLoadable.state === "loading");
-  }, [usersLoadable]);
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
-  if (usersLoadable.state === "hasError") {
-    return <ErrorPage message="Failed to load users" />;
-  }
+export default async function Users() {
+  const { user } = await getServerSession(NEXT_AUTH);
+  const hospitalId = user.hospitalId;
+  const users = await fetchUsers({ hospitalId });
 
   return (
     <ChildrenWrapper
       title={"Users"}
       description={"Manage and view user details"}
-      LeftComponent={() => <AddUser setUsers={setUsers} />}
+      LeftComponent={() => <AddUser />}
     >
-      <>
-        {users.length > 0 ? (
-          <UserTable users={users} setUsers={setUsers} />
-        ) : (
-          <NotAvailable title="users" />
-        )}
-      </>
+      {users.data?.length > 0 ? (
+        <UserTable users={users.data} />
+      ) : (
+        <NotAvailable title={"Users"} />
+      )}
     </ChildrenWrapper>
   );
 }

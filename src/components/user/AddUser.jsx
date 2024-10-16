@@ -18,7 +18,7 @@ import { userSchema } from "@/lib/inputValidation";
 import { toast } from "sonner";
 import { createUser } from "@/server/actions/users/create-user";
 
-export default function AddUser({ setUsers }) {
+export default function AddUser() {
   const hospitalId = useRecoilValue(hospitalIdState);
   const [isDialogOpen, setDialogOpen] = useState(false);
 
@@ -38,7 +38,6 @@ export default function AddUser({ setUsers }) {
         toast.error(newDoctor.error);
         return;
       }
-      setUsers((prev) => [...prev, newUser.data]);
       setDialogOpen(false);
     } catch (error) {
       console.error("Error adding user:", error);

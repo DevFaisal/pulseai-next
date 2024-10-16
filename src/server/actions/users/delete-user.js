@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { ObjectId } from "mongodb";
+import { revalidatePath } from "next/cache";
 
 export async function deleteUser({ userId }) {
   if (!ObjectId.isValid(userId)) {
@@ -20,6 +21,7 @@ export async function deleteUser({ userId }) {
         error: "No user found",
       };
     }
+    revalidatePath("/");
     return {
       data: user,
     };

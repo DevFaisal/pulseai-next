@@ -9,7 +9,6 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { EditPatient } from "@/components/patient/EditPatient";
 import DeleteDialog from "@/components/other/DeleteDialog";
 import { deletePatient } from "@/server/actions/patients/delete-patient";
 import { Badge } from "@/components/ui/badge";
@@ -20,10 +19,7 @@ export default function PatientTable({ patients }) {
   const handleDeletePatient = async (id) => {
     try {
       const res = await deletePatient({ patientId: id });
-      // if (res.data) {
-      //   setPatients((prev) => prev.filter((patient) => patient.id !== id));
-      //   toast.success("Patient deleted successfully");
-      // }
+      toast.success("Patient deleted successfully");
     } catch (error) {
       toast.error("Error deleting patient");
     }
