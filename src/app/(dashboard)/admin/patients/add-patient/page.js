@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,10 +29,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { doctorDataState } from "@/store/DoctorAtom";
-import { useRecoilValue } from "recoil";
-import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 import { fetchDoctors } from "@/server/actions/doctors/fetch-doctors";
+import { patientSchema } from "@/lib/inputValidation";
+import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 
 const steps = [
   "General Details",
@@ -44,57 +42,7 @@ const steps = [
   "Family Health History",
 ];
 
-const generalDetailsSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  dob: z.string().min(1, "Date of birth is required"),
-  gender: z.string().min(1, "Gender is required"),
-  weight: z.string().min(1, "Weight is required"),
-  height: z.string().min(1, "Height is required"),
-});
-const healthBackgroundSchema = z.object({
-  medicalConditions: z.string().min(1, "Medical condition is required"),
-  previousSurgeries: z.string().optional(),
-  ongoingTreatments: z.string().optional(),
-  noKnownHistory: z.boolean().optional(),
-});
-const currentHealthStatusSchema = z.object({
-  symptoms: z.string().min(1, "Symptom is required"),
-  symptomIntensity: z.number().min(0).max(10),
-  symptomDuration: z.string().min(1, "Symptom duration is required"),
-  additionalComments: z.string().optional(),
-  doctorAssigned: z.string().min(1, "Doctor assignment is required"),
-});
-const medicationAllergiesSchema = z.object({
-  medications: z.string().optional(),
-  foodAllergies: z.boolean().optional(),
-  medicationAllergies: z.boolean().optional(),
-  environmentalAllergies: z.boolean().optional(),
-  otherAllergies: z.string().optional(),
-});
-const lifestyleFactorsSchema = z.object({
-  smoking: z.enum(["yes", "no"]),
-  alcohol: z.enum(["yes", "no"]),
-  diet: z.string().min(1, "Diet type is required"),
-  exerciseFrequency: z.number().min(0).max(7),
-  sleepHours: z.string().min(1, "Sleep hours are required"),
-});
-const familyHealthHistorySchema = z.object({
-  familyConditions: z.string().optional(),
-  noKnownFamilyHistory: z.boolean().optional(),
-});
-
-const formSchema = z.object({
-  generalDetails: generalDetailsSchema,
-  healthBackground: healthBackgroundSchema,
-  currentHealthStatus: currentHealthStatusSchema,
-  medicationAllergies: medicationAllergiesSchema,
-  lifestyleFactors: lifestyleFactorsSchema,
-  familyHealthHistory: familyHealthHistorySchema,
-});
-
-export default function AddPatient() {
+export default function Component() {
   const [currentStep, setCurrentStep] = useState(0);
   const session = useSession();
   const { data: user } = session;
@@ -107,67 +55,62 @@ export default function AddPatient() {
       setDoctors(res.data);
     };
     fetchDoctorsData();
-  }, []);
-
-  console.log(doctors);
+  }, [id]);
 
   const form = useForm({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(patientSchema),
     defaultValues: {
-      // defaultValues: {
-      //   generalDetails: {
-      //     firstName: "",
-      //     lastName: "",
-      //     email: "",
-      //     dob: "",
-      //     gender: "",
-      //     weight: "",
-      //   },
-      //   healthBackground: {
-      //     medicalConditions: "",
-      //     previousSurgeries: "",
-      //     ongoingTreatments: "",
-      //     noKnownHistory: false,
-      //   },
-      //   currentHealthStatus: {
-      //     symptoms: "",
-      //     symptomIntensity: 5,
-      //     symptomDuration: "",
-      //     additionalComments: "",
-      //     doctorAssigned: "",
-      //   },
-      //   medicationAllergies: {
-      //     medications: "",
-      //     foodAllergies: false,
-      //     medicationAllergies: false,
-      //     environmentalAllergies: false,
-      //     otherAllergies: "",
-      //   },
-      //   lifestyleFactors: {
-      //     smoking: "no",
-      //     alcohol: "no",
-      //     diet: "",
-      //     exerciseFrequency: 3,
-      //     sleepHours: "",
-      //   },
-      //   familyHealthHistory: {
-      //     familyConditions: "",
-      //     noKnownFamilyHistory: false,
-      //   },
-      // },
+      generalDetails: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        dob: "",
+        gender: "",
+        weight: "",
+        height: "",
+      },
+      healthBackground: {
+        medicalConditions: "",
+        previousSurgeries: "",
+        ongoingTreatments: "",
+        noKnownHistory: false,
+      },
+      currentHealthStatus: {
+        symptoms: "",
+        symptomIntensity: 5,
+        symptomDuration: "",
+        additionalComments: "",
+        doctorAssigned: "",
+      },
+      medicationAllergies: {
+        medications: "",
+        foodAllergies: false,
+        medicationAllergies: false,
+        environmentalAllergies: false,
+        otherAllergies: "",
+      },
+      lifestyleFactors: {
+        smoking: "no",
+        alcohol: "no",
+        diet: "",
+        exerciseFrequency: 3,
+        sleepHours: "",
+      },
+      familyHealthHistory: {
+        familyConditions: "",
+        noKnownFamilyHistory: false,
+      },
     },
   });
 
   const onSubmit = async (data) => {
     try {
-      const res = await createPatient({
+      await createPatient({
         formData: data,
         hospitalId: id,
       });
-      console.log(res);
       toast.success("Patient added successfully");
       form.reset();
-      // setCurrentStep(0);
       window.location.href = "/admin/patients";
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -176,28 +119,15 @@ export default function AddPatient() {
   };
 
   const validateStep = async () => {
-    let isValid = false;
-    switch (currentStep) {
-      case 0:
-        isValid = await form.trigger("generalDetails");
-        break;
-      case 1:
-        isValid = await form.trigger("healthBackground");
-        break;
-      case 2:
-        isValid = await form.trigger("currentHealthStatus");
-        break;
-      case 3:
-        isValid = await form.trigger("medicationAllergies");
-        break;
-      case 4:
-        isValid = await form.trigger("lifestyleFactors");
-        break;
-      case 5:
-        isValid = await form.trigger("familyHealthHistory");
-        break;
-    }
-    return isValid;
+    const stepValidationMap = [
+      "generalDetails",
+      "healthBackground",
+      "currentHealthStatus",
+      "medicationAllergies",
+      "lifestyleFactors",
+      "familyHealthHistory",
+    ];
+    return await form.trigger(stepValidationMap[currentStep]);
   };
 
   const handleNext = async () => {
@@ -213,6 +143,286 @@ export default function AddPatient() {
     }
   };
 
+  const generalDetailsFields = [
+    {
+      name: "firstName",
+      label: "First Name",
+      type: "text",
+      placeholder: "Enter patient's first name",
+    },
+    {
+      name: "lastName",
+      label: "Last Name",
+      type: "text",
+      placeholder: "Enter patient's last name",
+    },
+    {
+      name: "email",
+      label: "Email",
+      type: "email",
+      placeholder: "Enter patient's email",
+    },
+    { name: "dob", label: "Date of Birth", type: "date" },
+    {
+      name: "gender",
+      label: "Gender",
+      type: "select",
+      options: [
+        { value: "male", label: "Male" },
+        { value: "female", label: "Female" },
+        { value: "other", label: "Other" },
+      ],
+    },
+    {
+      name: "weight",
+      label: "Weight (kg)",
+      type: "number",
+      placeholder: "Enter patient's weight",
+    },
+    {
+      name: "height",
+      label: "Height (cm)",
+      type: "number",
+      placeholder: "Enter patient's height",
+    },
+  ];
+  const healthBackgroundFields = [
+    {
+      name: "medicalConditions",
+      label: "Medical Conditions",
+      type: "select",
+      options: [
+        { value: "diabetes", label: "Diabetes" },
+        { value: "hypertension", label: "Hypertension" },
+        { value: "asthma", label: "Asthma" },
+        { value: "other", label: "Other" },
+      ],
+    },
+    {
+      name: "previousSurgeries",
+      label: "Previous Surgeries",
+      type: "textarea",
+      placeholder: "List any previous surgeries with dates",
+    },
+    {
+      name: "ongoingTreatments",
+      label: "Ongoing Treatments or Therapies",
+      type: "textarea",
+      placeholder: "List any ongoing treatments or therapies",
+    },
+    {
+      name: "noKnownHistory",
+      label: "No known medical history",
+      type: "checkbox",
+    },
+  ];
+  const currentHealthStatusFields = [
+    {
+      name: "symptoms",
+      label: "Symptoms",
+      type: "select",
+      options: [
+        { value: "headache", label: "Headache" },
+        { value: "fatigue", label: "Fatigue" },
+        { value: "pain", label: "Pain" },
+        { value: "other", label: "Other" },
+      ],
+    },
+    {
+      name: "symptomIntensity",
+      label: "Symptom Intensity",
+      type: "slider",
+      min: 0,
+      max: 10,
+      step: 1,
+    },
+    {
+      name: "symptomDuration",
+      label: "Symptom Duration",
+      type: "text",
+      placeholder: "e.g., 2 days, 1 week",
+    },
+    {
+      name: "additionalComments",
+      label: "Additional Comments",
+      type: "textarea",
+      placeholder: "Provide any additional details about your symptoms",
+    },
+    {
+      name: "doctorAssigned",
+      label: "Doctor Assigned",
+      type: "select",
+      options: doctors.map((doctor) => ({
+        value: doctor.id,
+        label: doctor.name,
+      })),
+    },
+  ];
+  const medicationAllergiesFields = [
+    {
+      name: "medications",
+      label: "Current Medications",
+      type: "textarea",
+      placeholder: "List current medications and dosages",
+    },
+    { name: "foodAllergies", label: "Food Allergies", type: "checkbox" },
+    {
+      name: "medicationAllergies",
+      label: "Medication Allergies",
+      type: "checkbox",
+    },
+    {
+      name: "environmentalAllergies",
+      label: "Environmental Allergies",
+      type: "checkbox",
+    },
+    {
+      name: "otherAllergies",
+      label: "Other Allergies",
+      type: "text",
+      placeholder: "List any other allergies",
+    },
+  ];
+  const lifestyleFactorsFields = [
+    {
+      name: "smoking",
+      label: "Smoking",
+      type: "radio",
+      options: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+      ],
+    },
+    {
+      name: "alcohol",
+      label: "Alcohol Consumption",
+      type: "radio",
+      options: [
+        { value: "yes", label: "Yes" },
+        { value: "no", label: "No" },
+      ],
+    },
+    {
+      name: "diet",
+      label: "Diet Type",
+      type: "select",
+      options: [
+        { value: "vegetarian", label: "Vegetarian" },
+        { value: "vegan", label: "Vegan" },
+        { value: "non-vegetarian", label: "Non-Vegetarian" },
+        { value: "other", label: "Other" },
+      ],
+    },
+    {
+      name: "exerciseFrequency",
+      label: "Exercise Frequency (days per week)",
+      type: "slider",
+      min: 0,
+      max: 7,
+      step: 1,
+    },
+    { name: "sleepHours", label: "Sleep (hours per night)", type: "number" },
+  ];
+  const familyHealthHistoryFields = [
+    {
+      name: "familyConditions",
+      label: "Family Health Conditions",
+      type: "textarea",
+      placeholder: "List any known family health conditions and the relation",
+    },
+    {
+      name: "noKnownFamilyHistory",
+      label: "No known family history",
+      type: "checkbox",
+    },
+  ];
+
+  const renderFormFields = (fields, section) => {
+    return fields.map((field) => (
+      <FormField
+        key={field.name}
+        control={form.control}
+        name={`${section}.${field.name}`}
+        render={({ field: formField }) => (
+          <FormItem>
+            <FormLabel>{field.label}</FormLabel>
+            <FormControl>
+              {field.type === "text" ||
+              field.type === "email" ||
+              field.type === "date" ||
+              field.type === "number" ? (
+                <Input
+                  type={field.type}
+                  placeholder={field.placeholder}
+                  {...formField}
+                />
+              ) : field.type === "select" ? (
+                <Select
+                  onValueChange={formField.onChange}
+                  value={formField.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={`Select ${field.label.toLowerCase()}`}
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {field.options.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              ) : field.type === "textarea" ? (
+                <Textarea placeholder={field.placeholder} {...formField} />
+              ) : field.type === "checkbox" ? (
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={formField.value}
+                    onCheckedChange={formField.onChange}
+                  />
+                  <span>{field.label}</span>
+                </div>
+              ) : field.type === "radio" ? (
+                <RadioGroup
+                  onValueChange={formField.onChange}
+                  value={formField.value}
+                  className="flex flex-col space-y-1"
+                >
+                  {field.options.map((option) => (
+                    <FormItem
+                      key={option.value}
+                      className="flex items-center space-x-3 space-y-0"
+                    >
+                      <FormControl>
+                        <RadioGroupItem value={option.value} />
+                      </FormControl>
+                      <FormLabel className="font-normal">
+                        {option.label}
+                      </FormLabel>
+                    </FormItem>
+                  ))}
+                </RadioGroup>
+              ) : field.type === "slider" ? (
+                <Slider
+                  min={field.min}
+                  max={field.max}
+                  step={field.step}
+                  value={[formField.value]}
+                  onValueChange={(value) => formField.onChange(value[0])}
+                />
+              ) : null}
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    ));
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case 0:
@@ -220,127 +430,7 @@ export default function AddPatient() {
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">General Details</h2>
             <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="generalDetails.firstName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>First Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter patient's first name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="generalDetails.lastName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Last Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter patient's last name"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="generalDetails.email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Enter patient's email"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="generalDetails.dob"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Date of Birth</FormLabel>
-                    <FormControl>
-                      <Input type="date" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="generalDetails.gender"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Gender</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select gender" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="generalDetails.weight"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Weight (kg)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter patient's weight"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="generalDetails.height"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Height (cm)</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter patient's height"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {renderFormFields(generalDetailsFields, "generalDetails")}
             </div>
           </div>
         );
@@ -348,440 +438,36 @@ export default function AddPatient() {
         return (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">Health Background</h2>
-            <FormField
-              control={form.control}
-              name="healthBackground.medicalConditions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Medical Conditions</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select condition" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="diabetes">Diabetes</SelectItem>
-                      <SelectItem value="hypertension">Hypertension</SelectItem>
-                      <SelectItem value="asthma">Asthma</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="healthBackground.previousSurgeries"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Previous Surgeries</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="List any previous surgeries with dates"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="healthBackground.ongoingTreatments"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Ongoing Treatments or Therapies</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="List any ongoing treatments or therapies"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="healthBackground.noKnownHistory"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>No known medical history</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
+            {renderFormFields(healthBackgroundFields, "healthBackground")}
           </div>
         );
       case 2:
         return (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">Current Health Status</h2>
-            <FormField
-              control={form.control}
-              name="currentHealthStatus.symptoms"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Symptoms</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select symptom" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="headache">Headache</SelectItem>
-                      <SelectItem value="fatigue">Fatigue</SelectItem>
-                      <SelectItem value="pain">Pain</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="currentHealthStatus.symptomIntensity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Symptom Intensity</FormLabel>
-                  <FormControl>
-                    <Slider
-                      min={0}
-                      max={10}
-                      step={1}
-                      value={[field.value]}
-                      onValueChange={(value) => field.onChange(value[0])}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="currentHealthStatus.symptomDuration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Symptom Duration</FormLabel>
-
-                  <FormControl>
-                    <Input placeholder="e.g., 2 days, 1 week" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="currentHealthStatus.additionalComments"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Additional Comments</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Provide any additional details about your symptoms"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="currentHealthStatus.doctorAssigned"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Doctor Assigned</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select doctor" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {doctors.map((doctor) => (
-                        <SelectItem key={doctor.id} value={doctor.id}>
-                          {doctor.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {renderFormFields(currentHealthStatusFields, "currentHealthStatus")}
           </div>
         );
       case 3:
         return (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">Medication & Allergies</h2>
-            <FormField
-              control={form.control}
-              name="medicationAllergies.medications"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Current Medications</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="List current medications and dosages"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="medicationAllergies.foodAllergies"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Food Allergies</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="medicationAllergies.medicationAllergies"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Medication Allergies</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="medicationAllergies.environmentalAllergies"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Environmental Allergies</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="medicationAllergies.otherAllergies"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Other Allergies</FormLabel>
-                  <FormControl>
-                    <Input placeholder="List any other allergies" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
+            {renderFormFields(medicationAllergiesFields, "medicationAllergies")}
           </div>
         );
       case 4:
         return (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">Lifestyle Factors</h2>
-            <FormField
-              control={form.control}
-              name="lifestyleFactors.smoking"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Smoking</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-1"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="yes" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Yes</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="no" />
-                        </FormControl>
-                        <FormLabel className="font-normal">No</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lifestyleFactors.alcohol"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Alcohol Consumption</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-1"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="yes" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Yes</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="no" />
-                        </FormControl>
-                        <FormLabel className="font-normal">No</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lifestyleFactors.diet"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Diet Type</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select diet type" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="vegetarian">Vegetarian</SelectItem>
-                      <SelectItem value="vegan">Vegan</SelectItem>
-                      <SelectItem value="non-vegetarian">
-                        Non-Vegetarian
-                      </SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lifestyleFactors.exerciseFrequency"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Exercise Frequency (days per week)</FormLabel>
-                  <FormControl>
-                    <Slider
-                      min={0}
-                      max={7}
-                      step={1}
-                      value={[field.value]}
-                      onValueChange={(value) => field.onChange(value[0])}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="lifestyleFactors.sleepHours"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Sleep (hours per night)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {renderFormFields(lifestyleFactorsFields, "lifestyleFactors")}
           </div>
         );
       case 5:
         return (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">Family Health History</h2>
-            <FormField
-              control={form.control}
-              name="familyHealthHistory.familyConditions"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Family Health Conditions</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="List any known family health conditions and the relation"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="familyHealthHistory.noKnownFamilyHistory"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>No known family history</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
+            {renderFormFields(familyHealthHistoryFields, "familyHealthHistory")}
           </div>
         );
       default:

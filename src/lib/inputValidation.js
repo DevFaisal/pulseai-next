@@ -16,15 +16,46 @@ const doctorSchema = z.object({
 });
 
 const patientSchema = z.object({
-  name: z.string().nonempty("Name is required"),
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(10, "Phone number should be at least 10 digits"),
-  age: z.string().nonempty("Age is required"),
-  weight: z.string().nonempty("Weight is required"),
-  height: z.string().nonempty("Height is required"),
-  bloodType: z.string().nonempty("Blood type is required"),
-  gender: z.enum(["Male", "Female"], "Please select a gender"),
-  assignedDoctor: z.string().nonempty("Assigned doctor is required"),
+  generalDetails: z.object({
+    firstName: z.string().min(1, "First name is required"),
+    lastName: z.string().min(1, "Last name is required"),
+    email: z.string().email("Invalid email address"),
+    dob: z.string().min(1, "Date of birth is required"),
+    gender: z.string().min(1, "Gender is required"),
+    weight: z.string().min(1, "Weight is required"),
+    height: z.string().min(1, "Height is required"),
+  }),
+  healthBackground: z.object({
+    medicalConditions: z.string().min(1, "Medical condition is required"),
+    previousSurgeries: z.string().optional(),
+    ongoingTreatments: z.string().optional(),
+    noKnownHistory: z.boolean().optional(),
+  }),
+  currentHealthStatus: z.object({
+    symptoms: z.string().min(1, "Symptom is required"),
+    symptomIntensity: z.number().min(0).max(10),
+    symptomDuration: z.string().min(1, "Symptom duration is required"),
+    additionalComments: z.string().optional(),
+    doctorAssigned: z.string().min(1, "Doctor assignment is required"),
+  }),
+  medicationAllergies: z.object({
+    medications: z.string().optional(),
+    foodAllergies: z.boolean().optional(),
+    medicationAllergies: z.boolean().optional(),
+    environmentalAllergies: z.boolean().optional(),
+    otherAllergies: z.string().optional(),
+  }),
+  lifestyleFactors: z.object({
+    smoking: z.enum(["yes", "no"]),
+    alcohol: z.enum(["yes", "no"]),
+    diet: z.string().min(1, "Diet type is required"),
+    exerciseFrequency: z.number().min(0).max(7),
+    sleepHours: z.string().min(1, "Sleep hours are required"),
+  }),
+  familyHealthHistory: z.object({
+    familyConditions: z.string().optional(),
+    noKnownFamilyHistory: z.boolean().optional(),
+  }),
 });
 
 const EditPatientSchema = z.object({
