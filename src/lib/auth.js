@@ -57,7 +57,6 @@ export const NEXT_AUTH = {
           // if (credentials.hospitalCode !== user?.Hospital.hospitalCode) {
           //   return null;
           // }
-          console.log(user);
           const isValidPassword = await bcrypt.compare(
             credentials.password,
             user.password

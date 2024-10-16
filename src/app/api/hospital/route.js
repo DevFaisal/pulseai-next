@@ -45,9 +45,6 @@ export async function POST(request) {
         hospitalId: hospital.id,
       },
     });
-
-    console.log("Admin created: ", masterAdmin);
-
     return NextResponse.json(hospital, { status: 201 });
   } catch (error) {
     console.error(error);

@@ -8,25 +8,25 @@ import { hospitalIdState, userRoleState } from "@/store/AdminAtom";
 function RecoilRootProvider({ children }) {
   return (
     <RecoilRoot>
-      <FetchHospitalId /> 
+      {/* <FetchHospitalId />  */}
       {children}
     </RecoilRoot>
   );
 }
 
-function FetchHospitalId() {
-  const { data: session } = useSession();
-  const setHospitalId = useSetRecoilState(hospitalIdState);
-  const setUserRole = useSetRecoilState(userRoleState);
+// function FetchHospitalId() {
+//   const { data: session } = useSession();
+//   const setHospitalId = useSetRecoilState(hospitalIdState);
+//   const setUserRole = useSetRecoilState(userRoleState);
 
-  useEffect(() => {
-    if (session?.user?.hospitalId) {
-      setHospitalId(session.user.hospitalId);
-      setUserRole(session.user.role);
-    }
-  }, [session, setHospitalId]);
+//   useEffect(() => {
+//     if (session?.user?.hospitalId) {
+//       setHospitalId(session.user.hospitalId);
+//       setUserRole(session.user.role);
+//     }
+//   }, [session, setHospitalId]);
 
-  return null;
-}
+//   return null;
+// }
 
 export default RecoilRootProvider;

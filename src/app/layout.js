@@ -2,9 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import Providers from "@/context/Providers";
 
-import RecoilRootProvider from "@/context/RecoilRootProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
-import { icons } from "lucide-react";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 
 export const metadata = {
@@ -25,7 +23,7 @@ export default function RootLayout({ children }) {
           >
             <Providers>
               <Toaster />
-              <RecoilRootProvider>{children}</RecoilRootProvider>
+              {children}
             </Providers>
           </ThemeProvider>
         </ErrorBoundary>

@@ -20,18 +20,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Activity, Calendar, FileText, Pill } from "lucide-react";
-import { useRecoilValueLoadable } from "recoil";
-import { patientDetailsId } from "@/store/HospitalAtom";
 import Loading from "@/components/other/Loading";
-import ErrorPage from "@/components/other/ErrorPage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { VitalsDrawerExample } from "@/components/other/Drawer";
 import { useRouter } from "next/navigation";
 import { fetchPatientById } from "@/server/actions/patients/fetch-patients";
 
 export default function PatientDetailsPage({ params }) {
   const patientId = params.id;
   const [patient, setPatient] = useState({});
+
 
   useEffect(() => {
     const fetchData = async () => {

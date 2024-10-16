@@ -1,12 +1,13 @@
-"use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, UserPlus } from "lucide-react";
-import { useRecoilValue } from "recoil";
-import { adminDashboardDetailsSelector } from "@/store/HospitalAtom";
+import { fetchDetailsForAdmin } from "@/server/actions/doctors/fetch-doctors";
+import { getServerSession } from "next-auth";
+import { NEXT_AUTH } from "@/lib/auth";
 
-export default function AdminHeaderCards() {
-  const details = useRecoilValue(adminDashboardDetailsSelector);
-
+export default async function AdminHeaderCards() {
+  const { user } = await getServerSession(NEXT_AUTH);
+  const hospitalId = user.hospitalId;
+  const { data: details } = await fetchDetailsForAdmin({ hospitalId });
   const hospitalStats = [
     {
       title: "Total Doctors",

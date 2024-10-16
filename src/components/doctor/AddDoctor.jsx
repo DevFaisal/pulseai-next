@@ -10,15 +10,15 @@ import {
 import { Button } from "@/components/ui/button";
 import ReusableFormWithSelect from "@/components/other/ReusableFormWithSelect";
 import Inputs from "@/lib/inputs";
-import { useRecoilValue } from "recoil";
-import { hospitalIdState } from "@/store/AdminAtom";
 import { doctorSchema } from "@/lib/inputValidation";
 import { toast } from "sonner";
 import { createDoctor } from "@/server/actions/doctors/create-doctor";
 import { useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function AddDoctor() {
-  const hospitalId = useRecoilValue(hospitalIdState);
+  const session = useSession();
+  const hospitalId = session?.data?.user?.hospitalId;
   const [isDialogOpen, setDialogOpen] = useState(false);
 
   const handleSubmit = async (formData) => {

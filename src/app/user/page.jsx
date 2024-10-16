@@ -1,5 +1,3 @@
-"use client";
-import React, { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -10,14 +8,6 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Users,
   Activity,
   Brain,
@@ -27,31 +17,17 @@ import {
   AlertTriangle,
   Clock,
 } from "lucide-react";
-import { useRecoilState, useRecoilValueLoadable } from "recoil";
-import { patientsDetailsState } from "@/store/HospitalAtom";
-import { useRouter } from "next/navigation";
-import { Spinner } from "@/components/ui/spinner";
-import Loading from "@/components/other/Loading";
-import { AdminPatientsSelector } from "@/store/AdminAtom";
+import { getServerSession } from "next-auth";
+import { NEXT_AUTH } from "@/lib/auth";
+import { fetchPatients } from "@/server/actions/patients/fetch-patients";
+import PatientListUser from "@/components/patient/PatientListUser";
+import TopCard from "@/components/other/TopCard";
 
-export default function PulseAIRemoteOperatorDashboard() {
-  const [patientsDetails, setPatientsDetails] =
-    useRecoilState(patientsDetailsState);
-  const fetchedPatientsDetails = useRecoilValueLoadable(AdminPatientsSelector);
+export default async function PulseAIRemoteOperatorDashboard() {
+  const { user } = await getServerSession(NEXT_AUTH);
+  const hospitalId = user.hospitalId;
+  const patients = await fetchPatients({ hospitalId });
 
-  useEffect(() => {
-    if (fetchedPatientsDetails.state === "hasValue") {
-      setPatientsDetails(fetchedPatientsDetails.contents);
-    }
-    if (fetchedPatientsDetails.state === "loading") {
-      <Loading />;
-    }
-    if (fetchedPatientsDetails.state === "hasValue") {
-      setPatientsDetails(fetchedPatientsDetails.contents);
-    }
-  }, [fetchedPatientsDetails]);
-
-  const router = useRouter();
   const kpis = {
     totalPatients: 1248,
     criticalAlerts: 7,
@@ -106,7 +82,6 @@ export default function PulseAIRemoteOperatorDashboard() {
     },
   ];
 
-  const isLoading = !patientsDetails || patientsDetails.length === 0;
 
   return (
     <main>
@@ -115,7 +90,7 @@ export default function PulseAIRemoteOperatorDashboard() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 mb-8">
           <TopCard
             title="Total Patients"
-            header={patientsDetails?.length || 0}
+            header={patients?.data?.length || 0}
             description="Currently under remote monitoring"
             icon={<Users className="h-4 w-4 text-muted-foreground" />}
           />
@@ -208,88 +183,37 @@ export default function PulseAIRemoteOperatorDashboard() {
         </div>
 
         {/* Patient List */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle>Patient List</CardTitle>
-            <CardDescription>
-              Click on a patient to view details
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <Spinner size={"large"} />
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>#</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Age</TableHead>
-                    <TableHead>Gender</TableHead>
-                    <TableHead>Doctor Assigned</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {patientsDetails &&
-                    patientsDetails?.map((patient, index) => (
-                      <TableRow
-                        key={patient.id}
-                        className="cursor-pointer hover:bg-muted/50"
-                        onClick={() =>
-                          router.push(`/user/patient/${patient.id}`)
-                        }
-                      >
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>
-                          {patient.firstName + " " + patient.lastName}
-                        </TableCell>
-                        <TableCell>
-                          {new Date().getFullYear() -
-                            new Date(patient.dateOfBirth).getFullYear()}
-                        </TableCell>
-                        <TableCell>{patient.gender}</TableCell>
-                        <TableCell>{patient.Doctor?.name}</TableCell>
-                        <TableCell>
-                          <Badge
-                            variant={
-                              patient.status === "Stable"
-                                ? "secondary"
-                                : patient.status === "Needs Attention"
-                                ? "warning"
-                                : patient.status === "Critical"
-                                ? "destructive"
-                                : "default"
-                            }
-                          >
-                            {patient.status || "Stable"}
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
+        {patients?.data?.length > 0 ? (
+          <PatientListUser patients={patients} />
+        ) : (
+          <Card>
+            <CardHeader>
+              <CardTitle>Patient List</CardTitle>
+              <CardDescription>
+                Click on a patient to view details
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">No patients found</p>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </main>
   );
 }
 
-function TopCard({ title, header, description, icon }) {
-  return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        {icon}
-      </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{header}</div>
-        <p className="text-xs text-muted-foreground">{description}</p>
-      </CardContent>
-    </Card>
-  );
-}
+// function TopCard({ title, header, description, icon }) {
+//   return (
+//     <Card>
+//       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+//         <CardTitle className="text-sm font-medium">{title}</CardTitle>
+//         {icon}
+//       </CardHeader>
+//       <CardContent>
+//         <div className="text-2xl font-bold">{header}</div>
+//         <p className="text-xs text-muted-foreground">{description}</p>
+//       </CardContent>
+//     </Card>
+//   );
+// }

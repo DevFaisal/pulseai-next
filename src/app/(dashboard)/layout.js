@@ -1,10 +1,15 @@
 import DashboardWrapper from "@/components/other/DashboardWrapper";
 import DashboardWrapperAce from "@/components/other/DashboardWrapperArc";
 import ErrorBoundary from "./ErrorBoundary";
+import { getServerSession } from "next-auth";
+import { NEXT_AUTH } from "@/lib/auth";
+
+const { user } = await getServerSession(NEXT_AUTH);
+const hospitalName = user.hospitalName;
 
 export const metadata = {
-  title: "Dashboard",
-  description: "Welcome to the dashboard",
+  title: `Dashboard - ${hospitalName}`,
+  description: `Welcome to the dashboard of ${hospitalName}`,
 };
 
 export default function RootLayout({ children }) {
