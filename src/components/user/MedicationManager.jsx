@@ -103,7 +103,7 @@ export function MedicationManager({ patient }) {
   };
 
   return (
-    <Card>
+    <Card className="rounded-none">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Medications</CardTitle>
         <CardDescription>Manage patient medications</CardDescription>

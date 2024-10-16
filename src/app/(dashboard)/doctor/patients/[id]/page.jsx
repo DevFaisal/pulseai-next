@@ -29,28 +29,28 @@ export default async function DoctorDiagnosisPage({ params }) {
     >
       <div className="space-y-6 ">
         <Tabs defaultValue="patientInformation" className="w-full h-fit">
-          <TabsList className="grid w-full grid-cols-4 gap-4 bg-gray-100 p-1 rounded-lg">
+          <TabsList className="grid w-full grid-cols-4 gap-4 p-1 rounded-lg">
             <TabsTrigger
               value="patientInformation"
-              className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
             >
               General Information
             </TabsTrigger>
             <TabsTrigger
               value="diagnose"
-              className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
             >
               Diagnose
             </TabsTrigger>
             <TabsTrigger
               value="medication"
-              className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
             >
               Medication
             </TabsTrigger>
             <TabsTrigger
               value="thresholds"
-              className="data-[state=active]:bg-white data-[state=active]:shadow-sm"
+              className="data-[state=active]:bg-background data-[state=active]:shadow-sm"
             >
               Threshold
             </TabsTrigger>

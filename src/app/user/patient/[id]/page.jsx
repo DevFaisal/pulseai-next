@@ -29,7 +29,6 @@ export default function PatientDetailsPage({ params }) {
   const patientId = params.id;
   const [patient, setPatient] = useState({});
 
-
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetchPatientById({ patientId });
@@ -52,7 +51,7 @@ export default function PatientDetailsPage({ params }) {
     <div className="px-4 py-6 sm:px-0">
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Patient Overview Card */}
-        <Card className="flex-1">
+        <Card className="flex-1 rounded-none">
           <CardHeader>
             <div className="flex items-center space-x-4">
               <Avatar className="w-20 h-20">
@@ -111,7 +110,7 @@ export default function PatientDetailsPage({ params }) {
         </Card>
 
         {/* Quick Actions Card */}
-        <Card className="flex-1">
+        <Card className="flex-1 rounded-none">
           <CardHeader>
             <CardTitle>Quick Actions</CardTitle>
           </CardHeader>
@@ -151,7 +150,7 @@ export default function PatientDetailsPage({ params }) {
         </TabsList>
 
         <TabsContent value="overview">
-          <Card>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Patient Overview</CardTitle>
               <CardDescription>
@@ -184,7 +183,7 @@ export default function PatientDetailsPage({ params }) {
         </TabsContent>
 
         <TabsContent value="medical-history">
-          <Card>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Medical History</CardTitle>
               <CardDescription>
@@ -213,7 +212,7 @@ export default function PatientDetailsPage({ params }) {
         </TabsContent>
 
         <TabsContent value="medications">
-          <Card>
+          <Card className='rounded-none'>
             <CardHeader>
               <CardTitle>Current Medications</CardTitle>
               <CardDescription>List of prescribed medications</CardDescription>
@@ -238,7 +237,7 @@ export default function PatientDetailsPage({ params }) {
         </TabsContent>
 
         <TabsContent value="allergies">
-          <Card>
+          <Card className='rounded-none'>
             <CardHeader>
               <CardTitle>Allergies</CardTitle>
               <CardDescription>Patient's known allergies</CardDescription>

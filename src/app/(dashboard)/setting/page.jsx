@@ -111,7 +111,7 @@ export default function SettingPage() {
     <div className="container mx-auto py-10">
       <h1 className="text-3xl font-bold mb-6">Settings</h1>
 
-      <Card className="mb-6">
+      <Card className="mb-6 rounded-none">
         <CardHeader>
           <CardTitle>User Details</CardTitle>
           <CardDescription>Your current profile information</CardDescription>
@@ -139,7 +139,7 @@ export default function SettingPage() {
         </TabsList>
 
         <TabsContent value="name">
-          <Card>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Change Name</CardTitle>
               <CardDescription>
@@ -158,7 +158,7 @@ export default function SettingPage() {
         </TabsContent>
 
         <TabsContent value="password">
-          <Card>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Change Password</CardTitle>
               <CardDescription>

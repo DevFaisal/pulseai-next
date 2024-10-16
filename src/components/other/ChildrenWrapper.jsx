@@ -14,7 +14,7 @@ export default function ChildrenWrapper({
 }) {
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <Card className="w-full">
+      <Card className="w-full rounded-none">
         <CardHeader>
           <div className="flex justify-between">
             <div>

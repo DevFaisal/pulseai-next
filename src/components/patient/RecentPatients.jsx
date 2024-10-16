@@ -15,7 +15,7 @@ export default function RecentPatients({ recentPatients }) {
   const router = useRouter();
 
   return (
-    <Card>
+    <Card className='rounded-none'>
       <CardHeader>
         <CardTitle>Recent Patients</CardTitle>
       </CardHeader>
@@ -32,7 +32,7 @@ export default function RecentPatients({ recentPatients }) {
           <TableBody>
             {recentPatients?.map((patient) => (
               <TableRow key={patient.id}>
-                <TableCell>{patient.name}</TableCell>
+                <TableCell>{`${patient.firstName} ${patient.lastName}`}</TableCell>
                 <TableCell>{patient.age}</TableCell>
                 <TableCell>{patient.lastVisit}</TableCell>
                 <TableCell>{patient.status}</TableCell>

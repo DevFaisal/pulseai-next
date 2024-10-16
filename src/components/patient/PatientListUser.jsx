@@ -25,7 +25,7 @@ export default function PatientListUser({ patients }) {
   };
 
   return (
-    <Card className="mb-8">
+    <Card className="mb-8 rounded-none">
       <CardHeader>
         <CardTitle>Patient List</CardTitle>
         <CardDescription>Click on a patient to view details</CardDescription>

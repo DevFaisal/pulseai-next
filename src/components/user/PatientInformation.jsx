@@ -30,7 +30,7 @@ export function PatientInformation({ patient }) {
   };
 
   return (
-    <Card className="w-full h-full">
+    <Card className="w-full h-full rounded-none">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>

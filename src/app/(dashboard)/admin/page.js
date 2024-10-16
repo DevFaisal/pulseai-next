@@ -13,7 +13,7 @@ export default async function AdminDashboard() {
           <TabsTrigger value="patients">Patient Growth</TabsTrigger>
         </TabsList>
         <TabsContent value="patients">
-          <Card>
+          <Card className='rounded-none'>
             <CardHeader>
               <CardTitle>New Patients Over Time</CardTitle>
             </CardHeader>

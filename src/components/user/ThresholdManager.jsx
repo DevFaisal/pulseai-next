@@ -59,12 +59,9 @@ export function ThresholdManager({ patient }) {
     }
   }, [patient?.Threshold]);
 
-  const handleTypeChange = useCallback(
-    (value) => {
-      setSelectedType(value);
-    },
-    []
-  );
+  const handleTypeChange = useCallback((value) => {
+    setSelectedType(value);
+  }, []);
 
   const handleAddThreshold = useCallback(async () => {
     if (!selectedType || !minValue || !maxValue) {
@@ -124,7 +121,7 @@ export function ThresholdManager({ patient }) {
   );
 
   return (
-    <Card>
+    <Card className="rounded-none">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Thresholds</CardTitle>
         <CardDescription>

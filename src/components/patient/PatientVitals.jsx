@@ -280,7 +280,7 @@ export default function PatientVitals() {
 
   return (
     <div className="container mx-auto px-4 py-6">
-      <Card className="mb-6">
+      <Card className="mb-6 rounded-none">
         <CardHeader>
           <div className="flex items-center space-x-4">
             <Avatar className="w-16 h-16">
@@ -318,7 +318,7 @@ export default function PatientVitals() {
         </CardHeader>
       </Card>
 
-      <Card className="mb-6">
+      <Card className="mb-6 rounded-none">
         <CardHeader>
           <CardTitle>Current Vitals</CardTitle>
           <CardDescription>
@@ -393,7 +393,7 @@ export default function PatientVitals() {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="rounded-none">
         <CardHeader>
           <CardTitle>Vitals History</CardTitle>
           <CardDescription>Trends over time</CardDescription>
@@ -411,7 +411,7 @@ export default function PatientVitals() {
               <TabsTrigger value="weight">Weight</TabsTrigger>
             </TabsList>
             <TabsContent value="bloodPressure">
-              <Card>
+              <Card className="rounded-none">
                 <CardHeader>
                   <CardTitle>Blood Pressure History</CardTitle>
                 </CardHeader>
@@ -432,7 +432,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="heartRate">
-              <Card>
+              <Card className="rounded-none">
                 <CardHeader>
                   <CardTitle>Heart Rate History</CardTitle>
                 </CardHeader>
@@ -447,7 +447,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="temperature">
-              <Card>
+              <Card className="rounded-none">
                 <CardHeader>
                   <CardTitle>Temperature History</CardTitle>
                 </CardHeader>
@@ -462,7 +462,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="bloodSugar">
-              <Card>
+              <Card className="rounded-none">
                 <CardHeader>
                   <CardTitle>Blood Sugar History</CardTitle>
                 </CardHeader>
@@ -477,7 +477,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="oxygenSaturation">
-              <Card>
+              <Card className="rounded-none">
                 <CardHeader>
                   <CardTitle>Oxygen Saturation History</CardTitle>
                 </CardHeader>
@@ -492,7 +492,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="weight">
-              <Card>
+              <Card className="rounded-none">
                 <CardHeader>
                   <CardTitle>Weight History</CardTitle>
                 </CardHeader>
@@ -510,7 +510,7 @@ export default function PatientVitals() {
         </CardContent>
       </Card>
 
-      <Card className="mt-6">
+      <Card className="mt-6 rounded-none">
         <CardHeader>
           <CardTitle>Vitals Log</CardTitle>
           <CardDescription>Detailed history of recorded vitals</CardDescription>

@@ -1,54 +1,63 @@
 "use client";
 
-import { Bar } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  PointElement,
-} from "chart.js";
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
-// Mock data
-const patientData = {
-  labels: [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ],
-  datasets: [
-    {
-      label: "New Patients",
-      data: [65, 59, 80, 81, 56, 55, 40, 30, 20, 10, 5, 1],
-      backgroundColor: "rgba(75, 192, 192, 0.6)",
-    },
-  ],
-};
+const patientData = [
+  { month: "Jan", newPatients: 65 },
+  { month: "Feb", newPatients: 59 },
+  { month: "Mar", newPatients: 80 },
+  { month: "Apr", newPatients: 81 },
+  { month: "May", newPatients: 56 },
+  { month: "Jun", newPatients: 55 },
+  { month: "Jul", newPatients: 40 },
+  { month: "Aug", newPatients: 30 },
+  { month: "Sep", newPatients: 20 },
+  { month: "Oct", newPatients: 10 },
+  { month: "Nov", newPatients: 5 },
+  { month: "Dec", newPatients: 1 },
+];
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  LineElement,
-  PointElement,
-  Title,
-  Tooltip,
-  Legend
-);
-
-export default function BarChart() {
-  return <Bar data={patientData} options={{ responsive: true }} />;
+export default function PatientDataChart() {
+  return (
+    <ChartContainer
+      config={{
+        newPatients: {
+          label: "New Patients",
+          color: "hsl(var(--chart-5))",
+        },
+      }}
+      className="h-[400px]"
+    >
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart data={patientData}>
+          <XAxis
+            dataKey="month"
+            stroke="hsl(var(--foreground))"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+          />
+          <YAxis
+            stroke="hsl(var(--foreground))"
+            fontSize={12}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value) => `${value}`}
+          />
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <Bar
+            dataKey="newPatients"
+            fill="var(--color-newPatients)"
+            radius={[4, 4, 0, 0]}
+            className="hover:opacity-80"
+          />
+        </BarChart>
+      </ResponsiveContainer>
+    </ChartContainer>
+  );
 }

@@ -49,7 +49,7 @@ export function DiagnoseManager({ patient, onDiagnoseSubmit }) {
   };
 
   return (
-    <Card className="w-full ">
+    <Card className="w-full rounded-none ">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Diagnose Patient</CardTitle>
         <CardDescription>

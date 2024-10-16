@@ -82,7 +82,6 @@ export default async function PulseAIRemoteOperatorDashboard() {
     },
   ];
 
-
   return (
     <main>
       <div>
@@ -115,7 +114,7 @@ export default async function PulseAIRemoteOperatorDashboard() {
         </div>
         {/* Patient Categories and Real-time Monitoring */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 mb-8">
-          <Card>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Patient Categories</CardTitle>
               <CardDescription>
@@ -144,7 +143,7 @@ export default async function PulseAIRemoteOperatorDashboard() {
           </Card>
 
           {/* Recent Alerts and AI Insights */}
-          <Card>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Recent Alerts</CardTitle>
               <CardDescription>Urgent patient notifications</CardDescription>
@@ -186,7 +185,7 @@ export default async function PulseAIRemoteOperatorDashboard() {
         {patients?.data?.length > 0 ? (
           <PatientListUser patients={patients} />
         ) : (
-          <Card>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Patient List</CardTitle>
               <CardDescription>
@@ -202,18 +201,3 @@ export default async function PulseAIRemoteOperatorDashboard() {
     </main>
   );
 }
-
-// function TopCard({ title, header, description, icon }) {
-//   return (
-//     <Card>
-//       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-//         <CardTitle className="text-sm font-medium">{title}</CardTitle>
-//         {icon}
-//       </CardHeader>
-//       <CardContent>
-//         <div className="text-2xl font-bold">{header}</div>
-//         <p className="text-xs text-muted-foreground">{description}</p>
-//       </CardContent>
-//     </Card>
-//   );
-// }

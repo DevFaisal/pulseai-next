@@ -45,7 +45,7 @@ const chartOptions = {
 
 export default function PatientDiagnosesOverTime() {
   return (
-    <Card>
+    <Card className='rounded-none'>
       <CardHeader>
         <CardTitle>Patient Diagnoses Over Time</CardTitle>
       </CardHeader>
