@@ -1,6 +1,6 @@
-// import { getServerSession } from "next-auth";
-// import { NEXT_AUTH } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { NEXT_AUTH } from "@/lib/auth";
 
-// const { user } = await getServerSession(NEXT_AUTH);
+const { user } = await getServerSession(NEXT_AUTH);
 
-export const hospitalName = "user.hospitalName";
+export const hospitalName = user.hospitalName;
