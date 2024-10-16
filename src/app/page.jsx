@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { ArrowRight, Heart, Users, UserCog } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -151,9 +152,11 @@ export default function PulseAILandingPage() {
               </ul>
             </div>
             <div className="relative">
-              <img
+              <Image
                 src="https://plus.unsplash.com/premium_photo-1661764570116-b1b0a2da783c?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                 alt="Pulse AI Dashboard"
+                width={3540}
+                height={2360}
                 className="rounded-lg shadow-xl"
               />
             </div>
@@ -189,8 +192,10 @@ export default function PulseAILandingPage() {
                 key={index}
                 className="border-violet-200 dark:border-violet-800 transition-all duration-300 hover:shadow-lg"
               >
-                <img
+                <Image
                   src={feature.image}
+                  width={3540}
+                  height={2360}
                   alt={feature.title}
                   className="w-full h-40 object-cover rounded-t-lg dark:opacity-80"
                 />
@@ -267,9 +272,11 @@ export default function PulseAILandingPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
-              <img
+              <Image
                 src="https://pulsehealthcare.ai/pulse-ai.svg"
                 alt="Pulse AI Logo"
+                width={200}
+                height={50}
                 className="h-8 dark:invert"
               />
             </div>

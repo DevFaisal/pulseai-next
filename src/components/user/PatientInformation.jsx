@@ -15,8 +15,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
 
 export function PatientInformation({ patient }) {
-  if (!patient) return null;
   const router = useRouter();
+  if (!patient) return null;
 
   const calculateAge = (dateOfBirth) => {
     const today = new Date();

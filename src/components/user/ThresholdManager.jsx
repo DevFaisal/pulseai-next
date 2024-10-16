@@ -1,143 +1,3 @@
-// "use client";
-
-// import React from "react";
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card";
-// import { Input } from "@/components/ui/input";
-// import { Button } from "@/components/ui/button";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { ScrollArea } from "@/components/ui/scroll-area";
-
-// export function ThresholdManager({
-//   thresholds,
-//   newThreshold,
-//   setNewThreshold,
-//   handleAddThreshold,
-// }) {
-//   const [unit, setUnit] = React.useState("bpm");
-//   const thresholdTypes = [
-//     {
-//       name: "Heart Rate",
-//       value: "heart_rate",
-//       unit: "bpm",
-//     },
-//     {
-//       name: "Blood Glucose",
-//       value: "blood_glucose",
-//       unit: "mg/dL",
-//     },
-//     {
-//       name: "Blood Pressure",
-//       value: "blood_pressure",
-//       unit: "mmHg",
-//     },
-//     {
-//       name: "Respiratory Rate",
-//       value: "respiratory_rate",
-//       unit: "bpm",
-//     },
-//     {
-//       name: "Temperature",
-//       value: "temperature",
-//       unit: "°C",
-//     },
-//     {
-//       name: "Oxygen Saturation",
-//       value: "oxygen_saturation",
-//       unit: "%",
-//     },
-//   ];
-//   const setThreshold = (value) => {
-//     setUnit(thresholdTypes.find((type) => type.value === value)?.unit);
-//   };
-//   return (
-//     <Card>
-//       <CardHeader>
-//         <CardTitle className="text-2xl font-bold">Thresholds</CardTitle>
-//         <CardDescription>
-//           Set alert thresholds for patient vitals
-//         </CardDescription>
-//       </CardHeader>
-//       <CardContent>
-//         <ScrollArea className="h-[200px] mb-4 border rounded-md">
-//           <Table>
-//             <TableHeader>
-//               <TableRow>
-//                 <TableHead>Vital Sign</TableHead>
-//                 <TableHead>Threshold</TableHead>
-//                 <TableHead>Unit</TableHead>
-//               </TableRow>
-//             </TableHeader>
-//             <TableBody>
-//               {thresholds.map((threshold) => (
-//                 <TableRow key={threshold.id}>
-//                   <TableCell>{threshold.name}</TableCell>
-//                   <TableCell>{threshold.value}</TableCell>
-//                   <TableCell>{threshold.unit}</TableCell>
-//                 </TableRow>
-//               ))}
-//             </TableBody>
-//           </Table>
-//         </ScrollArea>
-//         <div className="flex space-x-2">
-//           <Select value={thresholdTypes.name} onValueChange={setThreshold}>
-//             <SelectTrigger id="threshold" className="w-full">
-//               <SelectValue placeholder="Select type" />
-//             </SelectTrigger>
-//             <SelectContent>
-//               {thresholdTypes.map((item, index) => (
-//                 <SelectItem key={index} value={item.value}>
-//                   {item.name}
-//                 </SelectItem>
-//               ))}
-//             </SelectContent>
-//           </Select>
-
-//           <Input
-//             placeholder="Value"
-//             type="number"
-//             value={newThreshold.value}
-//             onChange={(e) =>
-//               setNewThreshold({
-//                 ...newThreshold,
-//                 value: parseFloat(e.target.value),
-//               })
-//             }
-//           />
-//           <Select value={unit} disabled>
-//             <SelectTrigger id="unit" className="w-full">
-//               <SelectValue placeholder="Unit" />
-//             </SelectTrigger>
-//             <SelectContent>
-//               <SelectItem value={unit}>{unit}</SelectItem>
-//             </SelectContent>
-//           </Select>
-//           <Button onClick={handleAddThreshold}>Add</Button>
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
 "use client";
 
 import React, { useState, useCallback, useEffect } from "react";
@@ -197,13 +57,13 @@ export function ThresholdManager({ patient }) {
     if (patient?.Threshold) {
       setThresholds(patient.Threshold);
     }
-  }, []);
+  }, [patient?.Threshold]);
 
   const handleTypeChange = useCallback(
     (value) => {
       setSelectedType(value);
     },
-    [thresholds]
+    []
   );
 
   const handleAddThreshold = useCallback(async () => {
@@ -248,12 +108,12 @@ export function ThresholdManager({ patient }) {
     setMaxValue("");
 
     toast.success("Threshold range added successfully");
-  }, [selectedType, minValue, maxValue, setThresholds]);
+  }, [selectedType, minValue, maxValue, patient.id]);
 
   const handleRemoveThreshold = useCallback(
     async (id) => {
       const res = await deleteThreshold({ thresholdId: id });
-      if (res.error) { 
+      if (res.error) {
         toast.error(res.error);
         return;
       }

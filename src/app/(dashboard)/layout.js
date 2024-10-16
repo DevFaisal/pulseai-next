@@ -1,10 +1,9 @@
 import DashboardWrapperAce from "@/components/other/DashboardWrapperArc";
 import ErrorBoundary from "./ErrorBoundary";
-import { hospitalName } from "@/lib/values";
 
 export const metadata = {
-  title: `Dashboard | ${hospitalName}`,
-  description: `Welcome to the dashboard of ${hospitalName}. Here you can view and manage your patients, view your appointments, and more.`,
+  title: `Dashboard `,
+  description: `Welcome to the dashboard. Here you can view and manage your patients, view your appointments, and more.`,
 };
 
 export default function RootLayout({ children }) {
