@@ -48,15 +48,6 @@ export default function Component() {
   const { data: user } = session;
   const id = user?.user?.hospitalId;
   const [doctors, setDoctors] = useState([]);
-
-  useEffect(() => {
-    const fetchDoctorsData = async () => {
-      const res = await fetchDoctors({ hospitalId: id });
-      setDoctors(res.data);
-    };
-    fetchDoctorsData();
-  }, [id]);
-
   const form = useForm({
     resolver: zodResolver(patientSchema),
     defaultValues: {
@@ -102,6 +93,32 @@ export default function Component() {
       },
     },
   });
+  useEffect(() => {
+    const fetchDoctorsData = async () => {
+      const res = await fetchDoctors({ hospitalId: id });
+      setDoctors(res.data);
+    };
+    fetchDoctorsData();
+  }, [id]);
+
+  const noKnownHistory = form.watch("healthBackground.noKnownHistory");
+  const noKnownFamilyHistory = form.watch(
+    "familyHealthHistory.noKnownFamilyHistory"
+  );
+
+  useEffect(() => {
+    if (noKnownHistory) {
+      form.setValue("healthBackground.medicalConditions", "");
+      form.setValue("healthBackground.previousSurgeries", "");
+      form.setValue("healthBackground.ongoingTreatments", "");
+    }
+  }, [noKnownHistory, form]);
+
+  useEffect(() => {
+    if (noKnownFamilyHistory) {
+      form.setValue("familyHealthHistory.familyConditions", "");
+    }
+  }, [noKnownFamilyHistory, form]);
 
   const onSubmit = async (data) => {
     try {
@@ -142,7 +159,7 @@ export default function Component() {
       toast.error("Please fill out the required fields");
     }
   };
-
+  
   const generalDetailsFields = [
     {
       name: "firstName",
@@ -252,7 +269,7 @@ export default function Component() {
       name: "doctorAssigned",
       label: "Doctor Assigned",
       type: "select",
-      options: doctors?.map((doctor) => ({
+      options: doctors.map((doctor) => ({
         value: doctor.id,
         label: doctor.name,
       })),
@@ -336,7 +353,6 @@ export default function Component() {
       type: "checkbox",
     },
   ];
-
   const renderFormFields = (fields, section) => {
     return fields.map((field) => (
       <FormField
@@ -355,11 +371,27 @@ export default function Component() {
                   type={field.type}
                   placeholder={field.placeholder}
                   {...formField}
+                  disabled={
+                    (section === "healthBackground" &&
+                      noKnownHistory &&
+                      field.name !== "noKnownHistory") ||
+                    (section === "familyHealthHistory" &&
+                      noKnownFamilyHistory &&
+                      field.name !== "noKnownFamilyHistory")
+                  }
                 />
               ) : field.type === "select" ? (
                 <Select
                   onValueChange={formField.onChange}
                   value={formField.value}
+                  disabled={
+                    (section === "healthBackground" &&
+                      noKnownHistory &&
+                      field.name !== "noKnownHistory") ||
+                    (section === "familyHealthHistory" &&
+                      noKnownFamilyHistory &&
+                      field.name !== "noKnownFamilyHistory")
+                  }
                 >
                   <FormControl>
                     <SelectTrigger>
@@ -377,7 +409,18 @@ export default function Component() {
                   </SelectContent>
                 </Select>
               ) : field.type === "textarea" ? (
-                <Textarea placeholder={field.placeholder} {...formField} />
+                <Textarea
+                  placeholder={field.placeholder}
+                  {...formField}
+                  disabled={
+                    (section === "healthBackground" &&
+                      noKnownHistory &&
+                      field.name !== "noKnownHistory") ||
+                    (section === "familyHealthHistory" &&
+                      noKnownFamilyHistory &&
+                      field.name !== "noKnownFamilyHistory")
+                  }
+                />
               ) : field.type === "checkbox" ? (
                 <div className="flex items-center space-x-2">
                   <Checkbox

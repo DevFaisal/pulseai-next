@@ -31,6 +31,7 @@ import {
 } from "recharts";
 import { Heart, Thermometer, Wind, Activity, Droplet } from "lucide-react";
 import axios from "axios";
+import { fetchVitals } from "@/lib/fetchVitals";
 
 export default function PatientVitals() {
   const [patient, setPatient] = useState({
@@ -51,6 +52,17 @@ export default function PatientVitals() {
   // heart_rate: [],
   // oxygen_saturation: [],
   // });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = fetchVitals({ type: "blood_pressure" });
+      console.log(res);
+    };
+    fetchData();
+  }, []);
+
+  const [vitals, setVitals] = useState(null);
+  const [error, setError] = useState(null);
 
   //Mock data
   const [currentVitals, setCurrentVitals] = useState({
@@ -231,22 +243,6 @@ export default function PatientVitals() {
       },
     ],
   });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const patientResponse = await axios.get("/api/patient/1");
-        setPatient(patientResponse.data);
-
-        const vitalsResponse = await axios.get("/api/patient/1/vitals"); // Replace with actual API endpoint
-        setCurrentVitals(vitalsResponse.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const getLatestVital = (vitalArray) => {
     return vitalArray.length > 0 ? vitalArray[vitalArray.length - 1] : null;

@@ -14,6 +14,7 @@ import { deletePatient } from "@/server/actions/patients/delete-patient";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Stethoscope } from "lucide-react";
+import { EditPatient } from "./EditPatient";
 
 export default function PatientTable({ patients }) {
   const handleDeletePatient = async (id) => {
@@ -86,7 +87,7 @@ export default function PatientTable({ patients }) {
               )}
             </TableCell>
             <TableCell className="text-right space-x-2">
-              {/* <EditPatient patient={patient} setPatients={setPatients} /> */}
+              {/* <EditPatient patient={patient} /> */}
               <DeleteDialog
                 title={`Remove ${patient.firstName} ${patient.lastName}`}
                 description={`Are you sure you want to remove ${patient.firstName} ${patient.lastName} from the hospital? This action cannot be undone.`}

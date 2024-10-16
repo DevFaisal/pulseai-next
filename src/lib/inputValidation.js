@@ -26,7 +26,7 @@ const patientSchema = z.object({
     height: z.string().min(1, "Height is required"),
   }),
   healthBackground: z.object({
-    medicalConditions: z.string().min(1, "Medical condition is required"),
+    medicalConditions: z.string().optional(),
     previousSurgeries: z.string().optional(),
     ongoingTreatments: z.string().optional(),
     noKnownHistory: z.boolean().optional(),

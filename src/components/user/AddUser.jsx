@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import ReusableFormWithSelect from "@/components/other/ReusableFormWithSelect";
 import Inputs from "@/lib/inputs";
-import { useRecoilValue } from "recoil";
 import { userSchema } from "@/lib/inputValidation";
 import { toast } from "sonner";
 import { createUser } from "@/server/actions/users/create-user";
