@@ -15,6 +15,46 @@ const doctorSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters." }),
 });
 
+// const patientSchema = z.object({
+//   generalDetails: z.object({
+//     firstName: z.string().min(1, "First name is required"),
+//     lastName: z.string().min(1, "Last name is required"),
+//     email: z.string().email("Invalid email address"),
+//     dob: z.string().min(1, "Date of birth is required"),
+//     gender: z.string().min(1, "Gender is required"),
+//     weight: z.string().min(1, "Weight is required"),
+//     height: z.string().min(1, "Height is required"),
+//   }),
+//   healthBackground: z.object({
+//     medicalConditions: z.string().optional(),
+//     previousSurgeries: z.string().optional(),
+//     ongoingTreatments: z.string().optional(),
+//     noKnownHistory: z.boolean().optional(),
+//   }),
+//   currentHealthStatus: z.object({
+//     symptoms: z.string().optional(),
+//     symptomIntensity: z.number().min(0).max(10),
+//     symptomDuration: z.string().optional(),
+//     additionalComments: z.string().optional(),
+//     doctorAssigned: z.string().min(1, "Doctor assignment is required"),
+//   }),
+//   medicationAllergies: z.object({
+//     medications: z.string().optional(),
+//     currentAllergies: z.string().optional(),
+//   }),
+//   lifestyleFactors: z.object({
+//     smoking: z.boolean(),
+//     alcohol: z.boolean(),
+//     diet: z.string().optional(),
+//     exerciseFrequency: z.number().min(0).max(7),
+//     sleepHours: z.string().optional(),
+//   }),
+//   familyHealthHistory: z.object({
+//     familyConditions: z.string().optional(),
+//     noKnownFamilyHistory: z.boolean().optional(),
+//   }),
+// });
+
 const patientSchema = z.object({
   generalDetails: z.object({
     firstName: z.string().min(1, "First name is required"),
@@ -29,28 +69,26 @@ const patientSchema = z.object({
     medicalConditions: z.string().optional(),
     previousSurgeries: z.string().optional(),
     ongoingTreatments: z.string().optional(),
+    medications: z.string().optional(),
+    allergies: z.string().optional(),
     noKnownHistory: z.boolean().optional(),
   }),
   currentHealthStatus: z.object({
-    symptoms: z.string().min(1, "Symptom is required"),
+    symptoms: z.string().optional(),
     symptomIntensity: z.number().min(0).max(10),
-    symptomDuration: z.string().min(1, "Symptom duration is required"),
-    additionalComments: z.string().optional(),
+    symptomDuration: z.string().optional(),
     doctorAssigned: z.string().min(1, "Doctor assignment is required"),
-  }),
-  medicationAllergies: z.object({
-    medications: z.string().optional(),
-    foodAllergies: z.boolean().optional(),
-    medicationAllergies: z.boolean().optional(),
-    environmentalAllergies: z.boolean().optional(),
-    otherAllergies: z.string().optional(),
-  }),
-  lifestyleFactors: z.object({
-    smoking: z.enum(["yes", "no"]),
-    alcohol: z.enum(["yes", "no"]),
-    diet: z.string().min(1, "Diet type is required"),
-    exerciseFrequency: z.number().min(0).max(7),
-    sleepHours: z.string().min(1, "Sleep hours are required"),
+    smoking: z.enum(["NEVER", "FORMER", "CURRENT"]),
+    alcohol: z.enum(["NONE", "OCCASIONAL", "MODERATE", "HEAVY"]),
+    diet: z.enum(["REGULAR", "VEGETARIAN", "VEGAN", "KETO", "PALEO", "OTHER"]),
+    exerciseFrequency: z.enum([
+      "SEDENTARY",
+      "LIGHT",
+      "MODERATE",
+      "ACTIVE",
+      "VERY_ACTIVE",
+    ]),
+    sleepHours: z.number().min(0).max(24).optional(),
   }),
   familyHealthHistory: z.object({
     familyConditions: z.string().optional(),

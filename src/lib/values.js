@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
-import { NEXT_AUTH } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 
-const { user } = await getServerSession(NEXT_AUTH);
+const { user } = await getServerSession(authOptions);
 
 export const hospitalName = user.hospitalName;
 

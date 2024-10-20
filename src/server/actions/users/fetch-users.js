@@ -154,8 +154,6 @@ export async function updateUserPassword({
       error: error.message,
     };
   }
-  console.log("Old pAssword", currentPassword)
-  console.log("New pAssword", newPassword)
   const user = await prisma.user.findUnique({
     where: {
       id: id,

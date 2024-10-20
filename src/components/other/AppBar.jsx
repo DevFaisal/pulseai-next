@@ -7,10 +7,24 @@ import { signOut, useSession } from "next-auth/react";
 import { ModeToggle } from "@/components/other/ModeToggle";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { HelpCircle, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AppBar() {
   const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState(true);
+  const [username, setUsername] = useState("");
+
+  const router = useRouter();
 
   useEffect(() => {
     if (status !== "loading") {
@@ -39,7 +53,7 @@ export default function AppBar() {
         </Link>
 
         {/* Dark/Light mode toggle */}
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex justify-end p-7">
           <ModeToggle />
         </div>
 
@@ -54,14 +68,46 @@ export default function AppBar() {
             </>
           ) : status === "authenticated" ? (
             // Logged-in user options
-            <Button
-              variant="ghost"
-              className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-destructive"
-              onClick={() => signOut()}
-            >
-              <LogOut className="h-5 w-5" aria-hidden="true" />
-              <span>Logout</span>
-            </Button>
+            // <Button
+            //   variant="ghost"
+            //   className="flex items-center gap-1 text-sm font-medium text-muted-foreground transition-colors hover:text-destructive"
+            //   onClick={() => signOut()}
+            // >
+            //   <LogOut className="h-5 w-5" aria-hidden="true" />
+            //   <span>Logout</span>
+            // </Button>
+            <>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full">
+                    <Avatar>
+                      <AvatarFallback>
+                        {session?.user?.name.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={(e) => router.push("/user/setting")}
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    <span>Support</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onSelect={signOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
           ) : (
             // Unauthenticated user links
             links.map((link) => (

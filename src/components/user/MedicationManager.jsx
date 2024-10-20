@@ -103,7 +103,7 @@ export function MedicationManager({ patient }) {
   };
 
   return (
-    <Card className="rounded-none">
+    <Card className="flex flex-col justify-between w-full rounded-none h-[66vh]">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Medications</CardTitle>
         <CardDescription>Manage patient medications</CardDescription>
@@ -150,7 +150,7 @@ export function MedicationManager({ patient }) {
             </TableBody>
           </Table>
         </ScrollArea>
-        <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="grid grid-cols-3 gap-4 mb-4">
           <Input
             placeholder="Medication name"
             value={newMedication.name}
@@ -214,7 +214,7 @@ export function MedicationManager({ patient }) {
             }
           />
         </div>
-        <Button onClick={handleAddMedication} className="w-full">
+        <Button onClick={handleAddMedication}>
           Add Medication
         </Button>
       </CardContent>

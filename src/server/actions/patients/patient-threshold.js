@@ -4,7 +4,6 @@ import prisma from "@/lib/prisma";
 import { ObjectId } from "mongodb";
 
 export async function UpdateThreshold({ patientId, threshold }) {
-  console.log("threshold", threshold);
   if (!ObjectId.isValid(patientId)) {
     return { error: "Invalid patient ID" };
   }

@@ -1,11 +1,11 @@
 import { Users, UserPlus } from "lucide-react";
 import { fetchDetailsForAdmin } from "@/server/actions/doctors/fetch-doctors";
 import { getServerSession } from "next-auth";
-import { NEXT_AUTH } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 import TopCard from "./TopCard";
 
 export default async function AdminHeaderCards() {
-  const { user } = await getServerSession(NEXT_AUTH);
+  const { user } = await getServerSession(authOptions);
   const hospitalId = user.hospitalId;
   const { data: details } = await fetchDetailsForAdmin({ hospitalId });
   const hospitalStats = [

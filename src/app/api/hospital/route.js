@@ -11,9 +11,9 @@ export async function POST(request) {
     const { name, location, email, password } = body;
 
     // Validate request body
-    if (!name) {
+    if (!name || !location || !email || !password) {
       return NextResponse.json(
-        { error: "Hospital name is required" },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
@@ -24,7 +24,7 @@ export async function POST(request) {
       .toUpperCase()
       .concat(crypto.randomBytes(2).toString("hex").toUpperCase());
 
-    // check whether the hospital is already registered
+    // TODO: check whether the hospital is already registered
 
     const hospital = await prisma.hospital.create({
       data: {

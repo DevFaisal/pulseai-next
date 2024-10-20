@@ -201,7 +201,7 @@ export const Logo = () => {
       <motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-      className="font-semibold text-xl text-black dark:text-white whitespace-pre"
+        className="font-semibold text-xl text-black dark:text-white whitespace-pre"
       >
         Pulse AI
       </motion.span>

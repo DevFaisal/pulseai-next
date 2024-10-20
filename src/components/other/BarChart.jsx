@@ -28,10 +28,10 @@ export default function PatientDataChart() {
       config={{
         newPatients: {
           label: "New Patients",
-          color: "hsl(var(--chart-5))",
+          color: "hsl(var(--chart-3))",
         },
       }}
-      className="h-[400px]"
+      className="h-full w-full"
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={patientData}>

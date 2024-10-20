@@ -13,11 +13,11 @@ export default async function AdminDashboard() {
           <TabsTrigger value="patients">Patient Growth</TabsTrigger>
         </TabsList>
         <TabsContent value="patients">
-          <Card className='rounded-none'>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>New Patients Over Time</CardTitle>
             </CardHeader>
-            <CardContent className="pt-2 h-[500px] w-full">
+            <CardContent className="pt-2 h-[66vh] w-full">
               <BarChart />
             </CardContent>
           </Card>

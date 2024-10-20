@@ -121,7 +121,7 @@ export function ThresholdManager({ patient }) {
   );
 
   return (
-    <Card className="rounded-none">
+    <Card className="flex flex-col justify-between w-full rounded-none h-[66vh]">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Thresholds</CardTitle>
         <CardDescription>

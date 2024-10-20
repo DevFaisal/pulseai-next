@@ -99,7 +99,127 @@ import crypto from "crypto";
 // function generateRandomToken() {
 //   return crypto.randomBytes(3).toString("hex");
 // }
+
+// export async function createPatient({ formData, hospitalId }) {
+//   console.log("formData", formData);
+//   try {
+//     // Destructure formData for easy access
+//     const {
+//       generalDetails: {
+//         email,
+//         firstName,
+//         lastName,
+//         dob,
+//         weight,
+//         gender,
+//         height,
+//       },
+//       healthBackground: {
+//         medicalConditions,
+//         previousSurgeries,
+//         ongoingTreatments,
+//         noKnownHistory,
+//       },
+//       currentHealthStatus: {
+//         symptoms,
+//         symptomIntensity,
+//         symptomDuration,
+//         doctorAssigned,
+//       },
+//       medicationAllergies: { medications, currentAllergies },
+//       lifestyleFactors: {
+//         smoking,
+//         alcohol,
+//         diet,
+//         exerciseFrequency,
+//         sleepHours,
+//       },
+//       familyHealthHistory: { familyConditions, noKnownFamilyHistory },
+//     } = formData;
+
+//     // Create new patient in the database
+//     const newPatient = await prisma.patient.create({
+//       data: {
+//         firstName,
+//         email,
+//         lastName,
+//         dateOfBirth: dob ? new Date(dob) : null,
+//         weight: weight ? parseFloat(weight) : null,
+//         gender,
+//         height: height ? parseInt(height, 10) : null,
+//         token: generateRandomToken(),
+//         bmi: calculateBMI(weight, height),
+//         // Health Background
+//         medicalConditions: medicalConditions || null,
+//         previousSurgeries: previousSurgeries || null,
+//         ongoingTreatments: ongoingTreatments || null,
+//         noKnownHistory: noKnownHistory || false,
+//         // Current Health Status
+//         symptoms: symptoms || null,
+//         symptomIntensity: symptomIntensity
+//           ? parseInt(symptomIntensity, 10)
+//           : null,
+//         symptomDuration: symptomDuration || null,
+//         // Medication & Allergies
+//         medications: medications || null,
+//         allergies: currentAllergies || null,
+//         // Lifestyle Factors
+//         smoking: smoking || null,
+//         alcohol: alcohol || null,
+//         diet: diet || null,
+//         exerciseFrequency: exerciseFrequency
+//           ? parseInt(exerciseFrequency, 10)
+//           : null,
+//         sleepHours: sleepHours ? parseInt(sleepHours, 10) : null,
+//         // Family Health History
+//         familyConditions: familyConditions || null,
+//         noKnownFamilyHistory: noKnownFamilyHistory || false,
+//         // Relationships
+//         hospitalId: hospitalId,
+//         doctorId: doctorAssigned,
+//       },
+//     });
+
+//     if (!newPatient) {
+//       return {
+//         success: false,
+//         error: "Failed to create patient",
+//       };
+//     }
+
+//     const sendMail = await sendEmail({
+//       email: newPatient.email,
+//       subject: "Welcome to Pulse AI",
+//       from: "onboading@brokerless.online",
+//       react: Onboarding({
+//         name: newPatient.firstName + " " + newPatient.lastName,
+//         token: newPatient.token,
+//       }),
+//     });
+
+//     return {
+//       success: true,
+//       data: newPatient,
+//     };
+//   } catch (error) {
+//     console.error("Error creating patient:", error.message || error);
+//     return {
+//       success: false,
+//       error: `Failed to create patient: ${error.message || "Unknown error"}`,
+//     };
+//   }
+// }
+
+// function calculateBMI(weight, height) {
+//   return parseFloat((weight / Math.pow(height / 100, 2)).toFixed(2));
+// }
+
+// function generateRandomToken() {
+//   return crypto.randomBytes(3).toString("hex");
+// }
+
 export async function createPatient({ formData, hospitalId }) {
+  console.log("formData", formData);
   try {
     // Destructure formData for easy access
     const {
@@ -116,23 +236,15 @@ export async function createPatient({ formData, hospitalId }) {
         medicalConditions,
         previousSurgeries,
         ongoingTreatments,
+        medications,
+        allergies,
         noKnownHistory,
       },
       currentHealthStatus: {
         symptoms,
         symptomIntensity,
         symptomDuration,
-        additionalComments,
         doctorAssigned,
-      },
-      medicationAllergies: {
-        foodAllergies,
-        medicationAllergies,
-        environmentalAllergies,
-        medications,
-        otherAllergies,
-      },
-      lifestyleFactors: {
         smoking,
         alcohol,
         diet,
@@ -142,50 +254,54 @@ export async function createPatient({ formData, hospitalId }) {
       familyHealthHistory: { familyConditions, noKnownFamilyHistory },
     } = formData;
 
+    const token = generateRandomToken();
+
     // Create new patient in the database
     const newPatient = await prisma.patient.create({
       data: {
         firstName,
-        email,
         lastName,
-        dateOfBirth: dob ? new Date(dob) : null,
+        email,
+        token,
+        dateOfBirth: dob ? new Date(dob) : undefined,
+        gender: gender.toUpperCase(),
         weight: weight ? parseFloat(weight) : null,
-        gender,
-        height: height ? parseInt(height, 10) : null,
-        token: generateRandomToken(),
+        height: height ? parseFloat(height) : null,
         bmi: calculateBMI(weight, height),
-        // Health Background
-        medicalConditions: medicalConditions || null,
-        previousSurgeries: previousSurgeries || null,
-        ongoingTreatments: ongoingTreatments || null,
-        noKnownHistory: noKnownHistory || false,
-        // Current Health Status
-        symptoms: symptoms || null,
-        symptomIntensity: symptomIntensity
-          ? parseInt(symptomIntensity, 10)
-          : null,
-        symptomDuration: symptomDuration || null,
-        additionalComments: additionalComments || null,
-        // Medication & Allergies
-        medications: medications || null,
-        foodAllergies: !!foodAllergies,
-        medicationAllergies: !!medicationAllergies,
-        environmentalAllergies: !!environmentalAllergies,
-        otherAllergies: otherAllergies || null,
-        // Lifestyle Factors
-        smoking: smoking || null,
-        alcohol: alcohol || null,
-        diet: diet || null,
-        exerciseFrequency: exerciseFrequency
-          ? parseInt(exerciseFrequency, 10)
-          : null,
-        sleepHours: sleepHours ? parseInt(sleepHours, 10) : null,
-        // Family Health History
-        familyConditions: familyConditions || null,
-        noKnownFamilyHistory: noKnownFamilyHistory || false,
-        // Relationships
-        hospitalId: hospitalId,
-        doctorId: doctorAssigned,
+        hospital: { connect: { id: hospitalId } },
+        doctor: doctorAssigned
+          ? { connect: { id: doctorAssigned } }
+          : undefined,
+        medicalHistory: {
+          create: {
+            medicalConditions: medicalConditions || null,
+            previousSurgeries: previousSurgeries || null,
+            ongoingTreatments: ongoingTreatments || null,
+            medications: medications || null,
+            allergies: allergies || null,
+            familyConditions: familyConditions || null,
+            noKnownHistory: noKnownHistory || false,
+            noKnownFamilyHistory: noKnownFamilyHistory || false,
+          },
+        },
+        currentHealthStatus: {
+          create: {
+            symptoms: symptoms || [],
+            symptomIntensity: symptomIntensity
+              ? parseInt(symptomIntensity, 10)
+              : null,
+            symptomDuration: symptomDuration || null,
+            smoking: smoking || false,
+            alcohol: alcohol || false,
+            diet: diet || null,
+            exerciseFrequency: exerciseFrequency || null,
+            sleepHours: sleepHours ? parseInt(sleepHours, 10) : null,
+          },
+        },
+      },
+      include: {
+        medicalHistory: true,
+        currentHealthStatus: true,
       },
     });
 
@@ -199,9 +315,9 @@ export async function createPatient({ formData, hospitalId }) {
     const sendMail = await sendEmail({
       email: newPatient.email,
       subject: "Welcome to Pulse AI",
-      from: "onboading@brokerless.online",
+      from: "onboarding@brokerless.online",
       react: Onboarding({
-        name: newPatient.firstName + " " + newPatient.lastName,
+        name: `${newPatient.firstName} ${newPatient.lastName}`,
         token: newPatient.token,
       }),
     });
@@ -211,18 +327,25 @@ export async function createPatient({ formData, hospitalId }) {
       data: newPatient,
     };
   } catch (error) {
-    console.error("Error creating patient:", error.message || error);
+    console.error("Error creating patient:", error);
     return {
       success: false,
-      error: `Failed to create patient: ${error.message || "Unknown error"}`,
+      error: `Failed to create patient: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
     };
   }
 }
 
 function calculateBMI(weight, height) {
-  return parseFloat((weight / Math.pow(height / 100, 2)).toFixed(2));
+  if (!weight || !height) return null;
+  const weightNum = parseFloat(weight);
+  const heightNum = parseFloat(height) / 100; // convert cm to m
+  return parseFloat((weightNum / Math.pow(heightNum, 2)).toFixed(2));
 }
 
 function generateRandomToken() {
   return crypto.randomBytes(3).toString("hex");
 }
+
+export default createPatient;

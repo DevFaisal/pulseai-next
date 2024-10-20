@@ -25,7 +25,6 @@ export default function PatientTable({ patients }) {
       toast.error("Error deleting patient");
     }
   };
-
   return (
     <Table>
       <TableHeader>
@@ -71,14 +70,14 @@ export default function PatientTable({ patients }) {
               <Badge variant="outline">{patient.gender.toUpperCase()}</Badge>
             </TableCell>
             <TableCell>
-              {patient.Doctor ? (
+              {patient.doctor ? (
                 <div className="flex items-center space-x-2">
                   <Avatar className="h-6 w-6">
                     <AvatarFallback>
                       <Stethoscope className="h-4 w-4" />
                     </AvatarFallback>
                   </Avatar>
-                  <span>{patient.Doctor.name}</span>
+                  <span>{patient.doctor.name}</span>
                 </div>
               ) : (
                 <span className="text-muted-foreground italic">

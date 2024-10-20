@@ -30,227 +30,86 @@ import {
   Legend,
 } from "recharts";
 import { Heart, Thermometer, Wind, Activity, Droplet } from "lucide-react";
-import axios from "axios";
-import { fetchVitals } from "@/lib/fetchVitals";
+import { fetchVitals, getAuthToken } from "@/lib/fetchVitals";
+import Loading from "../other/Loading";
+
+const VALID_VITAL_TYPES = [
+  "blood_pressure",
+  "blood_sugar",
+  "temperature",
+  "weight",
+  "heart_rate",
+  "oxygen_saturation",
+];
 
 export default function PatientVitals() {
   const [patient, setPatient] = useState({
     id: 1,
-    name: "Fatima Johnson",
+    name: "Johnson",
     age: 42,
-    gender: "Female",
+    gender: "Male",
     bloodType: "A+",
     primaryCondition: "Type 2 Diabetes",
     status: "Stable",
   });
 
-  // const [currentVitals, setCurrentVitals] = useState({
-  // blood_pressure: [],
-  // temperature: [],
-  // blood_sugar: [],
-  // weight: [],
-  // heart_rate: [],
-  // oxygen_saturation: [],
-  // });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = fetchVitals({ type: "blood_pressure" });
-      console.log(res);
-    };
-    fetchData();
-  }, []);
-
-  const [vitals, setVitals] = useState(null);
-  const [error, setError] = useState(null);
-
-  //Mock data
   const [currentVitals, setCurrentVitals] = useState({
-    blood_pressure: [
-      {
-        id: 0,
-        systolic: "120",
-        diastolic: "80",
-        created_date: "2024-10-01T07:50:30.467000",
-      },
-      {
-        id: 1,
-        systolic: "118",
-        diastolic: "76",
-        created_date: "2024-10-05T07:51:30.467000",
-      },
-      {
-        id: 2,
-        systolic: "115",
-        diastolic: "78",
-        created_date: "2024-10-10T08:01:02.345000",
-      },
-      {
-        id: 3,
-        systolic: "117",
-        diastolic: "79",
-        created_date: "2024-10-15T08:00:47.606000",
-      },
-      {
-        id: 4,
-        systolic: "116",
-        diastolic: "75",
-        created_date: "2024-10-20T08:05:30.467000",
-      },
-      {
-        id: 5,
-        systolic: "114",
-        diastolic: "77",
-        created_date: "2024-10-25T07:52:30.467000",
-      },
-      {
-        id: 6,
-        systolic: "113",
-        diastolic: "76",
-        created_date: "2024-10-29T08:01:02.345000",
-      },
-    ],
-    temperature: [
-      {
-        id: 1,
-        temperature: "36.8",
-        unit: "C",
-        created_date: "2024-10-01T07:53:02.446000",
-      },
-      {
-        id: 2,
-        temperature: "37.0",
-        unit: "C",
-        created_date: "2024-10-10T07:53:02.446000",
-      },
-      {
-        id: 3,
-        temperature: "36.9",
-        unit: "C",
-        created_date: "2024-10-20T07:53:02.446000",
-      },
-      {
-        id: 4,
-        temperature: "37.1",
-        unit: "C",
-        created_date: "2024-10-25T07:53:02.446000",
-      },
-      {
-        id: 5,
-        temperature: "36.7",
-        unit: "C",
-        created_date: "2024-10-29T07:53:02.446000",
-      },
-    ],
-    blood_sugar: [
-      {
-        id: 1,
-        blood_glucose: "5.8",
-        unit: "mmol/L",
-        created_date: "2024-10-02T07:51:10.496000",
-      },
-      {
-        id: 2,
-        blood_glucose: "6.0",
-        unit: "mmol/L",
-        created_date: "2024-10-15T07:51:10.496000",
-      },
-      {
-        id: 3,
-        blood_glucose: "6.2",
-        unit: "mmol/L",
-        created_date: "2024-10-28T07:51:10.496000",
-      },
-    ],
-    weight: [
-      {
-        id: 1,
-        weight: "126.5",
-        unit: "lb",
-        created_date: "2024-10-01T07:51:29.653000",
-      },
-      {
-        id: 2,
-        weight: "127.0",
-        unit: "lb",
-        created_date: "2024-10-10T07:51:29.653000",
-      },
-      {
-        id: 3,
-        weight: "126.8",
-        unit: "lb",
-        created_date: "2024-10-20T07:51:29.653000",
-      },
-      {
-        id: 4,
-        weight: "126.7",
-        unit: "lb",
-        created_date: "2024-10-29T07:51:29.653000",
-      },
-    ],
-    heart_rate: [
-      {
-        id: 1,
-        heart_rate: "65",
-        created_date: "2024-10-01T07:50:31.716000",
-      },
-      {
-        id: 2,
-        heart_rate: "63",
-        created_date: "2024-10-05T07:50:47.606000",
-      },
-      {
-        id: 3,
-        heart_rate: "70",
-        created_date: "2024-10-10T07:54:10.054000",
-      },
-      {
-        id: 4,
-        heart_rate: "68",
-        created_date: "2024-10-15T08:01:02.345000",
-      },
-      {
-        id: 5,
-        heart_rate: "72",
-        created_date: "2024-10-20T08:01:02.345000",
-      },
-      {
-        id: 6,
-        heart_rate: "64",
-        created_date: "2024-10-25T08:01:02.345000",
-      },
-    ],
-    oxygen_saturation: [
-      {
-        id: 1,
-        spo2: "98",
-        created_date: "2024-10-01T07:54:10.054000",
-      },
-      {
-        id: 2,
-        spo2: "97",
-        created_date: "2024-10-10T07:54:10.054000",
-      },
-      {
-        id: 3,
-        spo2: "96",
-        created_date: "2024-10-20T07:54:10.054000",
-      },
-      {
-        id: 4,
-        spo2: "98",
-        created_date: "2024-10-29T07:54:10.054000",
-      },
-    ],
+    blood_pressure: [],
+    temperature: [],
+    blood_sugar: [],
+    weight: [],
+    heart_rate: [],
+    oxygen_saturation: [],
   });
 
-  const getLatestVital = (vitalArray) => {
-    return vitalArray.length > 0 ? vitalArray[vitalArray.length - 1] : null;
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const patientId = "my_id_1001";
+
+  const fetchDataWithToken = async (authToken) => {
+    try {
+      const res = await Promise.all(
+        VALID_VITAL_TYPES.map((type) =>
+          fetchVitals({ type, firebaseId: patientId, token: authToken })
+        )
+      );
+      const newVitals = VALID_VITAL_TYPES.reduce((acc, type, index) => {
+        acc[type] = res[index]?.[type] || [];
+        return acc;
+      }, {});
+      setCurrentVitals(newVitals);
+      setLoading(false);
+    } catch (error) {
+      console.error("Failed to fetch vitals:", error.status);
+      if (error.status === 401) {
+        console.log("Refreshing token...");
+        const newToken = await getAuthToken();
+        setToken(newToken);
+        await fetchDataWithToken(newToken);
+      }
+    }
   };
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleString();
-  };
+  useEffect(() => {
+    const initFetch = async () => {
+      const initialToken = await getAuthToken();
+      setToken(initialToken);
+      await fetchDataWithToken(initialToken);
+    };
+
+    initFetch();
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      fetchDataWithToken(token);
+    }
+  }, [token]);
+
+  const getLatestVital = (vitalArray) =>
+    vitalArray.length > 0 ? vitalArray[vitalArray.length - 1] : null;
+  const formatDate = (dateString) => new Date(dateString).toLocaleString();
 
   const renderLineChart = (data, dataKey, color, unit) => (
     <ResponsiveContainer width="100%" height={300}>
@@ -274,12 +133,59 @@ export default function PatientVitals() {
     </ResponsiveContainer>
   );
 
+  const renderVitalCard = (icon, title, value, unit) => (
+    <Card className="flex flex-col items-center justify-center p-4 hover:shadow-lg transition-shadow duration-200">
+      <div className="text-4xl mb-2">{icon}</div>
+      <h3 className="text-lg font-semibold text-gray-700 mb-1">{title}</h3>
+      <p className="text-2xl font-bold">
+        {value}{" "}
+        <span className="text-sm font-normal text-gray-500">{unit}</span>
+      </p>
+    </Card>
+  );
+
+  const renderVitalTable = (title, data, columns) => (
+    <Card className="mt-6">
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              {columns.map((column, index) => (
+                <TableHead key={index}>{column.header}</TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((record, index) => (
+              <TableRow key={index}>
+                <TableCell>{formatDate(record.created_date)}</TableCell>
+                {columns.map((column, colIndex) => (
+                  <TableCell key={colIndex}>
+                    {record[column.key]} {column.unit}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+
+  if (loading) {
+    return <Loading />;
+  }
+
   return (
-    <div className="container mx-auto px-4 py-6">
-      <Card className="mb-6 rounded-none">
-        <CardHeader>
+    <div className="container mx-auto px-4 py-8 bg-gray-50">
+      <Card className="mb-8 overflow-hidden">
+        <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
           <div className="flex items-center space-x-4">
-            <Avatar className="w-16 h-16">
+            <Avatar className="w-20 h-20 border-4 border-white">
               <AvatarImage
                 src={`https://api.dicebear.com/6.x/initials/svg?seed=${patient.name}`}
                 alt={patient.name}
@@ -292,11 +198,12 @@ export default function PatientVitals() {
               </AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle>{patient.name}</CardTitle>
-              <CardDescription>
+              <CardTitle className="text-3xl">{patient.name}</CardTitle>
+              <CardDescription className="text-gray-200">
                 {patient.age} years old • {patient.gender} • {patient.bloodType}
               </CardDescription>
               <Badge
+                className="mt-2"
                 variant={
                   patient.status === "Stable"
                     ? "secondary"
@@ -314,88 +221,64 @@ export default function PatientVitals() {
         </CardHeader>
       </Card>
 
-      <Card className="mb-6 rounded-none">
+      <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Current Vitals</CardTitle>
+          <CardTitle className="text-2xl">Current Vitals</CardTitle>
           <CardDescription>
             Last recorded: {formatDate(new Date().toISOString())}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            <div className="flex items-center space-x-2">
-              <Heart className="h-5 w-5 text-red-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">
-                  Blood Pressure
-                </p>
-                <p className="text-lg font-semibold">
-                  {getLatestVital(currentVitals.blood_pressure)?.systolic}/
-                  {getLatestVital(currentVitals.blood_pressure)?.diastolic} mmHg
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Activity className="h-5 w-5 text-blue-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">Heart Rate</p>
-                <p className="text-lg font-semibold">
-                  {getLatestVital(currentVitals.heart_rate)?.heart_rate} bpm
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Thermometer className="h-5 w-5 text-yellow-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">Temperature</p>
-                <p className="text-lg font-semibold">
-                  {getLatestVital(currentVitals.temperature)?.temperature}°
-                  {getLatestVital(currentVitals.temperature)?.unit}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Wind className="h-5 w-5 text-green-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">Blood Sugar</p>
-                <p className="text-lg font-semibold">
-                  {getLatestVital(currentVitals.blood_sugar)?.blood_glucose}{" "}
-                  {getLatestVital(currentVitals.blood_sugar)?.unit}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Droplet className="h-5 w-5 text-blue-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">
-                  Oxygen Saturation
-                </p>
-                <p className="text-lg font-semibold">
-                  {getLatestVital(currentVitals.oxygen_saturation)?.spo2}%
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Activity className="h-5 w-5 text-purple-500" />
-              <div>
-                <p className="text-sm font-medium text-gray-500">Weight</p>
-                <p className="text-lg font-semibold">
-                  {getLatestVital(currentVitals.weight)?.weight}{" "}
-                  {getLatestVital(currentVitals.weight)?.unit}
-                </p>
-              </div>
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            {renderVitalCard(
+              <Heart className="text-red-500" />,
+              "Blood Pressure",
+              `${getLatestVital(currentVitals.blood_pressure)?.systolic}/${
+                getLatestVital(currentVitals.blood_pressure)?.diastolic
+              }`,
+              "mmHg"
+            )}
+            {renderVitalCard(
+              <Activity className="text-blue-500" />,
+              "Heart Rate",
+              getLatestVital(currentVitals.heart_rate)?.heart_rate,
+              "bpm"
+            )}
+            {renderVitalCard(
+              <Thermometer className="text-yellow-500" />,
+              "Temperature",
+              getLatestVital(currentVitals.temperature)?.temperature,
+              `°${getLatestVital(currentVitals.temperature)?.unit}`
+            )}
+            {renderVitalCard(
+              <Wind className="text-green-500" />,
+              "Blood Sugar",
+              getLatestVital(currentVitals.blood_sugar)?.blood_glucose,
+              getLatestVital(currentVitals.blood_sugar)?.unit
+            )}
+            {renderVitalCard(
+              <Droplet className="text-blue-500" />,
+              "Oxygen Saturation",
+              getLatestVital(currentVitals.oxygen_saturation)?.spo2,
+              "%"
+            )}
+            {renderVitalCard(
+              <Activity className="text-purple-500" />,
+              "Weight",
+              getLatestVital(currentVitals.weight)?.weight,
+              getLatestVital(currentVitals.weight)?.unit
+            )}
           </div>
         </CardContent>
       </Card>
 
-      <Card className="rounded-none">
+      <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Vitals History</CardTitle>
+          <CardTitle className="text-2xl">Vitals History</CardTitle>
           <CardDescription>Trends over time</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="bloodPressure">
+          <Tabs defaultValue="bloodPressure" className="space-y-4">
             <TabsList className="grid w-full grid-cols-3 md:grid-cols-6">
               <TabsTrigger value="bloodPressure">Blood Pressure</TabsTrigger>
               <TabsTrigger value="heartRate">Heart Rate</TabsTrigger>
@@ -407,19 +290,19 @@ export default function PatientVitals() {
               <TabsTrigger value="weight">Weight</TabsTrigger>
             </TabsList>
             <TabsContent value="bloodPressure">
-              <Card className="rounded-none">
+              <Card>
                 <CardHeader>
                   <CardTitle>Blood Pressure History</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {renderLineChart(
-                    currentVitals.blood_pressure,
+                    currentVitals?.blood_pressure,
                     "systolic",
                     "#8884d8",
                     " mmHg"
                   )}
                   {renderLineChart(
-                    currentVitals.blood_pressure,
+                    currentVitals?.blood_pressure,
                     "diastolic",
                     "#82ca9d",
                     " mmHg"
@@ -428,7 +311,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="heartRate">
-              <Card className="rounded-none">
+              <Card>
                 <CardHeader>
                   <CardTitle>Heart Rate History</CardTitle>
                 </CardHeader>
@@ -443,7 +326,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="temperature">
-              <Card className="rounded-none">
+              <Card>
                 <CardHeader>
                   <CardTitle>Temperature History</CardTitle>
                 </CardHeader>
@@ -458,7 +341,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="bloodSugar">
-              <Card className="rounded-none">
+              <Card>
                 <CardHeader>
                   <CardTitle>Blood Sugar History</CardTitle>
                 </CardHeader>
@@ -473,7 +356,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="oxygenSaturation">
-              <Card className="rounded-none">
+              <Card>
                 <CardHeader>
                   <CardTitle>Oxygen Saturation History</CardTitle>
                 </CardHeader>
@@ -488,7 +371,7 @@ export default function PatientVitals() {
               </Card>
             </TabsContent>
             <TabsContent value="weight">
-              <Card className="rounded-none">
+              <Card>
                 <CardHeader>
                   <CardTitle>Weight History</CardTitle>
                 </CardHeader>
@@ -506,53 +389,66 @@ export default function PatientVitals() {
         </CardContent>
       </Card>
 
-      <Card className="mt-6 rounded-none">
+      <Card>
         <CardHeader>
-          <CardTitle>Vitals Log</CardTitle>
-          <CardDescription>Detailed history of recorded vitals</CardDescription>
+          <CardTitle className="text-2xl">Vitals Logs</CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Blood Pressure</TableHead>
-                <TableHead>Heart Rate</TableHead>
-                <TableHead>Temperature</TableHead>
-                <TableHead>Blood Sugar</TableHead>
-                <TableHead>Oxygen Saturation</TableHead>
-                <TableHead>Weight</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {currentVitals.blood_pressure.map((record, index) => (
-                <TableRow key={index}>
-                  <TableCell>{formatDate(record.created_date)}</TableCell>
-                  <TableCell>
-                    {record.systolic}/{record.diastolic} mmHg
-                  </TableCell>
-                  <TableCell>
-                    {currentVitals.heart_rate[index]?.heart_rate || "-"} bpm
-                  </TableCell>
-                  <TableCell>
-                    {currentVitals.temperature[index]?.temperature || "-"}°
-                    {currentVitals.temperature[index]?.unit || "C"}
-                  </TableCell>
-                  <TableCell>
-                    {currentVitals.blood_sugar[index]?.blood_glucose || "-"}{" "}
-                    {currentVitals.blood_sugar[index]?.unit || "mmol/L"}
-                  </TableCell>
-                  <TableCell>
-                    {currentVitals.oxygen_saturation[index]?.spo2 || "-"}%
-                  </TableCell>
-                  <TableCell>
-                    {currentVitals.weight[index]?.weight || "-"}{" "}
-                    {currentVitals.weight[index]?.unit || "lb"}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <Tabs defaultValue="bloodPressure-logs">
+            <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 mb-4">
+              <TabsTrigger value="bloodPressure-logs">
+                Blood Pressure
+              </TabsTrigger>
+              <TabsTrigger value="heartRate-logs">Heart Rate</TabsTrigger>
+              <TabsTrigger value="temperature-logs">Temperature</TabsTrigger>
+              <TabsTrigger value="bloodSugar-logs">Blood Sugar</TabsTrigger>
+              <TabsTrigger value="oxygenSaturation-logs">
+                Oxygen Saturation
+              </TabsTrigger>
+              <TabsTrigger value="weight-logs">Weight</TabsTrigger>
+            </TabsList>
+            <TabsContent value="bloodPressure-logs">
+              {renderVitalTable(
+                "Blood Pressure Log",
+                currentVitals.blood_pressure,
+                [
+                  { header: "Systolic", key: "systolic", unit: "mmHg" },
+                  { header: "Diastolic", key: "diastolic", unit: "mmHg" },
+                ]
+              )}
+            </TabsContent>
+            <TabsContent value="heartRate-logs">
+              {renderVitalTable("Heart Rate Log", currentVitals.heart_rate, [
+                { header: "Heart Rate", key: "heart_rate", unit: "bpm" },
+              ])}
+            </TabsContent>
+            <TabsContent value="temperature-logs">
+              {renderVitalTable("Temperature Log", currentVitals.temperature, [
+                { header: "Temperature", key: "temperature", unit: "°C" },
+              ])}
+            </TabsContent>
+            <TabsContent value="bloodSugar-logs">
+              {renderVitalTable("Blood Sugar Log", currentVitals.blood_sugar, [
+                {
+                  header: "Blood Glucose",
+                  key: "blood_glucose",
+                  unit: "mmol/L",
+                },
+              ])}
+            </TabsContent>
+            <TabsContent value="oxygenSaturation-logs">
+              {renderVitalTable(
+                "Oxygen Saturation Log",
+                currentVitals.oxygen_saturation,
+                [{ header: "SpO2", key: "spo2", unit: "%" }]
+              )}
+            </TabsContent>
+            <TabsContent value="weight-logs">
+              {renderVitalTable("Weight Log", currentVitals.weight, [
+                { header: "Weight", key: "weight", unit: "lb" },
+              ])}
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>

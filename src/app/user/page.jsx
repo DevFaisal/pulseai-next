@@ -18,13 +18,13 @@ import {
   Clock,
 } from "lucide-react";
 import { getServerSession } from "next-auth";
-import { NEXT_AUTH } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 import { fetchPatients } from "@/server/actions/patients/fetch-patients";
 import PatientListUser from "@/components/patient/PatientListUser";
 import TopCard from "@/components/other/TopCard";
 
 export default async function PulseAIRemoteOperatorDashboard() {
-  const { user } = await getServerSession(NEXT_AUTH);
+  const { user } = await getServerSession(authOptions);
   const hospitalId = user.hospitalId;
   const patients = await fetchPatients({ hospitalId });
 

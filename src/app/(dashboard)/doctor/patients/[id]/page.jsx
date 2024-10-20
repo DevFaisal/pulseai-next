@@ -7,17 +7,25 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 import { fetchPatientById } from "@/server/actions/patients/fetch-patients";
 import NotAvailable from "@/components/other/NotAvailable";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export default async function DoctorDiagnosisPage({ params }) {
+  const { user } = await getServerSession(authOptions);
+  const userId = user.id;
   const id = params.id;
-  const patient = (await fetchPatientById({ patientId: id })).data;
+  const { data: patient, error } = await fetchPatientById({
+    patientId: id,
+    userId,
+  });
+
 
   if (!patient)
     return (
       <div className="flex justify-center items-center h-screen">
         <NotAvailable
           title="Patient"
-          description="The patient you are looking for does not exist."
+          description={error || "Patient not found"}
         />
       </div>
     );
@@ -56,12 +64,16 @@ export default async function DoctorDiagnosisPage({ params }) {
             </TabsTrigger>
           </TabsList>
           <div className="mt-6">
-            <ScrollArea className="h-[calc(100vh-300px)] pr-4">
+            <ScrollArea className="h-[calc(100vh-30vh)] pr-4">
               <TabsContent value="patientInformation">
-                <PatientInformation patient={patient} />
+                <div>
+                  <PatientInformation patient={patient} />
+                </div>
               </TabsContent>
               <TabsContent value="diagnose">
-                <DiagnoseManager patient={patient} />
+                <div>
+                  <DiagnoseManager patient={patient} />
+                </div>
               </TabsContent>
               <TabsContent value="medication">
                 <MedicationManager patient={patient} />

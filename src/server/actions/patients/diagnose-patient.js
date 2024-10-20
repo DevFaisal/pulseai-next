@@ -13,12 +13,6 @@ export async function DiagnosePatient({
     return { error: "Invalid patient ID" };
   }
 
-  console.log("DiagnosePatient");
-  console.log(patientId);
-  console.log(diagnose);
-  console.log(medication);
-  console.log(thresholds);
-
   try {
     const patient = await prisma.patient.findUnique({
       where: {

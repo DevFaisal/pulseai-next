@@ -4,13 +4,14 @@ import NotAvailable from "@/components/other/NotAvailable";
 import DoctorTable from "@/components/doctor/DoctorTable";
 import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 import { fetchDoctors } from "@/server/actions/doctors/fetch-doctors";
-import { NEXT_AUTH } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 
 export default async function Doctors() {
-  const { user } = await getServerSession(NEXT_AUTH);
+  const { user } = await getServerSession(authOptions);
   const hospitalId = user.hospitalId;
   const doctors = await fetchDoctors({ hospitalId });
+
 
   return (
     <ChildrenWrapper
@@ -25,4 +26,11 @@ export default async function Doctors() {
       )}
     </ChildrenWrapper>
   );
+}
+
+export function generateMetadata() {
+  return {
+    title: "Doctors",
+    description: "Manage and view doctor details",
+  };
 }

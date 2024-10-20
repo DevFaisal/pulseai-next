@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Eye, Pen, Stethoscope } from "lucide-react";
 import ActionDialog from "./ActionDialog";
 import { useRouter } from "next/navigation";
+import { encryptId } from "@/lib/encryption";
 
 export default function PatientList({ patients = [] }) {
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -72,7 +73,7 @@ export default function PatientList({ patients = [] }) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => router.push(`patients/${patient.id}`)}
+                onClick={() => router.push(`patients/${encryptId(String(patient.id))}`)}
               >
                 <Stethoscope className="mr-2 h-4 w-4" />
                 Diagnose

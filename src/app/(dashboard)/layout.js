@@ -10,7 +10,7 @@ export default function RootLayout({ children }) {
   return (
     <DashboardWrapperAce>
       <ErrorBoundary>
-        <div className="w-full h-full overflow-scroll mx-auto max-w-8xl">
+        <div className="w-full h-full min-h-screen overflow-y-scroll mx-auto max-w-8xl">
           {children}
         </div>
       </ErrorBoundary>

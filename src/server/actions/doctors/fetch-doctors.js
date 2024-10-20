@@ -52,10 +52,14 @@ export async function fetchDoctorsPatients({ userId }) {
         error: "User not found",
       };
     }
+
     const doctor = await prisma.doctor.findUnique({
       where: {
-        userId: userId,
-        email: user.email,
+        userId_hospitalId_email: {
+          userId: userId,
+          hospitalId: user.hospitalId,
+          email: user.email,
+        },
       },
       select: {
         id: true,

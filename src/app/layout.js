@@ -1,7 +1,6 @@
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 import Providers from "@/context/Providers";
-
 import { ThemeProvider } from "@/context/ThemeProvider";
 import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 

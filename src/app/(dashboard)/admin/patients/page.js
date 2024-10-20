@@ -2,12 +2,12 @@ import PatientTable from "@/components/patient/PatientTable";
 import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 import AddPatientButton from "@/components/other/AddPatientButton";
 import { getServerSession } from "next-auth";
-import { NEXT_AUTH } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 import { fetchPatients } from "@/server/actions/patients/fetch-patients";
 import NotAvailable from "@/components/other/NotAvailable";
 
 export default async function Patients() {
-  const { user } = await getServerSession(NEXT_AUTH);
+  const { user } = await getServerSession(authOptions);
   const hospitalId = user.hospitalId;
   const patients = await fetchPatients({ hospitalId });
 
@@ -26,4 +26,12 @@ export default async function Patients() {
       </div>
     </ChildrenWrapper>
   );
+}
+
+
+export function generateMetadata() {
+  return {
+    title: "Patients",
+    description: "Manage and view patient details",
+  };
 }

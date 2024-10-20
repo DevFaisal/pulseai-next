@@ -1,14 +1,13 @@
 import { Users, UserCheck, ClipboardList } from "lucide-react";
-
 import { fetchDoctorsPatients } from "@/server/actions/doctors/fetch-doctors";
 import { getServerSession } from "next-auth";
-import { NEXT_AUTH } from "@/lib/auth";
+import { authOptions } from "@/lib/auth";
 import PatientDiagnosesOverTime from "@/components/patient/PatientDiagnosesOverTime";
 import RecentPatients from "@/components/patient/RecentPatients";
 import TopCard from "@/components/other/TopCard";
 
 export default async function DoctorDashboard() {
-  const { user } = await getServerSession(NEXT_AUTH);
+  const { user } = await getServerSession(authOptions);
   const userId = user.id;
   const doctorData = await fetchDoctorsPatients({ userId });
 
