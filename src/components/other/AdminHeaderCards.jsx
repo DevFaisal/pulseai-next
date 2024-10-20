@@ -8,6 +8,9 @@ export default async function AdminHeaderCards() {
   const { user } = await getServerSession(authOptions);
   const hospitalId = user.hospitalId;
   const { data: details } = await fetchDetailsForAdmin({ hospitalId });
+
+  if (!details) return null;
+
   const hospitalStats = [
     {
       title: "Total Doctors",

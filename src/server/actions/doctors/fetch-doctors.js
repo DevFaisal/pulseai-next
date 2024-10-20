@@ -98,26 +98,35 @@ export async function fetchDetailsForAdmin({ hospitalId }) {
       where: {
         id: hospitalId,
       },
-      select: {
-        doctors: {
-          where: {
-            hospitalId: hospitalId,
-          },
-        },
-        patients: {
-          where: {
-            hospitalId: hospitalId,
-          },
-        },
+      include: {
+        doctors: true,
+        patients: true,
         users: {
           where: {
-            hospitalId: hospitalId,
-            role: {
-              equals: "USER",
-            },
+            role: "USER",
           },
         },
       },
+      // select: {
+      //   doctors: {
+      //     where: {
+      //       hospitalId: hospitalId,
+      //     },
+      //   },
+      //   patients: {
+      //     where: {
+      //       hospitalId: hospitalId,
+      //     },
+      //   },
+      //   users: {
+      //     where: {
+      //       hospitalId: hospitalId,
+      //       role: {
+      //         equals: "USER",
+      //       },
+      //     },
+      //   },
+      // },
     });
     if (!particularHospitalDetails) {
       return {

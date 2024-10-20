@@ -825,7 +825,7 @@ export default function AddPatient() {
       name: "doctorAssigned",
       label: "Doctor Assigned",
       type: "select",
-      options: doctors.map((doctor) => ({
+      options: doctors?.map((doctor) => ({
         value: doctor.id,
         label: doctor.name,
       })),
