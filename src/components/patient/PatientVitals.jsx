@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Card,
   CardContent,
@@ -43,6 +43,9 @@ const VALID_VITAL_TYPES = [
 ];
 
 export default function PatientVitals() {
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const fetchedRef = useRef(false);
   const [patient, setPatient] = useState({
     id: 1,
     name: "Johnson",
@@ -62,49 +65,50 @@ export default function PatientVitals() {
     oxygen_saturation: [],
   });
 
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
-
   const patientId = "my_id_1001";
 
-  const fetchDataWithToken = async (authToken) => {
-    try {
-      const res = await Promise.all(
-        VALID_VITAL_TYPES.map((type) =>
-          fetchVitals({ type, firebaseId: patientId, token: authToken })
-        )
-      );
-      const newVitals = VALID_VITAL_TYPES.reduce((acc, type, index) => {
-        acc[type] = res[index]?.[type] || [];
-        return acc;
-      }, {});
-      setCurrentVitals(newVitals);
-      setLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch vitals:", error.status);
-      if (error.status === 401) {
-        console.log("Refreshing token...");
-        const newToken = await getAuthToken();
-        setToken(newToken);
-        await fetchDataWithToken(newToken);
-      }
-    }
-  };
+  console.log("Component rendered");
 
   useEffect(() => {
-    const initFetch = async () => {
-      const initialToken = await getAuthToken();
-      setToken(initialToken);
-      await fetchDataWithToken(initialToken);
+    const fetchData = async () => {
+      if (fetchedRef.current) return; // Prevent double fetch in strict mode
+      fetchedRef.current = true;
+
+      try {
+        if (!token) {
+          const newToken = await getAuthToken();
+          setToken(newToken);
+          return;
+        }
+
+        console.log("Fetching vitals...");
+        const res = await Promise.all(
+          VALID_VITAL_TYPES.map((type) =>
+            fetchVitals({ type, firebaseId: patientId, token })
+          )
+        );
+        const newVitals = VALID_VITAL_TYPES.reduce((acc, type, index) => {
+          acc[type] = res[index]?.[type] || [];
+          return acc;
+        }, {});
+        setCurrentVitals(newVitals);
+        setLoading(false);
+      } catch (error) {
+        console.error("Failed to fetch vitals:", error);
+        if (error.status === 401) {
+          console.log("Token expired, refreshing...");
+          setToken(null);
+          fetchedRef.current = false; // Allow refetch with new token
+        }
+      }
     };
 
-    initFetch();
-  }, []);
+    fetchData();
 
-  useEffect(() => {
-    if (token) {
-      fetchDataWithToken(token);
-    }
+    // Cleanup function
+    return () => {
+      fetchedRef.current = false;
+    };
   }, [token]);
 
   const getLatestVital = (vitalArray) =>
@@ -181,7 +185,7 @@ export default function PatientVitals() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-gray-50">
+    <div className="container mx-auto px-4 py-8">
       <Card className="mb-8 overflow-hidden">
         <CardHeader className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
           <div className="flex items-center space-x-4">

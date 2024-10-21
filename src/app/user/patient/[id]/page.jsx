@@ -6,7 +6,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -16,17 +15,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Activity, Calendar, FileText, Pill } from "lucide-react";
-import Loading from "@/components/other/Loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { fetchPatientByIdOnly } from "@/server/actions/patients/fetch-patients";
+import { fetchPatientById } from "@/server/actions/patients/fetch-patients";
 import QuickActions from "@/components/other/QuickActions";
 import NotAvailable from "@/components/other/NotAvailable";
 
 export default async function PatientDetailsPage({ params }) {
   const patientId = params.id;
-
-  const { data, error } = await fetchPatientByIdOnly({ patientId });
+  const { data, error } = await fetchPatientById({ patientId });
 
   if (error) {
     return (

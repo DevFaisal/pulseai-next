@@ -5,7 +5,7 @@ import { PatientInformation } from "@/components/user/PatientInformation";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ChildrenWrapper from "@/components/other/ChildrenWrapper";
-import { fetchPatientById } from "@/server/actions/patients/fetch-patients";
+import { fetchPatientByPatientIdAndUserID } from "@/server/actions/patients/fetch-patients";
 import NotAvailable from "@/components/other/NotAvailable";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -14,11 +14,10 @@ export default async function DoctorDiagnosisPage({ params }) {
   const { user } = await getServerSession(authOptions);
   const userId = user.id;
   const id = params.id;
-  const { data: patient, error } = await fetchPatientById({
+  const { data: patient, error } = await fetchPatientByPatientIdAndUserID({
     patientId: id,
     userId,
   });
-
 
   if (!patient)
     return (

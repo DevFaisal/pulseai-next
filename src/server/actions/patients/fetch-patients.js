@@ -46,9 +46,7 @@ export async function fetchPatients({ hospitalId }) {
     };
   }
 }
-
-// Fetch a patient by their ID and to be associated with a doctor
-export async function fetchPatientById({ patientId, userId }) {
+export async function fetchPatientByPatientIdAndUserID({ patientId, userId }) {
   patientId = decryptId(String(patientId));
   // Validate input
   if (!ObjectId.isValid(patientId) || !ObjectId.isValid(userId)) {
@@ -103,8 +101,7 @@ export async function fetchPatientById({ patientId, userId }) {
     await prisma.$disconnect();
   }
 }
-
-export async function fetchPatientByIdOnly({ patientId }) {
+export async function fetchPatientById({ patientId }) {
   patientId = decryptId(String(patientId));
   // Validate input
   if (!ObjectId.isValid(patientId)) {
@@ -114,37 +111,18 @@ export async function fetchPatientByIdOnly({ patientId }) {
   }
 
   try {
-    // const result = await prisma.user.findUnique({
-    //   where: { id: userId },
-    //   include: {
-    //     Hospital: {
-    //       include: {
-    //         doctors: {
-    //           where: { userId: userId },
-    //           include: {
-    //             patients: {
-    //               where: { id: patientId },
-    //               include: {
-    //                 doctor: true,
-    //                 hospital: true,
-    //                 medicalHistory: true,
-    //                 currentHealthStatus: true,
-    //                 medications: true,
-    //                 thresholds: true,
-    //               },
-    //             },
-    //           },
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
-
     const patient = await prisma.patient.findUnique({
       where: { id: patientId },
-      include: {
-        doctor: true,
-        hospital: true,
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        height: true,
+        weight: true,
+        bmi: true,
+        gender: true,
+        dateOfBirth: true,
         medicalHistory: true,
         currentHealthStatus: true,
         medications: true,
