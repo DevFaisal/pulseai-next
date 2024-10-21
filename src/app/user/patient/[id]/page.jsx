@@ -23,15 +23,17 @@ import { Activity, Calendar, FileText, Pill } from "lucide-react";
 import Loading from "@/components/other/Loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
-import { fetchPatientById, fetchPatientByIdOnly } from "@/server/actions/patients/fetch-patients";
+import { fetchPatientByIdOnly } from "@/server/actions/patients/fetch-patients";
 
 export default function PatientDetailsPage({ params }) {
   const patientId = params.id;
   const [patient, setPatient] = useState({});
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetchPatientByIdOnly({ patientId });
+      console.log(res);
       if (res.error) {
         console.error(`Error fetching patient data: ${res.error}`);
         return;
@@ -41,11 +43,20 @@ export default function PatientDetailsPage({ params }) {
     fetchData();
   }, [patientId]);
 
-  const router = useRouter();
-
   if (!patient.id) {
     return <Loading />;
   }
+
+  const calculateAge = (dateOfBirth) => {
+    const today = new Date();
+    const birthDate = new Date(dateOfBirth);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  };
 
   return (
     <div className="px-4 py-6 sm:px-0">
@@ -67,12 +78,12 @@ export default function PatientDetailsPage({ params }) {
               <div>
                 <CardTitle>{`${patient.firstName} ${patient.lastName}`}</CardTitle>
                 <CardDescription>
-                  {new Date().getFullYear() -
-                    new Date(patient.dateOfBirth).getFullYear()}{" "}
-                  years old • {patient.gender}
+                  {calculateAge(patient.dateOfBirth)} years old •{" "}
+                  {patient.gender}
                 </CardDescription>
                 <Badge variant="secondary">
-                  {patient.medicalConditions || "No known conditions"}
+                  {patient.currentHealthStatus?.symptoms ||
+                    "No current symptoms"}
                 </Badge>
               </div>
             </div>
@@ -89,7 +100,7 @@ export default function PatientDetailsPage({ params }) {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Diet</p>
-                <p>{patient.diet}</p>
+                <p>{patient.currentHealthStatus?.diet}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">BMI</p>
@@ -97,13 +108,13 @@ export default function PatientDetailsPage({ params }) {
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">Smoking</p>
-                <p>{patient.smoking}</p>
+                <p>{patient.currentHealthStatus?.smoking}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500">
                   Exercise Frequency
                 </p>
-                <p>{patient.exerciseFrequency} times per week</p>
+                <p>{patient.currentHealthStatus?.exerciseFrequency}</p>
               </div>
             </div>
           </CardContent>
@@ -161,20 +172,31 @@ export default function PatientDetailsPage({ params }) {
               <div className="grid gap-4">
                 <div>
                   <h3 className="font-semibold mb-2">Symptoms</h3>
-                  <p>{patient.symptoms || "No symptoms reported"}</p>
-                  <p>Duration: {patient.symptomDuration || "N/A"}</p>
-                  <p>Intensity: {patient.symptomIntensity || "N/A"}</p>
+                  <p>
+                    {patient.currentHealthStatus?.symptoms ||
+                      "No symptoms reported"}
+                  </p>
+                  <p>
+                    Duration:{" "}
+                    {patient.currentHealthStatus?.symptomDuration || "N/A"}
+                  </p>
+                  <p>
+                    Intensity:{" "}
+                    {patient.currentHealthStatus?.symptomIntensity || "N/A"}
+                  </p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Sleep</h3>
-                  <p>{patient.sleepHours} hours per night</p>
+                  <p>
+                    {patient.currentHealthStatus?.sleepHours} hours per night
+                  </p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Family History</h3>
                   <p>
-                    {patient.noKnownFamilyHistory
+                    {patient.medicalHistory?.noKnownFamilyHistory
                       ? "No known family history"
-                      : patient.familyConditions}
+                      : patient.medicalHistory?.familyConditions}
                   </p>
                 </div>
               </div>
@@ -195,16 +217,23 @@ export default function PatientDetailsPage({ params }) {
                 <div>
                   <h3 className="font-semibold mb-2">Medical Conditions</h3>
                   <p>
-                    {patient.medicalConditions || "No known medical conditions"}
+                    {patient.medicalHistory?.medicalConditions ||
+                      "No known medical conditions"}
                   </p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Ongoing Treatments</h3>
-                  <p>{patient.ongoingTreatments || "No ongoing treatments"}</p>
+                  <p>
+                    {patient.medicalHistory?.ongoingTreatments ||
+                      "No ongoing treatments"}
+                  </p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Previous Surgeries</h3>
-                  <p>{patient.previousSurgeries || "No previous surgeries"}</p>
+                  <p>
+                    {patient.medicalHistory?.previousSurgeries ||
+                      "No previous surgeries"}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -227,7 +256,8 @@ export default function PatientDetailsPage({ params }) {
                 <TableBody>
                   <TableRow>
                     <TableCell>
-                      {patient.medications || "No current medications"}
+                      {patient.medicalHistory?.medications ||
+                        "No current medications"}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -245,33 +275,9 @@ export default function PatientDetailsPage({ params }) {
             <CardContent>
               <div className="space-y-4">
                 <div>
-                  <h3 className="font-semibold mb-2">Food Allergies</h3>
+                  <h3 className="font-semibold mb-2">Allergies</h3>
                   <p>
-                    {patient.foodAllergies ? "Yes" : "No known food allergies"}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">Medication Allergies</h3>
-                  <p>
-                    {patient.medicationAllergies
-                      ? "Yes"
-                      : "No known medication allergies"}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">
-                    Environmental Allergies
-                  </h3>
-                  <p>
-                    {patient.environmentalAllergies
-                      ? "Yes"
-                      : "No known environmental allergies"}
-                  </p>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-2">Other Allergies</h3>
-                  <p>
-                    {patient.otherAllergies || "No other allergies reported"}
+                    {patient.medicalHistory?.allergies || "No known allergies"}
                   </p>
                 </div>
               </div>
