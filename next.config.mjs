@@ -19,11 +19,28 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/:path*",
+        source: "/_svc/pulseaicore/auth/login",
         headers: [
           {
-            key: "Content-Security-Policy",
-            value: "upgrade-insecure-requests",
+            key: "Content-Type",
+            value: "application/x-www-form-urlencoded",
+          },
+          {
+            key: "Accept",
+            value: "application/json",
+          },
+        ],
+      },
+      {
+        source: "/_svc/pulseaicore/vision/vitals",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/x-www-form-urlencoded",
+          },
+          {
+            key: "Accept",
+            value: "application/json",
           },
         ],
       },
