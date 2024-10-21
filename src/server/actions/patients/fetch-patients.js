@@ -103,3 +103,60 @@ export async function fetchPatientById({ patientId, userId }) {
     await prisma.$disconnect();
   }
 }
+
+export async function fetchPatientByIdOnly({ patientId }) {
+  patientId = decryptId(String(patientId));
+  // Validate input
+  if (!ObjectId.isValid(patientId)) {
+    return {
+      error: `Invalid patientId `,
+    };
+  }
+
+  try {
+    // const result = await prisma.user.findUnique({
+    //   where: { id: userId },
+    //   include: {
+    //     Hospital: {
+    //       include: {
+    //         doctors: {
+    //           where: { userId: userId },
+    //           include: {
+    //             patients: {
+    //               where: { id: patientId },
+    //               include: {
+    //                 doctor: true,
+    //                 hospital: true,
+    //                 medicalHistory: true,
+    //                 currentHealthStatus: true,
+    //                 medications: true,
+    //                 thresholds: true,
+    //               },
+    //             },
+    //           },
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
+
+    const patient = await prisma.patient.findUnique({
+      where: { id: patientId },
+      include: {
+        doctor: true,
+        hospital: true,
+        medicalHistory: true,
+        currentHealthStatus: true,
+        medications: true,
+        thresholds: true,
+      },
+    });
+
+    return { data: patient };
+  } catch (error) {
+    console.error("Error fetching patient:", error);
+    return { error: "An unexpected error occurred while fetching the patient" };
+  } finally {
+    await prisma.$disconnect();
+  }
+}

@@ -16,12 +16,13 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "../ui/badge";
 import { useRouter } from "next/navigation";
+import { encryptId } from "@/lib/encryption";
 
 export default function PatientListUser({ patients }) {
   const router = useRouter();
 
-  const handlePatientClick = (id) => { 
-    router.push(`user/patient/${id}`);
+  const handlePatientClick = (id) => {
+    router.push(`user/patient/${encryptId(String(id))}`);
   };
 
   return (

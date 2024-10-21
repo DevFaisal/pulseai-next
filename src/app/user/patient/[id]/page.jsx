@@ -23,7 +23,7 @@ import { Activity, Calendar, FileText, Pill } from "lucide-react";
 import Loading from "@/components/other/Loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useRouter } from "next/navigation";
-import { fetchPatientById } from "@/server/actions/patients/fetch-patients";
+import { fetchPatientById, fetchPatientByIdOnly } from "@/server/actions/patients/fetch-patients";
 
 export default function PatientDetailsPage({ params }) {
   const patientId = params.id;
@@ -31,7 +31,7 @@ export default function PatientDetailsPage({ params }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetchPatientById({ patientId });
+      const res = await fetchPatientByIdOnly({ patientId });
       if (res.error) {
         console.error(`Error fetching patient data: ${res.error}`);
         return;
@@ -212,7 +212,7 @@ export default function PatientDetailsPage({ params }) {
         </TabsContent>
 
         <TabsContent value="medications">
-          <Card className='rounded-none'>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Current Medications</CardTitle>
               <CardDescription>List of prescribed medications</CardDescription>
@@ -237,7 +237,7 @@ export default function PatientDetailsPage({ params }) {
         </TabsContent>
 
         <TabsContent value="allergies">
-          <Card className='rounded-none'>
+          <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Allergies</CardTitle>
               <CardDescription>Patient's known allergies</CardDescription>

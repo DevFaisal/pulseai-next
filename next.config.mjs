@@ -16,7 +16,6 @@ const nextConfig = {
       },
     ],
   },
-  //allow insecure requests to http
   httpAgentOptions: {
     rejectUnauthorized: false,
   },
