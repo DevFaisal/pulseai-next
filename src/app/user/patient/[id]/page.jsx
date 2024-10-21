@@ -1,6 +1,3 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -22,30 +19,24 @@ import {
 import { Activity, Calendar, FileText, Pill } from "lucide-react";
 import Loading from "@/components/other/Loading";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useRouter } from "next/navigation";
 import { fetchPatientByIdOnly } from "@/server/actions/patients/fetch-patients";
+import QuickActions from "@/components/other/QuickActions";
+import NotAvailable from "@/components/other/NotAvailable";
 
-export default function PatientDetailsPage({ params }) {
+export default async function PatientDetailsPage({ params }) {
   const patientId = params.id;
-  const [patient, setPatient] = useState({});
-  const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetchPatientByIdOnly({ patientId });
-      console.log(res);
-      if (res.error) {
-        console.error(`Error fetching patient data: ${res.error}`);
-        return;
-      }
-      setPatient(res.data);
-    };
-    fetchData();
-  }, [patientId]);
+  const { data, error } = await fetchPatientByIdOnly({ patientId });
 
-  if (!patient.id) {
-    return <Loading />;
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <NotAvailable title={"Patient"} description={error} />
+      </div>
+    );
   }
+
+  const patient = data;
 
   const calculateAge = (dateOfBirth) => {
     const today = new Date();
@@ -121,34 +112,7 @@ export default function PatientDetailsPage({ params }) {
         </Card>
 
         {/* Quick Actions Card */}
-        <Card className="flex-1 rounded-none">
-          <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4">
-              <Button
-                onClick={() => router.push(`/user/patient/vitals`)}
-                className="h-20 flex flex-col items-center justify-center"
-              >
-                <Activity className="h-6 w-6 mb-2" />
-                Vitals
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center">
-                <Pill className="h-6 w-6 mb-2" />
-                Medications
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center">
-                <Calendar className="h-6 w-6 mb-2" />
-                Schedule Appointment
-              </Button>
-              <Button className="h-20 flex flex-col items-center justify-center">
-                <FileText className="h-6 w-6 mb-2" />
-                Add Note
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <QuickActions />
       </div>
 
       {/* Tabs for different sections */}
