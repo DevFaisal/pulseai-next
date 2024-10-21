@@ -19,28 +19,12 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/_svc/pulseaicore/auth/login",
+        source: "/:path*",
         headers: [
           {
-            key: "Content-Type",
-            value: "application/x-www-form-urlencoded",
-          },
-          {
-            key: "Accept",
-            value: "application/json",
-          },
-        ],
-      },
-      {
-        source: "/_svc/pulseaicore/vision/vitals",
-        headers: [
-          {
-            key: "Content-Type",
-            value: "application/x-www-form-urlencoded",
-          },
-          {
-            key: "Accept",
-            value: "application/json",
+            key: "Content-Security-Policy",
+            value:
+              "upgrade-insecure-requests; connect-src 'self' http://3.29.224.51",
           },
         ],
       },
