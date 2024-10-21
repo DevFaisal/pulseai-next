@@ -60,7 +60,7 @@ export default function PatientListUser({ patients }) {
                       new Date(patient.dateOfBirth).getFullYear()}
                   </TableCell>
                   <TableCell>{patient.gender}</TableCell>
-                  <TableCell>{patient.Doctor?.name}</TableCell>
+                  <TableCell>{patient.doctor?.name}</TableCell>
                   <TableCell>
                     <Badge
                       variant={
