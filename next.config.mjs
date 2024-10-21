@@ -16,20 +16,6 @@ const nextConfig = {
       },
     ],
   },
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          {
-            key: "Content-Security-Policy",
-            value:
-              "upgrade-insecure-requests; connect-src 'self' http://3.29.224.51",
-          },
-        ],
-      },
-    ];
-  },
 };
 
 export default nextConfig;
