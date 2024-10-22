@@ -16,9 +16,6 @@ const nextConfig = {
       },
     ],
   },
-  httpAgentOptions: {
-    rejectUnauthorized: false,
-  },
 };
 
 export default nextConfig;
