@@ -219,7 +219,6 @@ import crypto from "crypto";
 // }
 
 export async function createPatient({ formData, hospitalId }) {
-  console.log("formData", formData);
   try {
     // Destructure formData for easy access
     const {
@@ -253,6 +252,19 @@ export async function createPatient({ formData, hospitalId }) {
       },
       familyHealthHistory: { familyConditions, noKnownFamilyHistory },
     } = formData;
+
+    const existingEmail = await prisma.patient.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (existingEmail) {
+      return {
+        success: false,
+        error: "Email already exists",
+      };
+    }
 
     const token = generateRandomToken();
 

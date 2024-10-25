@@ -17,7 +17,7 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { Check, ChevronRight } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { updatePatient } from "@/server/actions/patients/update-patient";
+import { createPatient } from "@/server/actions/patients/create-patient";
 import {
   Form,
   FormControl,
@@ -29,6 +29,7 @@ import {
 import { toast } from "sonner";
 import { fetchDoctors } from "@/server/actions/doctors/fetch-doctors";
 import { patientSchema } from "@/lib/inputValidation";
+import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 
 const steps = [
   "General Details",
@@ -37,7 +38,7 @@ const steps = [
   "Family Health History",
 ];
 
-export default function EditPatient({ patient = {} }) {
+export default function AddSinglePatient() {
   const [currentStep, setCurrentStep] = useState(0);
   const session = useSession();
   const { data: user } = session;
@@ -47,37 +48,36 @@ export default function EditPatient({ patient = {} }) {
     resolver: zodResolver(patientSchema),
     defaultValues: {
       generalDetails: {
-        firstName: patient.firstName || "",
-        lastName: patient.lastName || "",
-        email: patient.email || "",
-        dob: String(patient.dateOfBirth) || "",
-        gender: patient.gender || "",
-        weight: String(patient.weight) || "",
-        height: String(patient.height) || "",
+        firstName: "",
+        lastName: "",
+        email: "",
+        dob: "",
+        gender: "",
+        weight: "",
+        height: "",
       },
       healthBackground: {
-        medicalConditions: patient.medicalHistory?.medicalConditions || "",
-        previousSurgeries: patient.medicalHistory?.previousSurgeries || "",
-        ongoingTreatments: patient.medicalHistory?.ongoingTreatments || "",
-        medications: patient.medications || "",
-        allergies: patient.medicalHistory?.allergies || "",
-        noKnownHistory: patient.medicalHistory?.noKnownHistory || false,
+        medicalConditions: "",
+        previousSurgeries: "",
+        ongoingTreatments: "",
+        medications: "",
+        allergies: "",
+        noKnownHistory: false,
       },
       currentHealthStatus: {
-        symptoms: patient.currentHealthStatus?.symptoms || "",
-        symptomIntensity: patient.currentHealthStatus?.symptomIntensity || 0,
-        symptomDuration: patient.currentHealthStatus?.symptomDuration || "",
-        doctorAssigned: patient.currentHealthStatus?.doctorAssigned || "",
-        smoking: patient.currentHealthStatus?.smoking || "",
-        alcohol: patient.currentHealthStatus?.alcohol || "",
-        diet: patient.currentHealthStatus?.diet || "",
-        exerciseFrequency: patient.currentHealthStatus?.exerciseFrequency || "",
-        sleepHours: patient.currentHealthStatus?.sleepHours || "",
+        symptoms: [],
+        symptomIntensity: 5,
+        symptomDuration: "",
+        doctorAssigned: "",
+        smoking: "NEVER",
+        alcohol: "NONE",
+        diet: "REGULAR",
+        exerciseFrequency: "MODERATE",
+        sleepHours: 8,
       },
       familyHealthHistory: {
-        familyConditions: patient.familyHealthHistory?.familyConditions || "",
-        noKnownFamilyHistory:
-          patient.familyHealthHistory?.noKnownFamilyHistory || false,
+        familyConditions: "",
+        noKnownFamilyHistory: false,
       },
     },
   });
@@ -112,9 +112,9 @@ export default function EditPatient({ patient = {} }) {
   }, [noKnownFamilyHistory, form]);
 
   const onSubmit = async (data) => {
+    console.log("Form submitted with data:", data);
     try {
-      const res = await updatePatient({
-        patientId: patient.id,
+      const res = await createPatient({
         formData: data,
         hospitalId: id,
       });
@@ -122,11 +122,12 @@ export default function EditPatient({ patient = {} }) {
         toast.error(res.error);
         return;
       }
-      toast.success("Patient updated successfully");
-      // Redirect or update UI as needed
+      toast.success("Patient added successfully");
+      form.reset();
+      window.location.href = "/admin/patients";
     } catch (error) {
-      console.error("Error updating patient:", error);
-      toast.error("Error updating patient");
+      console.error("Error submitting form:", error);
+      toast.error("Error submitting form");
     }
   };
 
@@ -149,7 +150,7 @@ export default function EditPatient({ patient = {} }) {
         await form.handleSubmit(onSubmit)();
       }
     } else {
-      toast.error("Please fill out all required fields");
+      toast.error("Please fill out the required fields");
     }
   };
 
@@ -433,7 +434,7 @@ export default function EditPatient({ patient = {} }) {
         return (
           <div className="space-y-4">
             <h2 className="text-2xl font-bold">General Details</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {renderFormFields(generalDetailsFields, "generalDetails")}
             </div>
           </div>
@@ -466,13 +467,13 @@ export default function EditPatient({ patient = {} }) {
 
   return (
     <div className="p-4 bg-background rounded-md">
-      <h1 className="text-3xl font-bold mb-6">Edit Patient</h1>
+      <h1 className="text-3xl font-bold mb-6">Add Patient</h1>
       <div className="mb-8">
         <div className="flex justify-between">
           {steps.map((step, index) => (
             <div key={index} className="flex flex-col items-center">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                className={`w-8 h-8 rounded-full flex  items-center justify-center ${
                   index <= currentStep
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted text-muted-foreground"
@@ -484,14 +485,16 @@ export default function EditPatient({ patient = {} }) {
                   index + 1
                 )}
               </div>
-              <span className="text-sm  mt-2 hidden md:inline">{step}</span>
+              <span className="text-sm mt-2">{step}</span>
             </div>
           ))}
         </div>
         <div className="h-2 bg-muted mt-4 rounded-full">
           <div
             className="h-full bg-primary rounded-full transition-all duration-300 ease-in-out"
-            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
+            style={{
+              width: `${((currentStep + 1) / steps.length) * 100}%`,
+            }}
           ></div>
         </div>
       </div>
@@ -515,7 +518,7 @@ export default function EditPatient({ patient = {} }) {
                   : handleNext
               }
             >
-              {currentStep === steps.length - 1 ? "Update" : "Next"}
+              {currentStep === steps.length - 1 ? "Submit" : "Next"}
               {currentStep !== steps.length - 1 && (
                 <ChevronRight className="ml-2 h-4 w-4" />
               )}

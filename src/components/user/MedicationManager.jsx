@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -34,13 +34,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export function MedicationManager({ patient }) {
+export function MedicationManager({ patient = {} }) {
   const [medications, setMedications] = useState([]);
   const [newMedication, setNewMedication] = useState({
     name: "",
-    type: "PILL",
+    type: "",
     frequency: "",
-    duration: "",
     startDate: "",
     endDate: "",
     notes: "",
@@ -48,17 +47,7 @@ export function MedicationManager({ patient }) {
     schedule: [],
   });
 
-  useEffect(() => {
-    const fetchMed = async () => {
-      const res = await fetchMedications({ patientId: patient?.id });
-      if (res.error) {
-        toast.error(res.error);
-        return;
-      }
-      setMedications(res.data);
-    };
-    fetchMed();
-  }, [patient]);
+
 
   const handleAddMedication = async () => {
     const res = await UpdateMedication({
@@ -80,9 +69,8 @@ export function MedicationManager({ patient }) {
       setMedications(res.data.medications);
       setNewMedication({
         name: "",
-        type: "TABLET",
+        type: "",
         frequency: "",
-        duration: "",
         startDate: "",
         endDate: "",
         notes: "",
@@ -91,6 +79,20 @@ export function MedicationManager({ patient }) {
       });
     }
   };
+
+    const fetchMedicationsRef = useRef(null);
+
+    useEffect(() => {
+      fetchMedicationsRef.current = async () => {
+        const res = await fetchMedications({ patientId: patient?.id });
+        if (res.error) {
+          toast.error(res.error);
+          return;
+        }
+        setMedications(res.data);
+      };
+      fetchMedicationsRef.current();
+    }, [patient, handleAddMedication]);
 
   const handleRemoveMedication = async (id) => {
     const res = await deleteMedication({ medicationId: id });
@@ -102,33 +104,33 @@ export function MedicationManager({ patient }) {
     setMedications((prev) => prev.filter((med) => med.id !== id));
   };
 
+  const today = new Date().toISOString().split("T")[0];
+
   return (
-    <Card className="flex flex-col justify-between w-full rounded-none h-[66vh]">
+    <Card className="flex flex-col justify-start w-full rounded-none h-[66vh]">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Medications</CardTitle>
         <CardDescription>Manage patient medications</CardDescription>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="h-[300px] mb-4 border rounded-md">
+        <ScrollArea className="h-[350px] mb-4 border rounded-md">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Frequency</TableHead>
-                <TableHead>Duration</TableHead>
                 <TableHead>Start Date</TableHead>
                 <TableHead>End Date</TableHead>
                 <TableHead className="w-[100px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {medications.map((medication) => (
+              {medications?.map((medication) => (
                 <TableRow key={medication.id}>
                   <TableCell>{medication.name}</TableCell>
                   <TableCell>{medication.type}</TableCell>
                   <TableCell>{medication.frequency}</TableCell>
-                  <TableCell>{medication.duration}</TableCell>
                   <TableCell>
                     {new Date(medication.startDate).toLocaleDateString()}
                   </TableCell>
@@ -176,24 +178,31 @@ export function MedicationManager({ patient }) {
               <SelectItem value="DROPS">Drops</SelectItem>
             </SelectContent>
           </Select>
-          <Input
-            placeholder="Frequency"
+          <Select
             value={newMedication.frequency}
-            onChange={(e) =>
-              setNewMedication({ ...newMedication, frequency: e.target.value })
+            onValueChange={(value) =>
+              setNewMedication({ ...newMedication, frequency: value })
             }
-          />
-          <Input
-            placeholder="Duration"
-            value={newMedication.duration}
-            onChange={(e) =>
-              setNewMedication({ ...newMedication, duration: e.target.value })
-            }
-          />
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select frequency" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ONCE_DAILY">Once a day</SelectItem>
+              <SelectItem value="TWICE_DAILY">Twice a day</SelectItem>
+              <SelectItem value="THREE_TIMES_DAILY">
+                Three times a day
+              </SelectItem>
+              <SelectItem value="FOUR_TIMES_DAILY">Four times a day</SelectItem>
+              <SelectItem value="WEEKLY">Once a week</SelectItem>
+              <SelectItem value="MONTHLY">Once a month</SelectItem>
+            </SelectContent>
+          </Select>
           <Input
             type="date"
             placeholder="Start Date"
             value={newMedication.startDate}
+            min={today}
             onChange={(e) =>
               setNewMedication({ ...newMedication, startDate: e.target.value })
             }
@@ -202,6 +211,7 @@ export function MedicationManager({ patient }) {
             type="date"
             placeholder="End Date"
             value={newMedication.endDate}
+            min={newMedication.startDate || today}
             onChange={(e) =>
               setNewMedication({ ...newMedication, endDate: e.target.value })
             }
@@ -214,9 +224,7 @@ export function MedicationManager({ patient }) {
             }
           />
         </div>
-        <Button onClick={handleAddMedication}>
-          Add Medication
-        </Button>
+        <Button onClick={handleAddMedication}>Add Medication</Button>
       </CardContent>
     </Card>
   );
@@ -224,20 +232,66 @@ export function MedicationManager({ patient }) {
 
 function calculateSchedule(newMedication) {
   const schedule = [];
-  const { frequency, duration, startDate, timezone } = newMedication;
+  const { frequency, startDate, endDate, timezone } = newMedication;
   const start = new Date(startDate);
-  const end = new Date(startDate);
-  end.setDate(end.getDate() + parseInt(duration));
-  const diff = end - start;
-  const days = diff / (1000 * 60 * 60 * 24); 
-  for (let i = 0; i < days; i++) {
-    const date = new Date(start);
-    date.setDate(date.getDate() + i);
+  const end = new Date(endDate);
+
+  const addScheduleItem = (date, time) => {
     schedule.push({
-      date: date.toISOString(),
+      date: new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        time,
+        0,
+        0,
+        0
+      ).toISOString(),
       timezone,
       frequency,
     });
+  };
+
+  for (
+    let date = new Date(start);
+    date <= end;
+    date.setDate(date.getDate() + 1)
+  ) {
+    switch (frequency) {
+      case "ONCE_DAILY":
+        addScheduleItem(date, 9); // 9 AM
+        break;
+      case "TWICE_DAILY":
+        addScheduleItem(date, 9); // 9 AM
+        addScheduleItem(date, 21); // 9 PM
+        break;
+      case "THREE_TIMES_DAILY":
+        addScheduleItem(date, 8); // 8 AM
+        addScheduleItem(date, 14); // 2 PM
+        addScheduleItem(date, 20); // 8 PM
+        break;
+      case "FOUR_TIMES_DAILY":
+        addScheduleItem(date, 8); // 8 AM
+        addScheduleItem(date, 12); // 12 PM
+        addScheduleItem(date, 16); // 4 PM
+        addScheduleItem(date, 20); // 8 PM
+        break;
+      case "WEEKLY":
+        if (date.getDay() === 1) {
+          // Monday
+          addScheduleItem(date, 9); // 9 AM
+        }
+        break;
+      case "MONTHLY":
+        if (
+          date.getDate() === 1 ||
+          date.getDate() ===
+            new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+        ) {
+          addScheduleItem(date, 9); // 9 AM
+        }
+        break;
+    }
   }
   return schedule;
 }

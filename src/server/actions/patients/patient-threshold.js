@@ -30,8 +30,8 @@ export async function UpdateThreshold({ patientId, threshold }) {
           id: existingThreshold.id,
         },
         data: {
-          min: threshold.min,
-          max: threshold.max,
+          min: String(threshold.min),
+          max: String(threshold.max),
         },
       });
       if (!updateThreshold) {
@@ -44,8 +44,8 @@ export async function UpdateThreshold({ patientId, threshold }) {
           patientId: patientId,
           name: threshold.name,
           type: threshold.type,
-          min: threshold.min,
-          max: threshold.max,
+          min: String(threshold.min),
+          max: String(threshold.max),
         },
       });
       if (!createThreshold) {
@@ -74,6 +74,27 @@ export async function deleteThreshold({ thresholdId }) {
       return { error: "Patient Medications not found" };
     }
     return { data: patientThresholdId };
+  } catch (error) {
+    console.error(error);
+    return { error: "An error occurred" };
+  }
+}
+
+export async function getThresholds({ patientId }) {
+  if (!ObjectId.isValid(patientId)) {
+    return { error: "Invalid patient ID" };
+  }
+
+  try {
+    const patientThresholds = await prisma.threshold.findMany({
+      where: {
+        patientId: patientId,
+      },
+    });
+    if (!patientThresholds) {
+      return { error: "Patient Thresholds not found" };
+    }
+    return { data: patientThresholds };
   } catch (error) {
     console.error(error);
     return { error: "An error occurred" };

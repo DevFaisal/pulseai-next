@@ -34,6 +34,7 @@ export default async function PatientDetailsPage({ params }) {
 
   const patient = data;
 
+
   const calculateAge = (dateOfBirth) => {
     const today = new Date();
     const birthDate = new Date(dateOfBirth);
@@ -216,8 +217,36 @@ export default async function PatientDetailsPage({ params }) {
                 <TableBody>
                   <TableRow>
                     <TableCell>
-                      {patient.medicalHistory?.medications ||
-                        "No current medications"}
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Frequency</TableHead>
+                            <TableHead>Start Date</TableHead>
+                            <TableHead>End Date</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {patient?.medications?.map((medication) => (
+                            <TableRow key={medication.id}>
+                              <TableCell>{medication.name}</TableCell>
+                              <TableCell>{medication.type}</TableCell>
+                              <TableCell>{medication.frequency}</TableCell>
+                              <TableCell>
+                                {new Date(
+                                  medication.startDate
+                                ).toLocaleDateString()}
+                              </TableCell>
+                              <TableCell>
+                                {new Date(
+                                  medication.endDate
+                                ).toLocaleDateString()}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
                     </TableCell>
                   </TableRow>
                 </TableBody>
