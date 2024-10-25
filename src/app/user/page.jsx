@@ -342,8 +342,9 @@ export default async function PulseAIRemoteOperatorDashboard() {
       <div>
         {/* KPIs */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-1 lg:grid-cols-6 mb-8">
-          {patientTypes.map((type) => (
+          {patientTypes.map((type, index) => (
             <TopCard
+              key={index}
               title={type.name}
               header={type.count}
               description="Currently under remote monitoring"
@@ -363,8 +364,9 @@ export default async function PulseAIRemoteOperatorDashboard() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {programOverview.map((category) => (
+                {programOverview.map((category, index) => (
                   <TopCard
+                    key={index}
                     title={category.name}
                     header={category.count}
                     icon={category.icon}
