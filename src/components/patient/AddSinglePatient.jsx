@@ -112,7 +112,6 @@ export default function AddSinglePatient() {
   }, [noKnownFamilyHistory, form]);
 
   const onSubmit = async (data) => {
-    console.log("Form submitted with data:", data);
     try {
       const res = await createPatient({
         formData: data,

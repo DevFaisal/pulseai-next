@@ -15,7 +15,7 @@ import { ThresholdManager } from "@/components/user/ThresholdManager";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { DiagnoseManager } from "./DiagnoseManager";
 
-export default function ActionDialog({ selectedPatient , setSelectedPatient }) {
+export default function ActionDialog({ selectedPatient, setSelectedPatient }) {
   const [activeTab, setActiveTab] = React.useState("information");
 
   return (
@@ -49,10 +49,7 @@ export default function ActionDialog({ selectedPatient , setSelectedPatient }) {
               )}
             </TabsContent>
             <TabsContent value="diagnose">
-              <DiagnoseManager
-                patient={selectedPatient}
-                // onDiagnoseSubmit={onDiagnoseSubmit}
-              />
+              <DiagnoseManager patient={selectedPatient} />
             </TabsContent>
             <TabsContent value="medication">
               <MedicationManager patient={selectedPatient} />

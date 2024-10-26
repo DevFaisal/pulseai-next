@@ -21,15 +21,16 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Check } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Code } from "@/lib/ICD_CODS";
+import { icdCodes } from "@/lib/ICD_CODS";
+import { DiagnosePatient } from "@/server/actions/patients/diagnose-patient";
 
-export function DiagnoseManager({ patient, onDiagnoseSubmit }) {
+export function DiagnoseManager({ patient }) {
   const [icdCode, setIcdCode] = useState("");
   const [note, setNote] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!icdCode) {
       setError("Please select an ICD code");
       return;
@@ -38,7 +39,17 @@ export function DiagnoseManager({ patient, onDiagnoseSubmit }) {
       setError("Please enter a diagnosis note");
       return;
     }
-    onDiagnoseSubmit({ icdCode, note });
+    const res = await DiagnosePatient({
+      patientId: patient.id,
+      icdCode,
+      diagnosisNote: note,
+    });
+
+    if (res.error) {
+      setError(res.error);
+      return;
+    }
+
     setSuccess(true);
     setError(null);
     setTimeout(() => {
@@ -64,7 +75,7 @@ export function DiagnoseManager({ patient, onDiagnoseSubmit }) {
               <SelectValue placeholder="Select ICD-10 Code" />
             </SelectTrigger>
             <SelectContent>
-              {Code.map((item, index) => (
+              {icdCodes.map((item, index) => (
                 <SelectItem key={index} value={item.code}>
                   {item.code} - {item.description}
                 </SelectItem>

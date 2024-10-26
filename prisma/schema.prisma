@@ -39,15 +39,17 @@ model Patient {
   updatedAt DateTime @updatedAt
 
   // General Details
-  firstName   String
-  lastName    String
-  email       String   @unique
-  dateOfBirth DateTime
-  gender      Gender
-  weight      Float?
-  height      Float?
-  bmi         Float?
-  token       String
+  firstName     String
+  lastName      String
+  email         String   @unique
+  dateOfBirth   DateTime
+  gender        Gender
+  weight        Float?
+  height        Float?
+  bmi           Float?
+  token         String
+  icdCode       String?
+  diagnosisNote String?
 
   // Health Background
   medicalHistory      MedicalHistory?
