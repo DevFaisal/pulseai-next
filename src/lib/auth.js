@@ -52,11 +52,6 @@ export const authOptions = {
           if (!user) {
             return null;
           }
-          // if (user.role === "DOCTOR") {
-          // }
-          // if (credentials.hospitalCode !== user?.Hospital.hospitalCode) {
-          //   return null;
-          // }
           const isValidPassword = await bcrypt.compare(
             credentials.password,
             user.password
@@ -79,6 +74,13 @@ export const authOptions = {
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 3 * 24 * 60 * 60,
+  },
+  jwt: {
+    maxAge: 3 * 24 * 60 * 60,
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

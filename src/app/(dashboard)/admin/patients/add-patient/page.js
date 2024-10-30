@@ -13,7 +13,7 @@ export default function AddPatient() {
         <TabsContent value="add-patient">
           {/* Add Single Patient */}
           <AddSinglePatient />
-        </TabsContent>
+        </TabsContent>x
         <TabsContent value="add-patient-bulk">
           <div>
             {/* Implement bulk add functionality here */}

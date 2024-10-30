@@ -29,7 +29,6 @@ import {
 import { toast } from "sonner";
 import { fetchDoctors } from "@/server/actions/doctors/fetch-doctors";
 import { patientSchema } from "@/lib/inputValidation";
-import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 
 const steps = [
   "General Details",
@@ -171,6 +170,7 @@ export default function AddSinglePatient() {
       label: "Email",
       type: "email",
       placeholder: "Enter patient's email",
+      disable: true,
     },
     { name: "dob", label: "Date of Birth", type: "date" },
     {
@@ -196,7 +196,6 @@ export default function AddSinglePatient() {
       placeholder: "Enter patient's height",
     },
   ];
-
   const healthBackgroundFields = [
     {
       name: "medicalConditions",
@@ -234,7 +233,6 @@ export default function AddSinglePatient() {
       type: "checkbox",
     },
   ];
-
   const currentHealthStatusFields = [
     {
       name: "symptoms",
@@ -319,7 +317,6 @@ export default function AddSinglePatient() {
       max: 24,
     },
   ];
-
   const familyHealthHistoryFields = [
     {
       name: "familyConditions",
