@@ -47,8 +47,6 @@ export function MedicationManager({ patient = {} }) {
     schedule: [],
   });
 
-
-
   const handleAddMedication = async () => {
     const res = await UpdateMedication({
       patientId: patient.id,
@@ -80,19 +78,19 @@ export function MedicationManager({ patient = {} }) {
     }
   };
 
-    const fetchMedicationsRef = useRef(null);
+  const fetchMedicationsRef = useRef(null);
 
-    useEffect(() => {
-      fetchMedicationsRef.current = async () => {
-        const res = await fetchMedications({ patientId: patient?.id });
-        if (res.error) {
-          toast.error(res.error);
-          return;
-        }
-        setMedications(res.data);
-      };
-      fetchMedicationsRef.current();
-    }, [patient, handleAddMedication]);
+  useEffect(() => {
+    fetchMedicationsRef.current = async () => {
+      const res = await fetchMedications({ patientId: patient?.id });
+      if (res.error) {
+        toast.error(res.error);
+        return;
+      }
+      setMedications(res.data);
+    };
+    fetchMedicationsRef.current();
+  }, [patient]);
 
   const handleRemoveMedication = async (id) => {
     const res = await deleteMedication({ medicationId: id });

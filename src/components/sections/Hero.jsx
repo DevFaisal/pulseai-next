@@ -1,10 +1,11 @@
 "use client";
 import React from "react";
-import { Button } from "../ui/Button";
 import { ArrowRight, Play, Brain } from "lucide-react";
 import { Stats } from "./Stats";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import { Button } from "../ui/button";
 
 export function Hero() {
   return (
@@ -57,8 +58,10 @@ export function Hero() {
           <div className="relative lg:ml-4">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transparent z-10" />
-              <img
+              <Image
                 className="w-full h-full object-cover"
+                width={2080}
+                height={2080}
                 src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80"
                 alt="Medical professional using digital interface"
               />
