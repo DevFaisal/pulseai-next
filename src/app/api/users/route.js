@@ -22,9 +22,11 @@ export async function GET() {
       email: userData.email || "",
       dob: userData.dob || "",
       name: userData.first || "",
+      lastName: userData.last || "",
       gender: userData.gender || "",
       imageUrl: userData.imageUrl || "",
       address: userData.address || "",
+      lastLoginDate: userData.lastLoginDate || "",
     }));
 
     return NextResponse.json({ users }, { status: 200 });

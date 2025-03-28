@@ -43,12 +43,13 @@ export default function PatientDetailsPage({ params }) {
     );
   }
 
-  const calculateAge = (dateOfBirth) => {
+  const calculateAge = (dob) => {
+    if (!dob) return "N/A";
+    const birthDate = new Date(dob);
     const today = new Date();
-    const birthDate = new Date(dateOfBirth);
     let age = today.getFullYear() - birthDate.getFullYear();
-    const m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
     return age;
@@ -68,7 +69,7 @@ export default function PatientDetailsPage({ params }) {
               <div>
                 <CardTitle>{`${patient.name}`}</CardTitle>
                 <CardDescription>
-                  {calculateAge(parseInt(patient.dob))} years old • {patient.gender}
+                  {calculateAge(patient.dob)} years old • {patient.gender}
                 </CardDescription>
                 <Badge variant="secondary">{patient.currentHealthStatus?.symptoms || "No current symptoms"}</Badge>
               </div>
