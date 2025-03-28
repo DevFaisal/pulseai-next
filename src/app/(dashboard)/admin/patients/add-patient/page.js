@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ChildrenWrapper from "@/components/other/ChildrenWrapper";
-import AddSinglePatient from "@/components/patient/AddSinglePatient";
+import AddSinglePatient from "./components/AddSinglePatient";
 
 export default function AddPatient() {
   return (
@@ -13,7 +13,8 @@ export default function AddPatient() {
         <TabsContent value="add-patient">
           {/* Add Single Patient */}
           <AddSinglePatient />
-        </TabsContent>x
+        </TabsContent>
+        x
         <TabsContent value="add-patient-bulk">
           <div>
             {/* Implement bulk add functionality here */}

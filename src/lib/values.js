@@ -6,10 +6,6 @@ const { user } = await getServerSession(authOptions);
 export const hospitalName = user.hospitalName;
 
 
-
-
-
-
 export const calculateAge = (dateOfBirth) => {
   const today = new Date();
   const birthDate = new Date(dateOfBirth);

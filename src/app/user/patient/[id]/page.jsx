@@ -1,28 +1,31 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+"use client";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { fetchPatientById } from "@/server/actions/patients/fetch-patients";
 import QuickActions from "@/components/other/QuickActions";
 import NotAvailable from "@/components/other/NotAvailable";
+import useUserStore from "@/store/useUserStore";
+import { useEffect } from "react";
 
-export default async function PatientDetailsPage({ params }) {
+export default function PatientDetailsPage({ params }) {
   const patientId = params.id;
-  const { data, error } = await fetchPatientById({ patientId });
+  const { users, loading, error, fetchUsers } = useUserStore();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
+
+  const patient = users.find((user) => user.id === patientId);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -32,8 +35,13 @@ export default async function PatientDetailsPage({ params }) {
     );
   }
 
-  const patient = data;
-
+  if (!patient) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <NotAvailable title={"Patient"} description="Patient not found" />
+      </div>
+    );
+  }
 
   const calculateAge = (dateOfBirth) => {
     const today = new Date();
@@ -54,25 +62,15 @@ export default async function PatientDetailsPage({ params }) {
           <CardHeader>
             <div className="flex items-center space-x-4">
               <Avatar className="w-20 h-20">
-                <AvatarImage
-                  src={`https://api.dicebear.com/6.x/initials/svg?seed=${patient.firstName}`}
-                  alt={`${patient.firstName} ${patient.lastName}`}
-                />
-                <AvatarFallback>
-                  {patient.firstName && patient.firstName[0]}
-                  {patient.lastName && patient.lastName[0]}
-                </AvatarFallback>
+                <AvatarImage src={patient?.imageUrl} alt={patient?.name || "Unknown"} />
+                <AvatarFallback>{patient?.name?.[0] || "?"}</AvatarFallback>
               </Avatar>
               <div>
-                <CardTitle>{`${patient.firstName} ${patient.lastName}`}</CardTitle>
+                <CardTitle>{`${patient.name}`}</CardTitle>
                 <CardDescription>
-                  {calculateAge(patient.dateOfBirth)} years old •{" "}
-                  {patient.gender}
+                  {calculateAge(parseInt(patient.dob))} years old • {patient.gender}
                 </CardDescription>
-                <Badge variant="secondary">
-                  {patient.currentHealthStatus?.symptoms ||
-                    "No current symptoms"}
-                </Badge>
+                <Badge variant="secondary">{patient.currentHealthStatus?.symptoms || "No current symptoms"}</Badge>
               </div>
             </div>
           </CardHeader>
@@ -99,9 +97,7 @@ export default async function PatientDetailsPage({ params }) {
                 <p>{patient.currentHealthStatus?.smoking}</p>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-500">
-                  Exercise Frequency
-                </p>
+                <p className="text-sm font-medium text-gray-500">Exercise Frequency</p>
                 <p>{patient.currentHealthStatus?.exerciseFrequency}</p>
               </div>
             </div>
@@ -109,7 +105,7 @@ export default async function PatientDetailsPage({ params }) {
         </Card>
 
         {/* Quick Actions Card */}
-        <QuickActions />
+        <QuickActions userId={patientId} />
       </div>
 
       {/* Tabs for different sections */}
@@ -125,32 +121,19 @@ export default async function PatientDetailsPage({ params }) {
           <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Patient Overview</CardTitle>
-              <CardDescription>
-                Key information about the patient
-              </CardDescription>
+              <CardDescription>Key information about the patient</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4">
                 <div>
                   <h3 className="font-semibold mb-2">Symptoms</h3>
-                  <p>
-                    {patient.currentHealthStatus?.symptoms ||
-                      "No symptoms reported"}
-                  </p>
-                  <p>
-                    Duration:{" "}
-                    {patient.currentHealthStatus?.symptomDuration || "N/A"}
-                  </p>
-                  <p>
-                    Intensity:{" "}
-                    {patient.currentHealthStatus?.symptomIntensity || "N/A"}
-                  </p>
+                  <p>{patient.currentHealthStatus?.symptoms || "No symptoms reported"}</p>
+                  <p>Duration: {patient.currentHealthStatus?.symptomDuration || "N/A"}</p>
+                  <p>Intensity: {patient.currentHealthStatus?.symptomIntensity || "N/A"}</p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Sleep</h3>
-                  <p>
-                    {patient.currentHealthStatus?.sleepHours} hours per night
-                  </p>
+                  <p>{patient.currentHealthStatus?.sleepHours} hours per night</p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Family History</h3>
@@ -169,32 +152,21 @@ export default async function PatientDetailsPage({ params }) {
           <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Medical History</CardTitle>
-              <CardDescription>
-                Patient's medical conditions and treatments
-              </CardDescription>
+              <CardDescription>Patient's medical conditions and treatments</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4">
                 <div>
                   <h3 className="font-semibold mb-2">Medical Conditions</h3>
-                  <p>
-                    {patient.medicalHistory?.medicalConditions ||
-                      "No known medical conditions"}
-                  </p>
+                  <p>{patient.medicalHistory?.medicalConditions || "No known medical conditions"}</p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Ongoing Treatments</h3>
-                  <p>
-                    {patient.medicalHistory?.ongoingTreatments ||
-                      "No ongoing treatments"}
-                  </p>
+                  <p>{patient.medicalHistory?.ongoingTreatments || "No ongoing treatments"}</p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Previous Surgeries</h3>
-                  <p>
-                    {patient.medicalHistory?.previousSurgeries ||
-                      "No previous surgeries"}
-                  </p>
+                  <p>{patient.medicalHistory?.previousSurgeries || "No previous surgeries"}</p>
                 </div>
               </div>
             </CardContent>
@@ -211,44 +183,23 @@ export default async function PatientDetailsPage({ params }) {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Medication</TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Frequency</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>End Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  <TableRow>
-                    <TableCell>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Frequency</TableHead>
-                            <TableHead>Start Date</TableHead>
-                            <TableHead>End Date</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {patient?.medications?.map((medication) => (
-                            <TableRow key={medication.id}>
-                              <TableCell>{medication.name}</TableCell>
-                              <TableCell>{medication.type}</TableCell>
-                              <TableCell>{medication.frequency}</TableCell>
-                              <TableCell>
-                                {new Date(
-                                  medication.startDate
-                                ).toLocaleDateString()}
-                              </TableCell>
-                              <TableCell>
-                                {new Date(
-                                  medication.endDate
-                                ).toLocaleDateString()}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableCell>
-                  </TableRow>
+                  {patient?.medications?.map((medication) => (
+                    <TableRow key={medication.id}>
+                      <TableCell>{medication.name}</TableCell>
+                      <TableCell>{medication.type}</TableCell>
+                      <TableCell>{medication.frequency}</TableCell>
+                      <TableCell>{new Date(medication.startDate).toLocaleDateString()}</TableCell>
+                      <TableCell>{new Date(medication.endDate).toLocaleDateString()}</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>
@@ -265,9 +216,7 @@ export default async function PatientDetailsPage({ params }) {
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold mb-2">Allergies</h3>
-                  <p>
-                    {patient.medicalHistory?.allergies || "No known allergies"}
-                  </p>
+                  <p>{patient.medicalHistory?.allergies || "No known allergies"}</p>
                 </div>
               </div>
             </CardContent>

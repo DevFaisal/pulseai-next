@@ -1,7 +1,6 @@
-import AddDoctor from "@/components/doctor/AddDoctor";
-import Loading from "@/components/other/Loading";
+import AddDoctor from "./components/AddDoctor";
 import NotAvailable from "@/components/other/NotAvailable";
-import DoctorTable from "@/components/doctor/DoctorTable";
+import DoctorTable from "./components/DoctorTable";
 import ChildrenWrapper from "@/components/other/ChildrenWrapper";
 import { fetchDoctors } from "@/server/actions/doctors/fetch-doctors";
 import { authOptions } from "@/lib/auth";
@@ -12,18 +11,13 @@ export default async function Doctors() {
   const hospitalId = user.hospitalId;
   const doctors = await fetchDoctors({ hospitalId });
 
-
   return (
     <ChildrenWrapper
       title={"Doctors"}
       description={"Manage and view doctor details"}
       LeftComponent={() => <AddDoctor />}
     >
-      {doctors?.data?.length > 0 ? (
-        <DoctorTable doctors={doctors.data} />
-      ) : (
-        <NotAvailable title={"Doctors"} />
-      )}
+      {doctors?.data?.length > 0 ? <DoctorTable doctors={doctors.data} /> : <NotAvailable title={"Doctors"} />}
     </ChildrenWrapper>
   );
 }

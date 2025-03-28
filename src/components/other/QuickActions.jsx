@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Activity, Calendar, FileText, Pill } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function QuickActions() {
+export default function QuickActions({userId}) {
   const router = useRouter();
 
   return (
@@ -16,7 +16,7 @@ export default function QuickActions() {
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
           <Button
-            onClick={() => router.push(`/user/patient/vitals`)}
+            onClick={() => router.push(`/user/patient/vitals/${userId}`)}
             className="h-20 flex flex-col items-center justify-center"
           >
             <Activity className="h-6 w-6 mb-2" />

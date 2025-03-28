@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { memo } from "react";
 import { ArrowRight, Play, Brain } from "lucide-react";
 import { Stats } from "./Stats";
 import { useRouter } from "next/navigation";
@@ -7,7 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../ui/button";
 
-export function Hero() {
+export const Hero = memo(function Hero() {
   return (
     <div className="relative min-h-[90vh] flex items-center bg-gradient-to-br from-blue-50 via-white to-blue-50">
       {/* Background Pattern */}
@@ -29,23 +29,16 @@ export function Hero() {
             </h1>
 
             <p className="mt-6 text-xl text-gray-600 max-w-2xl mx-auto lg:mx-0">
-              Enhance patient care with real-time health monitoring, AI-driven
-              symptom analysis, and seamless healthcare system integration.
+              Enhance patient care with real-time health monitoring, AI-driven symptom analysis, and seamless healthcare
+              system integration.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button
-                size="lg"
-                className="w-full sm:w-auto px-8 shadow-lg shadow-blue-500/25"
-              >
+              <Button size="lg" className="w-full sm:w-auto px-8 shadow-lg shadow-blue-500/25">
                 <Link href="/login">Get Started</Link>
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="w-full sm:w-auto px-8 group"
-              >
+              <Button variant="outline" size="lg" className="w-full sm:w-auto px-8 group">
                 <Play className="mr-2 h-4 w-4 fill-gray-700 group-hover:fill-blue-600" />
                 Watch Demo
               </Button>
@@ -60,10 +53,12 @@ export function Hero() {
               <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transparent z-10" />
               <Image
                 className="w-full h-full object-cover"
-                width={2080}
-                height={2080}
-                src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=2850&q=80"
+                width={800}
+                height={600}
+                src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
                 alt="Medical professional using digital interface"
+                priority
+                quality={85}
               />
             </div>
 
@@ -76,12 +71,8 @@ export function Hero() {
                   </div>
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-gray-900">
-                    AI Analysis Complete
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    Processing 1M+ data points daily
-                  </p>
+                  <p className="text-sm font-medium text-gray-900">AI Analysis Complete</p>
+                  <p className="text-xs text-gray-500">Processing 1M+ data points daily</p>
                 </div>
               </div>
             </div>
@@ -90,4 +81,4 @@ export function Hero() {
       </div>
     </div>
   );
-}
+});

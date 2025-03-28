@@ -1,30 +1,30 @@
-import React from 'react';
-import { Brain, Activity, Shield, Clock } from 'lucide-react';
+import React, { memo } from "react";
+import { Brain, Activity, Shield, Clock } from "lucide-react";
 
 const features = [
   {
-    name: 'AI-Powered Analysis',
-    description: 'Advanced machine learning algorithms provide accurate symptom analysis and health insights.',
+    name: "AI-Powered Analysis",
+    description: "Advanced machine learning algorithms provide accurate symptom analysis and health insights.",
     icon: Brain,
   },
   {
-    name: 'Real-time Monitoring',
-    description: 'Continuous tracking of vital signs and health metrics for proactive care.',
+    name: "Real-time Monitoring",
+    description: "Continuous tracking of vital signs and health metrics for proactive care.",
     icon: Activity,
   },
   {
-    name: 'Secure Integration',
-    description: 'Seamless and secure integration with existing healthcare systems and databases.',
+    name: "Secure Integration",
+    description: "Seamless and secure integration with existing healthcare systems and databases.",
     icon: Shield,
   },
   {
-    name: '24/7 Availability',
-    description: 'Round-the-clock access to health data and remote care capabilities.',
+    name: "24/7 Availability",
+    description: "Round-the-clock access to health data and remote care capabilities.",
     icon: Clock,
   },
 ];
 
-export function Features() {
+export const Features = memo(function Features() {
   return (
     <div className="py-12 bg-white" id="features">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -34,7 +34,8 @@ export function Features() {
             Revolutionize Healthcare Management
           </p>
           <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-            Pulse AI brings cutting-edge technology to healthcare, enabling better patient outcomes and streamlined operations.
+            Pulse AI brings cutting-edge technology to healthcare, enabling better patient outcomes and streamlined
+            operations.
           </p>
         </div>
 
@@ -56,4 +57,4 @@ export function Features() {
       </div>
     </div>
   );
-}
+});

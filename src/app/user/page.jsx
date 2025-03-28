@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -24,12 +18,13 @@ import { authOptions } from "@/lib/auth";
 import { fetchPatients } from "@/server/actions/patients/fetch-patients";
 import PatientListUser from "@/components/patient/PatientListUser";
 import TopCard from "@/components/other/TopCard";
-import { color } from "framer-motion";
+
 
 export default async function PulseAIRemoteOperatorDashboard() {
   const { user } = await getServerSession(authOptions);
   const hospitalId = user.hospitalId;
   const patients = await fetchPatients({ hospitalId });
+
 
   const kpis = {
     totalPatients: 1248,
@@ -153,9 +148,7 @@ export default async function PulseAIRemoteOperatorDashboard() {
           <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Program Overview</CardTitle>
-              <CardDescription>
-                Distribution of monitored patients
-              </CardDescription>
+              <CardDescription>Distribution of monitored patients</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -181,28 +174,16 @@ export default async function PulseAIRemoteOperatorDashboard() {
             <CardContent>
               <div className="space-y-4">
                 {recentAlerts.map((alert) => (
-                  <div
-                    key={alert.id}
-                    className="flex items-center justify-between"
-                  >
+                  <div key={alert.id} className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">{alert.patient}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {alert.issue}
-                      </p>
+                      <p className="text-sm text-muted-foreground">{alert.issue}</p>
                     </div>
                     <div className="flex items-center">
-                      <Badge
-                        variant={
-                          alert.severity === "High" ? "destructive" : "warning"
-                        }
-                        className="mr-2"
-                      >
+                      <Badge variant={alert.severity === "High" ? "destructive" : "warning"} className="mr-2">
                         {alert.severity}
                       </Badge>
-                      <span className="text-xs text-muted-foreground">
-                        {alert.time}
-                      </span>
+                      <span className="text-xs text-muted-foreground">{alert.time}</span>
                     </div>
                   </div>
                 ))}
@@ -218,9 +199,7 @@ export default async function PulseAIRemoteOperatorDashboard() {
           <Card className="rounded-none">
             <CardHeader>
               <CardTitle>Patient List</CardTitle>
-              <CardDescription>
-                Click on a patient to view details
-              </CardDescription>
+              <CardDescription>Click on a patient to view details</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">No patients found</p>
